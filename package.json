@@ -2,27 +2,34 @@
 	"name": "mfx",
 	"version": "0.0.0",
 	"license": "MIT",
-	"bin": "dist/cli.js",
+	"bin": "dist/source/cli.js",
 	"type": "module",
 	"engines": {
-		"node": ">=16"
+		"node": ">=18"
 	},
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch",
-		"test": "prettier --check . && xo && ava"
+		"build": "tsc && tsc-alias -p tsconfig.json -f",
+		"dev": "tsx watch source/cli.tsx",
+		"build:watch": "tsc --watch --preserveWatchOutput",
+		"test": "npm run build && ava",
+		"lint": "prettier --check . && xo"
 	},
 	"files": [
 		"dist"
 	],
 	"dependencies": {
-		"ink": "^4.1.0",
+		"cli-spinners": "^2.9.2",
+		"glob": "^13.0.6",
+		"ink": "^7.0.3",
+		"marked": "^18.0.3",
 		"meow": "^11.0.0",
-		"react": "^18.2.0"
+		"mnemonist": "^0.40.4",
+		"react": "^19.2.0",
+		"simple-ascii-chart": "^5.4.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/react": "^18.0.32",
+		"@types/react": "^19.0.32",
 		"@vdemedes/prettier-config": "^2.0.1",
 		"ava": "^5.2.0",
 		"chalk": "^5.2.0",
@@ -32,17 +39,20 @@
 		"ink-testing-library": "^3.0.0",
 		"prettier": "^2.8.7",
 		"ts-node": "^10.9.1",
+		"tsx": "^4.19.4",
+		"tsc-alias": "^1.8.17",
 		"typescript": "^5.0.3",
 		"xo": "^0.53.1"
 	},
 	"ava": {
+		"files": [
+			"test/**/*.mjs"
+		],
 		"extensions": {
-			"ts": "module",
-			"tsx": "module"
+			"js": true,
+			"mjs": true
 		},
-		"nodeArguments": [
-			"--loader=ts-node/esm"
-		]
+		"nodeArguments": []
 	},
 	"xo": {
 		"extends": "xo-react",

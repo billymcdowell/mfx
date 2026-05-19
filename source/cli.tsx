@@ -1,8 +1,13 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
 import React from 'react';
 import {render} from 'ink';
 import meow from 'meow';
 import App from './app.js';
+import {getBookmarksFilePath, getConfigFilePath} from './lib/paths.js';
+
+const ALT_SCREEN_ON = '\u001B[?1049h';
+const ALT_SCREEN_OFF = '\u001B[?1049l';
 
 const cli = meow(
 	`
@@ -10,20 +15,45 @@ const cli = meow(
 	  $ mfx
 
 	Options
-		--name  Your name
+	  --reset-config  Delete local mfx config & bookmarks (demo)
 
 	Examples
-	  $ mfx --name=Jane
-	  Hello, Jane
+	  $ mfx
+	  $ mfx --reset-config
 `,
 	{
 		importMeta: import.meta,
 		flags: {
-			name: {
-				type: 'string',
+			resetConfig: {
+				default: false,
+				type: 'boolean',
 			},
 		},
 	},
 );
 
-render(<App name={cli.flags.name} />);
+if (cli.flags.resetConfig) {
+	try {
+		fs.unlinkSync(getConfigFilePath());
+	} catch {
+		/* noop */
+	}
+
+	try {
+		fs.unlinkSync(getBookmarksFilePath());
+	} catch {
+		/* noop */
+	}
+}
+
+if (process.stdout.isTTY) {
+	process.stdout.write(ALT_SCREEN_ON);
+}
+
+const ink = render(<App />);
+
+void ink.waitUntilExit().finally(() => {
+	if (process.stdout.isTTY) {
+		process.stdout.write(ALT_SCREEN_OFF);
+	}
+});

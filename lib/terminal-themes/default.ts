@@ -1,0 +1,52 @@
+import type {Theme} from '@/components/ui/theme-provider';
+
+/** Baseline Ink terminal palette used when no named theme is selected. */
+export const defaultTheme: Theme = {
+	border: {
+		color: '#6B7280',
+		focusColor: '#60A5FA',
+		style: 'single',
+	},
+	colors: {
+		accent: '#A78BFA',
+		accentForeground: '#0F172A',
+		background: '#0F172A',
+		panel: '#1E293B',
+		border: '#334155',
+		error: '#F87171',
+		errorForeground: '#0F172A',
+		focusRing: '#60A5FA',
+		foreground: '#E2E8F0',
+		info: '#38BDF8',
+		infoForeground: '#0F172A',
+		muted: '#1E293B',
+		mutedForeground: '#94A3B8',
+		primary: '#60A5FA',
+		primaryForeground: '#0F172A',
+		secondary: '#94A3B8',
+		secondaryForeground: '#0F172A',
+		selection: '#334155',
+		selectionForeground: '#F8FAFC',
+		success: '#4ADE80',
+		successForeground: '#0F172A',
+		warning: '#FBBF24',
+		warningForeground: '#0F172A',
+	},
+	name: 'default',
+	spacing: {
+		0: 0,
+		1: 1,
+		2: 2,
+		3: 3,
+		4: 4,
+		6: 6,
+		8: 8,
+	},
+	typography: {
+		base: '',
+		bold: true,
+		lg: 'bold',
+		sm: 'dim',
+		xl: 'bold',
+	},
+};

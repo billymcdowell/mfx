@@ -1,7 +1,27 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": "dist"
+		"outDir": "dist",
+		"target": "ES2022",
+		"lib": ["DOM", "DOM.Iterable", "ES2023"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"jsx": "react-jsx",
+		"declaration": false,
+		"stripInternal": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noUncheckedIndexedAccess": false,
+		"noPropertyAccessFromIndexSignature": false,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"]
+		}
 	},
-	"include": ["source"]
+	"include": [
+		"source",
+		"components",
+		"lib",
+		"hooks"
+	]
 }
