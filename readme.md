@@ -42,7 +42,7 @@ Use it as:
 
 | Layer         | Technology                                                                                            |
 | ------------- | ----------------------------------------------------------------------------------------------------- |
-| Runtime       | Node.js 18+ (ES modules)                                                                              |
+| Runtime       | Node.js 22+ (ES modules; matches Ink 7)                                                               |
 | CLI           | [meow](https://github.com/sindresorhus/meow) — flags and help                                         |
 | Terminal UI   | [Ink](https://github.com/vadimdemedes/ink) 7 — React for the command line                             |
 | UI framework  | React 19                                                                                              |
@@ -67,7 +67,7 @@ The app uses the terminal **alternate screen** (`\u001B[?1049h`) so the full UI 
 ## Requirements
 
 - A TTY terminal (macOS Terminal, iTerm2, Windows Terminal, etc.)
-- Node.js **18** or newer
+- Node.js **22** or newer (Ink 7 requires Node ≥22)
 
 ## Install & run
 
