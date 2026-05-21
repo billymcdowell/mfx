@@ -71,16 +71,16 @@ The app uses the terminal **alternate screen** (`\u001B[?1049h`) so the full UI 
 
 ## Install & run
 
-From [npm](https://www.npmjs.com/package/@billymcdowell/mfx):
+From [npm](https://www.npmjs.com/package/@billy_mcdowell/mfx):
 
 ```bash
-npx @billymcdowell/mfx
+npx @billy_mcdowell/mfx
 ```
 
 Or install globally (the CLI command stays `mfx`):
 
 ```bash
-npm install -g @billymcdowell/mfx
+npm install -g @billy_mcdowell/mfx
 mfx
 ```
 
@@ -161,7 +161,7 @@ npm run changeset
 
 Pick **patch**, **minor**, or **major** and write a short summary; skip adding a changeset if the PR should not bump the published version.
 
-After merge, GitHub Actions opens or updates a **Version Packages** PR; merging that PR publishes `@billymcdowell/mfx` and updates `CHANGELOG.md`.
+After merge, GitHub Actions opens or updates a **Version Packages** PR; merging that PR publishes `@billy_mcdowell/mfx` and updates `CHANGELOG.md`.
 
 **Maintainers:** configure an npm automation token as the repository secret `NPM_TOKEN` (GitHub → Settings → Secrets and variables → Actions) so the release workflow can publish.
 
