@@ -1,6 +1,6 @@
 {
 	"name": "@billy_mcdowell/mfx",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Terminal-native market dashboard CLI (Ink + React)",
 	"license": "MIT",
 	"repository": {
