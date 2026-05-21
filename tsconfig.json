@@ -18,10 +18,5 @@
 			"@/*": ["./*"]
 		}
 	},
-	"include": [
-		"source",
-		"components",
-		"lib",
-		"hooks"
-	]
+	"include": ["source", "components", "lib", "hooks"]
 }

@@ -153,11 +153,7 @@ export function NewsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					const selBg = hi ? theme.colors.selection : undefined;
 					return (
 						<Box flexDirection="column" key={article.id} width="100%">
-							<Box
-								backgroundColor={selBg}
-								flexDirection="column"
-								width="100%"
-							>
+							<Box backgroundColor={selBg} flexDirection="column" width="100%">
 								<Box flexDirection="row" width="100%">
 									<Box
 										flexDirection="row"
@@ -167,7 +163,9 @@ export function NewsScreen({mainInputActive}: {mainInputActive: boolean}) {
 									>
 										<Text
 											backgroundColor={selBg}
-											color={hi ? theme.colors.success : theme.colors.foreground}
+											color={
+												hi ? theme.colors.success : theme.colors.foreground
+											}
 										>
 											{hi ? '> ' : '  '}
 										</Text>

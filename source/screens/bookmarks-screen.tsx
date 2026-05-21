@@ -110,7 +110,9 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 											minWidth={0}
 										>
 											<Text
-												backgroundColor={hi ? theme.colors.selection : undefined}
+												backgroundColor={
+													hi ? theme.colors.selection : undefined
+												}
 												color={
 													hi ? theme.colors.success : theme.colors.foreground
 												}
@@ -119,7 +121,9 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 											</Text>
 											<Box flexGrow={1} flexShrink={1} minWidth={0}>
 												<Text
-													backgroundColor={hi ? theme.colors.selection : undefined}
+													backgroundColor={
+														hi ? theme.colors.selection : undefined
+													}
 													bold={hi}
 													wrap="truncate-end"
 												>
@@ -128,7 +132,10 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 											</Box>
 										</Box>
 										<Box flexShrink={0}>
-											<Text backgroundColor={st.backgroundColor} color={st.color}>
+											<Text
+												backgroundColor={st.backgroundColor}
+												color={st.color}
+											>
 												{` ${tag} `}
 											</Text>
 										</Box>

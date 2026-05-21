@@ -78,10 +78,7 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 				input === 'K' ||
 				key.downArrow ||
 				key.upArrow;
-			if (
-				vertical &&
-				(focusRow === 'theme' || focusRow === 'refresh')
-			) {
+			if (vertical && (focusRow === 'theme' || focusRow === 'refresh')) {
 				return;
 			}
 
@@ -169,10 +166,7 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					marginTop={1}
 					width="100%"
 				>
-					<Text
-						backgroundColor={rowBg('theme')}
-						color={rowFg('theme')}
-					>
+					<Text backgroundColor={rowBg('theme')} color={rowFg('theme')}>
 						Theme
 					</Text>
 					<Select<ThemeKey>
@@ -200,10 +194,7 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					marginTop={1}
 					width="100%"
 				>
-					<Text
-						backgroundColor={rowBg('refresh')}
-						color={rowFg('refresh')}
-					>
+					<Text backgroundColor={rowBg('refresh')} color={rowFg('refresh')}>
 						Price Auto-Refresh Interval
 					</Text>
 					<RadioGroup<number>
@@ -248,7 +239,10 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					flexShrink={0}
 					marginTop={1}
 				>
-					<Text backgroundColor={rowBg('copyConfig')} color={rowFg('copyConfig')}>
+					<Text
+						backgroundColor={rowBg('copyConfig')}
+						color={rowFg('copyConfig')}
+					>
 						Config file {pathConfig}
 					</Text>
 					<Text color={theme.colors.info}> [c] Copy path</Text>

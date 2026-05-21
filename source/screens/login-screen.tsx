@@ -73,7 +73,12 @@ export function LoginScreen() {
 					{busy ? (
 						<Text dimColor>Signing in...</Text>
 					) : (
-						<Box flexDirection="column" gap={1} alignItems="flex-start" justifyContent="flex-start">
+						<Box
+							flexDirection="column"
+							gap={1}
+							alignItems="flex-start"
+							justifyContent="flex-start"
+						>
 							<TextInput
 								autoFocus
 								borderStyle="single"
@@ -100,10 +105,13 @@ export function LoginScreen() {
 								value={password}
 								width={44}
 							/>
-							<Box marginTop={1} backgroundColor={theme.colors.success} paddingY={1} paddingX={2}>
-								<Text
-									color={theme.colors.successForeground}
-								>
+							<Box
+								marginTop={1}
+								backgroundColor={theme.colors.success}
+								paddingY={1}
+								paddingX={2}
+							>
+								<Text color={theme.colors.successForeground}>
 									{'  '}▶ Sign In{'  '}
 								</Text>
 							</Box>
