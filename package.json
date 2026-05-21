@@ -80,5 +80,8 @@
 			"react/prop-types": "off"
 		}
 	},
-	"prettier": "@vdemedes/prettier-config"
+	"prettier": "@vdemedes/prettier-config",
+	"overrides": {
+		"eslint-plugin-unicorn": "^52.0.0"
+	}
 }
