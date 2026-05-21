@@ -1,8 +1,20 @@
 {
-	"name": "mfx",
+	"name": "@billymcdowell/mfx",
 	"version": "0.0.0",
+	"description": "Terminal-native market dashboard CLI (Ink + React)",
 	"license": "MIT",
-	"bin": "dist/source/cli.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/billymcdowell/mfx.git"
+	},
+	"bugs": "https://github.com/billymcdowell/mfx/issues",
+	"homepage": "https://github.com/billymcdowell/mfx#readme",
+	"publishConfig": {
+		"access": "public"
+	},
+	"bin": {
+		"mfx": "dist/source/cli.js"
+	},
 	"type": "module",
 	"engines": {
 		"node": ">=18"
@@ -12,7 +24,11 @@
 		"dev": "tsx watch source/cli.tsx",
 		"build:watch": "tsc --watch --preserveWatchOutput",
 		"test": "npm run build && ava",
-		"lint": "prettier --check . && xo"
+		"lint": "prettier --check . && xo",
+		"prepublishOnly": "npm run build",
+		"release": "npm run build && changeset publish",
+		"changeset": "changeset",
+		"version-packages": "changeset version"
 	},
 	"files": [
 		"dist"
@@ -29,6 +45,8 @@
 		"simple-ascii-chart": "^5.4.0"
 	},
 	"devDependencies": {
+		"@changesets/changelog-github": "^0.5.2",
+		"@changesets/cli": "^2.29.8",
 		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/react": "^19.0.32",
 		"@vdemedes/prettier-config": "^2.0.1",
