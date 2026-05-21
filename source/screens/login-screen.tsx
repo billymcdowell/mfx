@@ -7,6 +7,7 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useTerminalViewport} from '@/source/context/terminal-viewport-context';
 import {useAuth} from '@/source/context/auth-context';
 import {APP_VERSION} from '@/source/version';
+import {RainbowTitle} from '@/components/rainbow-text';
 
 export function LoginScreen() {
 	const theme = useTheme();
@@ -50,7 +51,9 @@ export function LoginScreen() {
 				paddingBottom={2}
 				paddingX={2}
 			>
-				<BigText color={theme.colors.primary} font="shade">MFX</BigText>
+				{/* <BigText color={theme.colors.primary} font="shade">MFX</BigText> */}
+				<RainbowTitle text="MFX CLI" fps={24} />
+				<Box height={2} />
 				<Text color={theme.colors.mutedForeground}>
 					Commodities & Forex Terminal · v{APP_VERSION}
 				</Text>
@@ -70,7 +73,7 @@ export function LoginScreen() {
 					{busy ? (
 						<Text dimColor>Signing in...</Text>
 					) : (
-						<>
+						<Box flexDirection="column" gap={1} alignItems="flex-start" justifyContent="flex-start">
 							<TextInput
 								autoFocus
 								borderStyle="single"
@@ -93,18 +96,18 @@ export function LoginScreen() {
 								onSubmit={() => {
 									void submit();
 								}}
+								placeholder="********"
 								value={password}
 								width={44}
 							/>
-							<Box marginTop={1}>
+							<Box marginTop={1} backgroundColor={theme.colors.success} paddingY={1} paddingX={2}>
 								<Text
-									backgroundColor={theme.colors.success}
 									color={theme.colors.successForeground}
 								>
 									{'  '}▶ Sign In{'  '}
 								</Text>
 							</Box>
-						</>
+						</Box>
 					)}
 				</Box>
 				{error && (
