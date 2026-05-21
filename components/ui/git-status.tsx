@@ -2,21 +2,21 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface GitStatusProps {
-	branch: string;
-	staged?: number;
-	modified?: number;
-	ahead?: number;
-	behind?: number;
-}
+export type GitStatusProps = {
+	readonly branch: string;
+	readonly staged?: number;
+	readonly modified?: number;
+	readonly ahead?: number;
+	readonly behind?: number;
+};
 
-export const GitStatus = ({
+export function GitStatus({
 	branch,
 	staged = 0,
 	modified = 0,
 	ahead = 0,
 	behind = 0,
-}: GitStatusProps) => {
+}: GitStatusProps) {
 	const theme = useTheme();
 	return (
 		<Box flexDirection="column" gap={0}>
@@ -29,4 +29,4 @@ export const GitStatus = ({
 			</Text>
 		</Box>
 	);
-};
+}

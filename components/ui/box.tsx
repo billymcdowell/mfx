@@ -12,20 +12,20 @@ export type BorderVariant =
 	| 'error'
 	| 'warning';
 
-export interface BoxProps extends InkBoxProps {
-	border?: boolean;
-	borderVariant?: BorderVariant;
-	borderColor?: string;
-	children?: ReactNode;
-}
+export type BoxProps = {
+	readonly border?: boolean;
+	readonly borderVariant?: BorderVariant;
+	readonly borderColor?: string;
+	readonly children?: ReactNode;
+} & InkBoxProps;
 
-export const Box = ({
+export function Box({
 	border,
 	borderVariant = 'default',
 	borderColor,
 	children,
 	...props
-}: BoxProps) => {
+}: BoxProps) {
 	const theme = useTheme();
 
 	const resolvedBorderColor =
@@ -35,18 +35,23 @@ export const Box = ({
 				case 'focus': {
 					return theme.colors.focusRing;
 				}
+
 				case 'success': {
 					return theme.colors.success;
 				}
+
 				case 'error': {
 					return theme.colors.error;
 				}
+
 				case 'warning': {
 					return theme.colors.warning;
 				}
+
 				case 'muted': {
 					return theme.colors.mutedForeground;
 				}
+
 				default: {
 					return theme.colors.border;
 				}
@@ -62,4 +67,4 @@ export const Box = ({
 			{children}
 		</InkBox>
 	);
-};
+}

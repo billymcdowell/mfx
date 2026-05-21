@@ -6,19 +6,19 @@ import {useInput} from '@/hooks/use-input';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-export interface LogEntry {
+export type LogEntry = {
 	level: LogLevel;
 	message: string;
 	timestamp?: Date;
-}
+};
 
-export interface LogProps {
-	entries: LogEntry[];
-	height?: number;
-	showTimestamp?: boolean;
-	filter?: string;
-	follow?: boolean;
-}
+export type LogProps = {
+	readonly entries: LogEntry[];
+	readonly height?: number;
+	readonly showTimestamp?: boolean;
+	readonly filter?: string;
+	readonly follow?: boolean;
+};
 
 const LEVEL_COLORS: Record<LogLevel, string> = {
 	debug: 'gray',
@@ -41,13 +41,13 @@ const formatTimestamp = (date: Date): string => {
 	return `${h}:${m}:${s}`;
 };
 
-export const Log = ({
+export function Log({
 	entries,
 	height = 10,
 	showTimestamp = true,
 	filter,
 	follow: followProp = false,
-}: LogProps) => {
+}: LogProps) {
 	const theme = useTheme();
 	const [scrollOffset, setScrollOffset] = useState(0);
 	const [follow, setFollow] = useState(followProp);
@@ -56,6 +56,7 @@ export const Log = ({
 		if (!filter) {
 			return entries;
 		}
+
 		const lower = filter.toLowerCase();
 		return entries.filter(
 			e =>
@@ -104,14 +105,15 @@ export const Log = ({
 					} else {
 						messageColor = theme.colors.foreground;
 					}
+
 					return (
 						<Box key={i} gap={1}>
 							{showTimestamp && entry.timestamp && (
-								<Text color={theme.colors.mutedForeground} dimColor>
+								<Text dimColor color={theme.colors.mutedForeground}>
 									{formatTimestamp(entry.timestamp)}
 								</Text>
 							)}
-							<Text color={levelColor} bold>
+							<Text bold color={levelColor}>
 								{levelLabel}
 							</Text>
 							<Text color={messageColor}>{entry.message}</Text>
@@ -120,25 +122,25 @@ export const Log = ({
 				})}
 			</Box>
 			<Box gap={2} marginTop={0}>
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					{scrollOffset + 1}–{Math.min(scrollOffset + height, filtered.length)}/
 					{filtered.length}
 				</Text>
 				<Text
-					color={follow ? theme.colors.success : theme.colors.mutedForeground}
 					dimColor
+					color={follow ? theme.colors.success : theme.colors.mutedForeground}
 				>
 					{follow ? '↓ follow' : 'f follow'}
 				</Text>
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					j/k scroll
 				</Text>
 				{filter && (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						filter: {filter}
 					</Text>
 				)}
 			</Box>
 		</Box>
 	);
-};
+}

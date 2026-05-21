@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface MenuItem {
+export type MenuItem = {
 	key: string;
 	label: string;
 	icon?: string;
@@ -12,15 +12,15 @@ export interface MenuItem {
 	disabled?: boolean;
 	separator?: boolean;
 	children?: MenuItem[];
-}
+};
 
-export interface MenuProps {
-	items: MenuItem[];
-	onSelect?: (item: MenuItem) => void;
-	title?: string;
-}
+export type MenuProps = {
+	readonly items: MenuItem[];
+	readonly onSelect?: (item: MenuItem) => void;
+	readonly title?: string;
+};
 
-export const Menu = ({items, onSelect, title}: MenuProps) => {
+export function Menu({items, onSelect, title}: MenuProps) {
 	const theme = useTheme();
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [submenuStack, setSubmenuStack] = useState<MenuItem[][]>([]);
@@ -43,14 +43,14 @@ export const Menu = ({items, onSelect, title}: MenuProps) => {
 	const openSubmenu = (item: MenuItem) => {
 		if (item.children && item.children.length > 0) {
 			const {children} = item;
-			setSubmenuStack(prev => [...prev, children]);
+			setSubmenuStack(previous => [...previous, children]);
 			setFocusIndex(0);
 		}
 	};
 
 	const closeSubmenu = () => {
 		if (submenuStack.length > 0) {
-			setSubmenuStack(prev => prev.slice(0, -1));
+			setSubmenuStack(previous => previous.slice(0, -1));
 			setFocusIndex(0);
 		}
 	};
@@ -59,6 +59,7 @@ export const Menu = ({items, onSelect, title}: MenuProps) => {
 		if (item.disabled || item.separator) {
 			return;
 		}
+
 		if (item.children && item.children.length > 0) {
 			openSubmenu(item);
 		} else {
@@ -162,4 +163,4 @@ export const Menu = ({items, onSelect, title}: MenuProps) => {
 			})}
 		</Box>
 	);
-};
+}

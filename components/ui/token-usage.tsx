@@ -2,12 +2,12 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface TokenUsageProps {
-	prompt: number;
-	completion: number;
-	model?: string;
-	showCost?: boolean;
-}
+export type TokenUsageProps = {
+	readonly prompt: number;
+	readonly completion: number;
+	readonly model?: string;
+	readonly showCost?: boolean;
+};
 
 const MODEL_PRICING: Record<string, {input: number; output: number}> = {
 	'claude-3-5-haiku': {input: 0.8, output: 4},
@@ -22,9 +22,11 @@ const formatTokens = (n: number): string => {
 	if (n >= 1_000_000) {
 		return `${(n / 1_000_000).toFixed(1)}M`;
 	}
+
 	if (n >= 1000) {
 		return `${(n / 1000).toFixed(1)}k`;
 	}
+
 	return String(n);
 };
 
@@ -32,16 +34,18 @@ const estimateCost = (
 	prompt: number,
 	completion: number,
 	model?: string,
-): number | null => {
+): number | undefined => {
 	if (!model) {
-		return null;
+		return undefined;
 	}
+
 	const key = Object.keys(MODEL_PRICING).find(k =>
 		model.toLowerCase().includes(k),
 	);
 	if (!key) {
-		return null;
+		return undefined;
 	}
+
 	const pricing = MODEL_PRICING[key];
 	return (
 		(prompt / 1_000_000) * pricing.input +
@@ -49,60 +53,58 @@ const estimateCost = (
 	);
 };
 
-export const TokenUsage = ({
+export function TokenUsage({
 	prompt,
 	completion,
 	model,
 	showCost = false,
-}: TokenUsageProps) => {
+}: TokenUsageProps) {
 	const theme = useTheme();
-	const cost = showCost ? estimateCost(prompt, completion, model) : null;
+	const cost = showCost ? estimateCost(prompt, completion, model) : undefined;
 
 	return (
 		<Box gap={0}>
 			<Text dimColor color={theme.colors.mutedForeground}>
-				⟨{''}
+				⟨
 			</Text>
 			<Text color={theme.colors.primary}>{formatTokens(prompt)}</Text>
 			<Text dimColor color={theme.colors.mutedForeground}>
-				{''}
-				in /{''}
+				in /
 			</Text>
 			<Text color={theme.colors.secondary ?? theme.colors.accent}>
 				{formatTokens(completion)}
 			</Text>
 			<Text dimColor color={theme.colors.mutedForeground}>
-				{''}
 				out
 			</Text>
 			{model && (
 				<Text dimColor color={theme.colors.mutedForeground}>
-					{''}· {model}
+					· {model}
 				</Text>
 			)}
-			{cost !== null && (
+			{cost !== undefined && (
 				<Text dimColor color={theme.colors.mutedForeground}>
-					{''}· ${cost.toFixed(4)}
+					· ${cost.toFixed(4)}
 				</Text>
 			)}
 			<Text dimColor color={theme.colors.mutedForeground}>
-				{''}⟩
+				⟩
 			</Text>
 		</Box>
 	);
-};
-
-export interface ContextMeterProps {
-	used: number;
-	limit: number;
-	label?: string;
-	showPercent?: boolean;
-	warnAt?: number;
-	criticalAt?: number;
-	width?: number;
 }
 
-export const ContextMeter = ({
+export type ContextMeterProps = {
+	readonly used: number;
+	readonly limit: number;
+	readonly label?: string;
+	readonly showPercent?: boolean;
+	readonly warnAt?: number;
+	readonly criticalAt?: number;
+	readonly width?: number;
+};
+
+export function ContextMeter({
 	used,
 	limit,
 	label,
@@ -110,7 +112,7 @@ export const ContextMeter = ({
 	warnAt = 75,
 	criticalAt = 90,
 	width = 20,
-}: ContextMeterProps) => {
+}: ContextMeterProps) {
 	const theme = useTheme();
 	const percent = Math.min(100, Math.round((used / limit) * 100));
 	const filled = Math.round((percent / 100) * width);
@@ -141,4 +143,4 @@ export const ContextMeter = ({
 			</Text>
 		</Box>
 	);
-};
+}

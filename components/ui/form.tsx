@@ -5,56 +5,56 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-interface FormContextValue {
+type FormContextValue = {
 	values: Record<string, unknown>;
 	errors: Record<string, string>;
 	isDirty: boolean;
 	setFieldValue: (name: string, value: unknown) => void;
 	setFieldError: (name: string, error: string) => void;
-}
+};
 
 const FormContext = createContext<FormContextValue>({
 	errors: {
-		/* noop */
+		/* Noop */
 	},
 	isDirty: false,
-	setFieldError: () => {
-		/* noop */
+	setFieldError() {
+		/* Noop */
 	},
-	setFieldValue: () => {
-		/* noop */
+	setFieldValue() {
+		/* Noop */
 	},
 	values: {
-		/* noop */
+		/* Noop */
 	},
 });
 
 export const useFormContext = () => useContext(FormContext);
 
-export interface FormField {
+export type FormField = {
 	name: string;
-	validate?: (value: unknown) => string | null;
-}
+	validate?: (value: unknown) => string | undefined;
+};
 
-export interface FormProps {
-	onSubmit?: (values: Record<string, unknown>) => void;
-	initialValues?: Record<string, unknown>;
-	fields?: FormField[];
-	children: ReactNode;
-}
+export type FormProps = {
+	readonly onSubmit?: (values: Record<string, unknown>) => void;
+	readonly initialValues?: Record<string, unknown>;
+	readonly fields?: FormField[];
+	readonly children: ReactNode;
+};
 
-export const Form = ({
+export function Form({
 	onSubmit,
 	initialValues = {
-		/* noop */
+		/* Noop */
 	},
 	fields = [],
 	children,
-}: FormProps) => {
+}: FormProps) {
 	const theme = useTheme();
 	const [values, setValues] = useState<Record<string, unknown>>(initialValues);
 	const [errors, setErrors] = useState<Record<string, string>>({
-		/* noop */
+		/* Noop */
 	});
 	const [isDirty, setIsDirty] = useState(false);
 
@@ -70,18 +70,22 @@ export const Form = ({
 	useInput((input, key) => {
 		if (key.ctrl && input === 's') {
 			const newErrors: Record<string, string> = {
-				/* noop */
+				/* Noop */
 			};
 			for (const field of fields) {
-				const err = field.validate ? field.validate(values[field.name]) : null;
-				if (err) {
-					newErrors[field.name] = err;
+				const error = field.validate
+					? field.validate(values[field.name])
+					: null;
+				if (error) {
+					newErrors[field.name] = error;
 				}
 			}
+
 			if (Object.keys(newErrors).length > 0) {
 				setErrors(newErrors);
 				return;
 			}
+
 			onSubmit?.(values);
 		}
 	});
@@ -95,10 +99,10 @@ export const Form = ({
 		<FormContext.Provider value={contextValue}>
 			<Box flexDirection="column" gap={1}>
 				{children}
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					Press Ctrl+S to submit
 				</Text>
 			</Box>
 		</FormContext.Provider>
 	);
-};
+}

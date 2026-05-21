@@ -36,13 +36,13 @@ if (cli.flags.resetConfig) {
 	try {
 		fs.unlinkSync(getConfigFilePath());
 	} catch {
-		/* noop */
+		/* Noop */
 	}
 
 	try {
 		fs.unlinkSync(getBookmarksFilePath());
 	} catch {
-		/* noop */
+		/* Noop */
 	}
 }
 

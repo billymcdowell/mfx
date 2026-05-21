@@ -19,19 +19,19 @@ const ICONS: Record<BannerVariant, string> = {
 	warning: '⚠',
 };
 
-export interface BannerProps {
-	children: ReactNode;
-	variant?: BannerVariant;
-	icon?: string;
-	title?: string;
-	dismissible?: boolean;
-	onDismiss?: () => void;
-	color?: string;
-	accentChar?: string;
-	gap?: number;
-}
+export type BannerProps = {
+	readonly children: ReactNode;
+	readonly variant?: BannerVariant;
+	readonly icon?: string;
+	readonly title?: string;
+	readonly dismissible?: boolean;
+	readonly onDismiss?: () => void;
+	readonly color?: string;
+	readonly accentChar?: string;
+	readonly gap?: number;
+};
 
-export const Banner = ({
+export function Banner({
 	children,
 	variant = 'info',
 	icon,
@@ -41,7 +41,7 @@ export const Banner = ({
 	color,
 	accentChar = '┃',
 	gap = 1,
-}: BannerProps) => {
+}: BannerProps) {
 	const theme = useTheme();
 	const [dismissed, setDismissed] = useState(false);
 
@@ -52,15 +52,19 @@ export const Banner = ({
 				case 'success': {
 					return theme.colors.success;
 				}
+
 				case 'error': {
 					return theme.colors.error;
 				}
+
 				case 'warning': {
 					return theme.colors.warning;
 				}
+
 				case 'neutral': {
 					return theme.colors.muted;
 				}
+
 				default: {
 					return theme.colors.info;
 				}
@@ -95,7 +99,7 @@ export const Banner = ({
 						<Text>{children}</Text>
 					</Box>
 					{dismissible && (
-						<Text color={theme.colors.muted} dimColor>
+						<Text dimColor color={theme.colors.muted}>
 							press Esc to dismiss
 						</Text>
 					)}
@@ -103,4 +107,4 @@ export const Banner = ({
 			</Box>
 		</Box>
 	);
-};
+}

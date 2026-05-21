@@ -4,33 +4,33 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type MultiProgressStatus = 'pending' | 'running' | 'done' | 'error';
 
-export interface MultiProgressItem {
+export type MultiProgressItem = {
 	id: string;
 	label: string;
 	value: number;
 	total: number;
 	status?: MultiProgressStatus;
 	statusText?: string;
-}
+};
 
-export interface MultiProgressProps {
-	items: MultiProgressItem[];
-	barWidth?: number;
-	labelWidth?: number;
-	compact?: boolean;
-	showPercent?: boolean;
-}
+export type MultiProgressProps = {
+	readonly items: MultiProgressItem[];
+	readonly barWidth?: number;
+	readonly labelWidth?: number;
+	readonly compact?: boolean;
+	readonly showPercent?: boolean;
+};
 
 const truncate = (s: string, n: number): string =>
 	s.length > n ? `${s.slice(0, n - 1)}…` : s.padEnd(n);
 
-export const MultiProgress = ({
+export function MultiProgress({
 	items,
 	barWidth = 20,
 	labelWidth = 20,
 	compact = false,
 	showPercent = true,
-}: MultiProgressProps) => {
+}: MultiProgressProps) {
 	const theme = useTheme();
 
 	const statusColor = (status: MultiProgressStatus | undefined): string => {
@@ -38,12 +38,15 @@ export const MultiProgress = ({
 			case 'done': {
 				return theme.colors.success;
 			}
+
 			case 'error': {
 				return theme.colors.error;
 			}
+
 			case 'pending': {
 				return theme.colors.mutedForeground;
 			}
+
 			default: {
 				return theme.colors.primary;
 			}
@@ -81,7 +84,7 @@ export const MultiProgress = ({
 								</Text>
 							)}
 							{item.statusText && (
-								<Text color={theme.colors.mutedForeground} dimColor>
+								<Text dimColor color={theme.colors.mutedForeground}>
 									{item.statusText}
 								</Text>
 							)}
@@ -96,7 +99,7 @@ export const MultiProgress = ({
 								{label}
 							</Text>
 							{item.statusText && (
-								<Text color={theme.colors.mutedForeground} dimColor>
+								<Text dimColor color={theme.colors.mutedForeground}>
 									{item.statusText}
 								</Text>
 							)}
@@ -116,4 +119,4 @@ export const MultiProgress = ({
 			})}
 		</Box>
 	);
-};
+}

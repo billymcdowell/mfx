@@ -5,58 +5,62 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface AppShellProps {
-	children: ReactNode;
-	fullscreen?: boolean;
+export type AppShellProps = {
+	readonly children: ReactNode;
+	readonly fullscreen?: boolean;
+};
+
+export type AppShellHeaderProps = {
+	readonly children: ReactNode;
+};
+
+export type AppShellTipProps = {
+	readonly children: ReactNode;
+};
+
+export type AppShellInputProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly placeholder?: string;
+	readonly borderStyle?: 'single' | 'double' | 'round' | 'bold';
+	readonly borderColor?: string;
+	readonly prefix?: string;
+};
+
+export type AppShellContentProps = {
+	readonly children: ReactNode;
+	readonly autoscroll?: boolean;
+	readonly height?: number;
+};
+
+export type AppShellHintsProps = {
+	readonly items?: string[];
+	readonly children?: ReactNode;
+};
+
+function AppShellRoot({children}: AppShellProps) {
+	return (
+		<Box flexDirection="column" flexGrow={1}>
+			{children}
+		</Box>
+	);
 }
 
-export interface AppShellHeaderProps {
-	children: ReactNode;
+function AppShellHeader({children}: AppShellHeaderProps) {
+	return <Box flexDirection="column">{children}</Box>;
 }
 
-export interface AppShellTipProps {
-	children: ReactNode;
+function AppShellTip({children}: AppShellTipProps) {
+	return (
+		<Box paddingLeft={2} paddingY={0}>
+			<Text dimColor>Tip:</Text>
+			<Text dimColor>{children}</Text>
+		</Box>
+	);
 }
 
-export interface AppShellInputProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	placeholder?: string;
-	borderStyle?: 'single' | 'double' | 'round' | 'bold';
-	borderColor?: string;
-	prefix?: string;
-}
-
-export interface AppShellContentProps {
-	children: ReactNode;
-	autoscroll?: boolean;
-	height?: number;
-}
-
-export interface AppShellHintsProps {
-	items?: string[];
-	children?: ReactNode;
-}
-
-const AppShellRoot = ({children}: AppShellProps) => (
-	<Box flexDirection="column" flexGrow={1}>
-		{children}
-	</Box>
-);
-
-const AppShellHeader = ({children}: AppShellHeaderProps) => (
-	<Box flexDirection="column">{children}</Box>
-);
-
-const AppShellTip = ({children}: AppShellTipProps) => (
-	<Box paddingLeft={2} paddingY={0}>
-		<Text dimColor>{'Tip:'}</Text>
-		<Text dimColor>{children}</Text>
-	</Box>
-);
-
-const AppShellInput = ({
+function AppShellInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -64,7 +68,7 @@ const AppShellInput = ({
 	borderStyle = 'single',
 	borderColor,
 	prefix = '>',
-}: AppShellInputProps) => {
+}: AppShellInputProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const theme = useTheme();
 	const value = controlledValue ?? internalValue;
@@ -75,8 +79,10 @@ const AppShellInput = ({
 			if (!controlledValue) {
 				setInternalValue('');
 			}
+
 			return;
 		}
+
 		if (key.backspace || key.delete) {
 			const next = value.slice(0, -1);
 			if (onChange) {
@@ -84,11 +90,14 @@ const AppShellInput = ({
 			} else {
 				setInternalValue(next);
 			}
+
 			return;
 		}
+
 		if (key.escape || key.upArrow || key.downArrow || key.tab) {
 			return;
 		}
+
 		const next = value + input;
 		if (onChange) {
 			onChange(next);
@@ -105,7 +114,7 @@ const AppShellInput = ({
 			paddingX={1}
 		>
 			{prefix && (
-				<Text color={theme.colors.primary} bold>
+				<Text bold color={theme.colors.primary}>
 					{`${prefix} `}
 				</Text>
 			)}
@@ -113,9 +122,9 @@ const AppShellInput = ({
 			<Text color={theme.colors.focusRing}>█</Text>
 		</Box>
 	);
-};
+}
 
-const AppShellContent = ({children, height = 20}: AppShellContentProps) => {
+function AppShellContent({children, height = 20}: AppShellContentProps) {
 	const [scrollTop, setScrollTop] = useState(0);
 
 	useInput((_input, key) => {
@@ -128,14 +137,14 @@ const AppShellContent = ({children, height = 20}: AppShellContentProps) => {
 
 	return (
 		<Box flexDirection="row" height={height} overflow="hidden">
-			<Box flexGrow={1} flexDirection="column" marginTop={-scrollTop as number}>
+			<Box flexGrow={1} flexDirection="column" marginTop={-scrollTop}>
 				{children}
 			</Box>
 		</Box>
 	);
-};
+}
 
-const AppShellHints = ({items, children}: AppShellHintsProps) => {
+function AppShellHints({items, children}: AppShellHintsProps) {
 	const theme = useTheme();
 	const content = items ? items.join('|') : children;
 	return (
@@ -145,7 +154,7 @@ const AppShellHints = ({items, children}: AppShellHintsProps) => {
 			</Text>
 		</Box>
 	);
-};
+}
 
 export const AppShell = Object.assign(AppShellRoot, {
 	Content: AppShellContent,

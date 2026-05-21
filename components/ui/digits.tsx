@@ -4,11 +4,11 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type DigitSize = 'sm' | 'md' | 'lg';
 
-export interface DigitsProps {
-	value: string | number;
-	color?: string;
-	size?: DigitSize;
-}
+export type DigitsProps = {
+	readonly value: string | number;
+	readonly color?: string;
+	readonly size?: DigitSize;
+};
 
 const SEGMENTS_MD: Record<string, string[]> = {
 	'': ['', '', '', '', ''],
@@ -54,22 +54,22 @@ const getFallback = (size: DigitSize): string[] => {
 	return [`╭${bar}╮`, side, side, side, `╰${bar}╯`];
 };
 
-export const Digits = ({value, color, size = 'md'}: DigitsProps) => {
+export function Digits({value, color, size = 'md'}: DigitsProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
-	const str = String(value);
+	const string_ = String(value);
 
 	if (size === 'sm') {
 		return (
-			<Text color={resolvedColor} bold>
-				{str}
+			<Text bold color={resolvedColor}>
+				{string_}
 			</Text>
 		);
 	}
 
 	const segMap = getSegmentMap(size);
 	const fallback = getFallback(size);
-	const chars = [...str];
+	const chars = [...string_];
 	const rows = 5;
 
 	return (
@@ -78,11 +78,11 @@ export const Digits = ({value, color, size = 'md'}: DigitsProps) => {
 				<Box key={rowIdx} flexDirection="row">
 					{chars.map((ch, charIdx) => {
 						const segments = segMap[ch] ?? fallback;
-						const rowStr = segments[rowIdx] ?? ''.repeat(size === 'lg' ? 5 : 3);
+						const rowString =
+							segments[rowIdx] ?? ''.repeat(size === 'lg' ? 5 : 3);
 						return (
 							<Text key={charIdx} color={resolvedColor}>
-								{rowStr}
-								{''}
+								{rowString}
 							</Text>
 						);
 					})}
@@ -90,4 +90,4 @@ export const Digits = ({value, color, size = 'md'}: DigitsProps) => {
 			))}
 		</Box>
 	);
-};
+}

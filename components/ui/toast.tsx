@@ -13,24 +13,24 @@ const ICONS: Record<ToastVariant, string> = {
 	warning: '⚠',
 };
 
-export interface ToastProps {
-	message: string;
-	variant?: ToastVariant;
-	duration?: number;
-	onDismiss?: () => void;
-	icon?: string;
-}
+export type ToastProps = {
+	readonly message: string;
+	readonly variant?: ToastVariant;
+	readonly duration?: number;
+	readonly onDismiss?: () => void;
+	readonly icon?: string;
+};
 
 const BAR_WIDTH = 20;
 const TICK_MS = 100;
 
-export const Toast = ({
+export function Toast({
 	message,
 	variant = 'info',
 	duration = 3000,
 	onDismiss,
 	icon,
-}: ToastProps) => {
+}: ToastProps) {
 	const theme = useTheme();
 	const [elapsed, setElapsed] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
@@ -40,12 +40,15 @@ export const Toast = ({
 			case 'success': {
 				return theme.colors.success;
 			}
+
 			case 'error': {
 				return theme.colors.error;
 			}
+
 			case 'warning': {
 				return theme.colors.warning;
 			}
+
 			default: {
 				return theme.colors.info;
 			}
@@ -57,14 +60,16 @@ export const Toast = ({
 			setDismissed(true);
 			onDismiss?.();
 		}, duration);
-		return () => clearTimeout(id);
+		return () => {
+			clearTimeout(id);
+		};
 	}, [duration, onDismiss]);
 
 	useInterval(
 		() => {
 			setElapsed(e => Math.min(e + TICK_MS, duration));
 		},
-		dismissed ? null : TICK_MS,
+		dismissed ? undefined : TICK_MS,
 	);
 
 	if (dismissed) {
@@ -89,7 +94,7 @@ export const Toast = ({
 			flexDirection="column"
 		>
 			<Box gap={1}>
-				<Text color={variantColor} bold>
+				<Text bold color={variantColor}>
 					{resolvedIcon}
 				</Text>
 				<Text>{message}</Text>
@@ -100,4 +105,4 @@ export const Toast = ({
 			</Box>
 		</Box>
 	);
-};
+}

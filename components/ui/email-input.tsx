@@ -5,42 +5,45 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface EmailInputProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	label?: string;
-	placeholder?: string;
-	autoFocus?: boolean;
-	id?: string;
-	width?: number;
-	suggestions?: string[];
-}
+export type EmailInputProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly label?: string;
+	readonly placeholder?: string;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+	readonly width?: number;
+	readonly suggestions?: string[];
+};
 
 const isValidEmail = (email: string): boolean => {
 	const atIdx = email.indexOf('@');
 	if (atIdx < 1) {
 		return false;
 	}
+
 	const domain = email.slice(atIdx + 1);
 	return domain.includes('.');
 };
 
 const getBorderColor = (
-	error: string | null,
+	error: string | undefined,
 	isFocused: boolean,
 	theme: ReturnType<typeof useTheme>,
 ): string => {
 	if (error) {
 		return theme.colors.error;
 	}
+
 	if (isFocused) {
 		return theme.colors.focusRing;
 	}
+
 	return theme.colors.border;
 };
 
-export const EmailInput = ({
+export function EmailInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -50,35 +53,38 @@ export const EmailInput = ({
 	id,
 	width = 40,
 	suggestions = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'],
-}: EmailInputProps) => {
+}: EmailInputProps) {
 	const [internalValue, setInternalValue] = useState('');
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState<string | undefined>();
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 
 	const value = controlledValue ?? internalValue;
 
-	const applyChange = (newVal: string) => {
+	const applyChange = (newValue: string) => {
 		if (onChange) {
-			onChange(newVal);
+			onChange(newValue);
 		} else {
-			setInternalValue(newVal);
+			setInternalValue(newValue);
 		}
 	};
 
-	const getSuggestion = (val: string): string | null => {
-		const atIdx = val.indexOf('@');
+	const getSuggestion = (value_: string): string | undefined => {
+		const atIdx = value_.indexOf('@');
 		if (atIdx === -1) {
-			return null;
+			return undefined;
 		}
-		const afterAt = val.slice(atIdx + 1);
+
+		const afterAt = value_.slice(atIdx + 1);
 		if (afterAt.length === 0) {
-			return null;
+			return undefined;
 		}
+
 		const match = suggestions.find(s => s.startsWith(afterAt) && s !== afterAt);
 		if (!match) {
-			return null;
+			return undefined;
 		}
+
 		return match.slice(afterAt.length);
 	};
 
@@ -92,7 +98,8 @@ export const EmailInput = ({
 				setError('Please enter a valid email address');
 				return;
 			}
-			setError(null);
+
+			setError(undefined);
 			onSubmit?.(value);
 			return;
 		}
@@ -100,16 +107,17 @@ export const EmailInput = ({
 		if (key.tab) {
 			const hint = getSuggestion(value);
 			if (hint) {
-				const newVal = value + hint;
-				applyChange(newVal);
+				const newValue = value + hint;
+				applyChange(newValue);
 			}
+
 			return;
 		}
 
 		if (key.backspace || key.delete) {
-			setError(null);
-			const newVal = value.slice(0, -1);
-			applyChange(newVal);
+			setError(undefined);
+			const newValue = value.slice(0, -1);
+			applyChange(newValue);
 			return;
 		}
 
@@ -117,9 +125,9 @@ export const EmailInput = ({
 			return;
 		}
 
-		setError(null);
-		const newVal = value + input;
-		applyChange(newVal);
+		setError(undefined);
+		const newValue = value + input;
+		applyChange(newValue);
 	});
 
 	const borderColor = getBorderColor(error, isFocused, theme);
@@ -141,7 +149,7 @@ export const EmailInput = ({
 					{value || placeholder}
 				</Text>
 				{isFocused && suggestion && (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{suggestion}
 					</Text>
 				)}
@@ -149,11 +157,11 @@ export const EmailInput = ({
 			</Box>
 			{error && <Text color={theme.colors.error}>{error}</Text>}
 			{isFocused && suggestion && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					Tab to complete: {value}
 					{suggestion}
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

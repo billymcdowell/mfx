@@ -4,25 +4,25 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface RadioOption<T = string> {
+export type RadioOption<T = string> = {
 	value: T;
 	label: string;
 	hint?: string;
 	disabled?: boolean;
-}
+};
 
-export interface RadioGroupProps<T = string> {
-	options: RadioOption<T>[];
-	value?: T;
-	onChange?: (value: T) => void;
-	name?: string;
-	cursor?: string;
-	inputActive?: boolean;
+export type RadioGroupProps<T = string> = {
+	readonly options: Array<RadioOption<T>>;
+	readonly value?: T;
+	readonly onChange?: (value: T) => void;
+	readonly name?: string;
+	readonly cursor?: string;
+	readonly inputActive?: boolean;
 	/** Fired when ↑ is pressed while the first option is focused. */
-	onFocusLeaveStart?: () => void;
+	readonly onFocusLeaveStart?: () => void;
 	/** Fired when ↓ is pressed while the last option is focused. */
-	onFocusLeaveEnd?: () => void;
-}
+	readonly onFocusLeaveEnd?: () => void;
+};
 
 const getOptionColor = (
 	disabled: boolean | undefined,
@@ -32,13 +32,15 @@ const getOptionColor = (
 	if (disabled) {
 		return theme.colors.mutedForeground;
 	}
+
 	if (isHighlighted) {
 		return theme.colors.primary;
 	}
+
 	return theme.colors.foreground;
 };
 
-export const RadioGroup = <T = string,>({
+export function RadioGroup<T = string>({
 	options,
 	value: controlledValue,
 	onChange,
@@ -47,12 +49,13 @@ export const RadioGroup = <T = string,>({
 	inputActive = true,
 	onFocusLeaveStart,
 	onFocusLeaveEnd,
-}: RadioGroupProps<T>) => {
+}: RadioGroupProps<T>) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(() => {
 		if (controlledValue === undefined) {
 			return 0;
 		}
+
 		const idx = options.findIndex(o => o.value === controlledValue);
 		return Math.max(idx, 0);
 	});
@@ -78,9 +81,11 @@ export const RadioGroup = <T = string,>({
 		if (!opt || opt.disabled) {
 			return;
 		}
+
 		if (controlledValue === undefined) {
 			setInternalValue(opt.value);
 		}
+
 		onChange?.(opt.value);
 	};
 
@@ -94,10 +99,12 @@ export const RadioGroup = <T = string,>({
 					while (next >= 0 && options[next]?.disabled) {
 						next -= 1;
 					}
+
 					if (next < 0) {
 						onFocusLeaveStart?.();
 						return i;
 					}
+
 					return next;
 				});
 			} else if (down) {
@@ -106,10 +113,12 @@ export const RadioGroup = <T = string,>({
 					while (next < options.length && options[next]?.disabled) {
 						next += 1;
 					}
+
 					if (next >= options.length) {
 						onFocusLeaveEnd?.();
 						return i;
 					}
+
 					return next;
 				});
 			} else if (key.return) {
@@ -145,9 +154,9 @@ export const RadioGroup = <T = string,>({
 						</Text>
 						{opt.hint ? (
 							<Text
+								dimColor
 								backgroundColor={rowBg}
 								color={theme.colors.mutedForeground}
-								dimColor
 							>
 								{`  ${opt.hint}`}
 							</Text>
@@ -157,4 +166,4 @@ export const RadioGroup = <T = string,>({
 			})}
 		</Box>
 	);
-};
+}

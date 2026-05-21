@@ -6,17 +6,17 @@ import {useInput} from '@/hooks/use-input';
 
 export type DrawerEdge = 'left' | 'right' | 'top' | 'bottom';
 
-export interface DrawerProps {
-	isOpen?: boolean;
-	edge?: DrawerEdge;
-	title?: string;
-	children: ReactNode;
-	onClose?: () => void;
-	width?: number;
-	height?: number;
-}
+export type DrawerProps = {
+	readonly isOpen?: boolean;
+	readonly edge?: DrawerEdge;
+	readonly title?: string;
+	readonly children: ReactNode;
+	readonly onClose?: () => void;
+	readonly width?: number;
+	readonly height?: number;
+};
 
-export const Drawer = ({
+export function Drawer({
 	isOpen = false,
 	edge = 'right',
 	title,
@@ -24,7 +24,7 @@ export const Drawer = ({
 	onClose,
 	width = 40,
 	height = 10,
-}: DrawerProps) => {
+}: DrawerProps) {
 	const theme = useTheme();
 
 	useInput(
@@ -32,6 +32,7 @@ export const Drawer = ({
 			if (!isOpen) {
 				return;
 			}
+
 			if (key.escape) {
 				onClose?.();
 			}
@@ -63,7 +64,7 @@ export const Drawer = ({
 				) : (
 					<Text> </Text>
 				)}
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					Esc to close
 				</Text>
 			</Box>
@@ -72,4 +73,4 @@ export const Drawer = ({
 			</Box>
 		</Box>
 	);
-};
+}

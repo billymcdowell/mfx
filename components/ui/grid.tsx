@@ -2,13 +2,13 @@ import {Box} from 'ink';
 import React, {Children} from 'react';
 import type {ReactNode} from 'react';
 
-export interface GridProps {
-	columns: number;
-	gap?: number;
-	children: ReactNode;
-}
+export type GridProps = {
+	readonly columns: number;
+	readonly gap?: number;
+	readonly children: ReactNode;
+};
 
-export const Grid = ({columns, gap = 0, children}: GridProps) => {
+export function Grid({columns, gap = 0, children}: GridProps) {
 	const items = Children.toArray(children);
 	const rows: ReactNode[][] = [];
 
@@ -29,4 +29,4 @@ export const Grid = ({columns, gap = 0, children}: GridProps) => {
 			))}
 		</Box>
 	);
-};
+}

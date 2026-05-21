@@ -4,20 +4,20 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type DiffMode = 'unified' | 'split' | 'inline';
 
-export interface DiffViewProps {
-	oldText: string;
-	newText: string;
-	filename?: string;
-	language?: string;
-	mode?: DiffMode;
-	context?: number;
-	showLineNumbers?: boolean;
-}
+export type DiffViewProps = {
+	readonly oldText: string;
+	readonly newText: string;
+	readonly filename?: string;
+	readonly language?: string;
+	readonly mode?: DiffMode;
+	readonly context?: number;
+	readonly showLineNumbers?: boolean;
+};
 
-interface DiffOp {
+type DiffOp = {
 	type: 'equal' | 'insert' | 'delete';
 	line: string;
-}
+};
 
 const computeDiff = (oldLines: string[], newLines: string[]): DiffOp[] => {
 	const m = oldLines.length;
@@ -58,11 +58,11 @@ const computeDiff = (oldLines: string[], newLines: string[]): DiffOp[] => {
 	return ops;
 };
 
-interface Hunk {
+type Hunk = {
 	oldStart: number;
 	newStart: number;
 	ops: DiffOp[];
-}
+};
 
 const buildHunks = (ops: DiffOp[], context: number): Hunk[] => {
 	let oldLine = 1;
@@ -73,9 +73,11 @@ const buildHunks = (ops: DiffOp[], context: number): Hunk[] => {
 		if (op.type !== 'insert') {
 			oldLine += 1;
 		}
+
 		if (op.type !== 'delete') {
 			newLine += 1;
 		}
+
 		return {...op, newLine: n, oldLine: o};
 	});
 
@@ -100,7 +102,7 @@ const buildHunks = (ops: DiffOp[], context: number): Hunk[] => {
 		}
 	}
 
-	const indices = [...included].toSorted((a, b) => a - b);
+	const indices = [...included].sort((a, b) => a - b);
 	const hunks: Hunk[] = [];
 	let start = 0;
 	while (start < indices.length) {
@@ -111,8 +113,10 @@ const buildHunks = (ops: DiffOp[], context: number): Hunk[] => {
 			if (nextIdx !== curIdx + 1) {
 				break;
 			}
+
 			end += 1;
 		}
+
 		const slice = indices.slice(start, end + 1).map(i => numbered[i]);
 		const firstOld = slice.find(op => op.oldLine !== null)?.oldLine ?? 1;
 		const firstNew = slice.find(op => op.newLine !== null)?.newLine ?? 1;
@@ -123,13 +127,13 @@ const buildHunks = (ops: DiffOp[], context: number): Hunk[] => {
 	return hunks;
 };
 
-interface ViewProps {
-	hunks: Hunk[];
-	showLineNumbers: boolean;
-	theme: ReturnType<typeof useTheme>;
-}
+type ViewProps = {
+	readonly hunks: Hunk[];
+	readonly showLineNumbers: boolean;
+	readonly theme: ReturnType<typeof useTheme>;
+};
 
-const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
+function UnifiedView({hunks, showLineNumbers, theme}: ViewProps) {
 	const rows: React.ReactNode[] = [];
 
 	for (const hunk of hunks) {
@@ -137,7 +141,7 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 		const newCount = hunk.ops.filter(op => op.type !== 'delete').length;
 		rows.push(
 			<Box key={`hunk-${hunk.oldStart}-${hunk.newStart}`}>
-				<Text color="cyan" dimColor>
+				<Text dimColor color="cyan">
 					@@ -{hunk.oldStart},{oldCount} +{hunk.newStart},{newCount} @@
 				</Text>
 			</Box>,
@@ -152,6 +156,7 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 			if (op.type !== 'insert') {
 				ol += 1;
 			}
+
 			if (op.type !== 'delete') {
 				nl += 1;
 			}
@@ -162,7 +167,7 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 				rows.push(
 					<Box key={key} gap={1}>
 						{showLineNumbers && (
-							<Text color={theme.colors.mutedForeground} dimColor>
+							<Text dimColor color={theme.colors.mutedForeground}>
 								{String(currentOl ?? '').padStart(4)} {''.repeat(4)}
 							</Text>
 						)}
@@ -173,7 +178,7 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 				rows.push(
 					<Box key={key} gap={1}>
 						{showLineNumbers && (
-							<Text color={theme.colors.mutedForeground} dimColor>
+							<Text dimColor color={theme.colors.mutedForeground}>
 								{''.repeat(4)} {String(currentNl ?? '').padStart(4)}
 							</Text>
 						)}
@@ -184,9 +189,9 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 				rows.push(
 					<Box key={key} gap={1}>
 						{showLineNumbers && (
-							<Text color={theme.colors.mutedForeground} dimColor>
+							<Text dimColor color={theme.colors.mutedForeground}>
 								{String(currentOl ?? '').padStart(4)}
-								{''}
+
 								{String(currentNl ?? '').padStart(4)}
 							</Text>
 						)}
@@ -198,9 +203,9 @@ const UnifiedView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 	}
 
 	return <Box flexDirection="column">{rows}</Box>;
-};
+}
 
-const SplitView = ({hunks, showLineNumbers, theme}: ViewProps) => {
+function SplitView({hunks, showLineNumbers, theme}: ViewProps) {
 	const rows: React.ReactNode[] = [];
 
 	for (const hunk of hunks) {
@@ -208,7 +213,7 @@ const SplitView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 		const newCount = hunk.ops.filter(op => op.type !== 'delete').length;
 		rows.push(
 			<Box key={`hunk-${hunk.oldStart}-${hunk.newStart}`}>
-				<Text color="cyan" dimColor>
+				<Text dimColor color="cyan">
 					@@ -{hunk.oldStart},{oldCount} +{hunk.newStart},{newCount} @@
 				</Text>
 			</Box>,
@@ -223,6 +228,7 @@ const SplitView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 			if (op.type !== 'insert') {
 				ol += 1;
 			}
+
 			if (op.type !== 'delete') {
 				nl += 1;
 			}
@@ -278,15 +284,15 @@ const SplitView = ({hunks, showLineNumbers, theme}: ViewProps) => {
 	}
 
 	return <Box flexDirection="column">{rows}</Box>;
-};
-
-interface InlineViewProps {
-	ops: DiffOp[];
-	showLineNumbers: boolean;
-	theme: ReturnType<typeof useTheme>;
 }
 
-const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
+type InlineViewProps = {
+	readonly ops: DiffOp[];
+	readonly showLineNumbers: boolean;
+	readonly theme: ReturnType<typeof useTheme>;
+};
+
+function InlineView({ops, showLineNumbers, theme}: InlineViewProps) {
 	const rows: React.ReactNode[] = [];
 	let oldLine = 1;
 	let newLine = 1;
@@ -297,6 +303,7 @@ const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
 		if (op.type !== 'insert') {
 			oldLine += 1;
 		}
+
 		if (op.type !== 'delete') {
 			newLine += 1;
 		}
@@ -307,11 +314,11 @@ const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
 			rows.push(
 				<Box key={key} gap={1}>
 					{showLineNumbers && (
-						<Text color={theme.colors.mutedForeground} dimColor>
-							{String(currentOl ?? '').padStart(4)} {''}
+						<Text dimColor color={theme.colors.mutedForeground}>
+							{String(currentOl ?? '').padStart(4)}
 						</Text>
 					)}
-					<Text color="red" dimColor>
+					<Text dimColor color="red">
 						-{op.line}
 					</Text>
 				</Box>,
@@ -320,8 +327,8 @@ const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
 			rows.push(
 				<Box key={key} gap={1}>
 					{showLineNumbers && (
-						<Text color={theme.colors.mutedForeground} dimColor>
-							{''} {String(currentNl ?? '').padStart(4)}
+						<Text dimColor color={theme.colors.mutedForeground}>
+							{String(currentNl ?? '').padStart(4)}
 						</Text>
 					)}
 					<Text color="green">+{op.line}</Text>
@@ -331,9 +338,9 @@ const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
 			rows.push(
 				<Box key={key} gap={1}>
 					{showLineNumbers && (
-						<Text color={theme.colors.mutedForeground} dimColor>
+						<Text dimColor color={theme.colors.mutedForeground}>
 							{String(currentOl ?? '').padStart(4)}
-							{''}
+
 							{String(currentNl ?? '').padStart(4)}
 						</Text>
 					)}
@@ -344,16 +351,16 @@ const InlineView = ({ops, showLineNumbers, theme}: InlineViewProps) => {
 	}
 
 	return <Box flexDirection="column">{rows}</Box>;
-};
+}
 
-export const DiffView = ({
+export function DiffView({
 	oldText,
 	newText,
 	filename,
 	mode = 'unified',
 	context = 3,
 	showLineNumbers = false,
-}: DiffViewProps) => {
+}: DiffViewProps) {
 	const theme = useTheme();
 
 	const oldLines = oldText.split('');
@@ -410,4 +417,4 @@ export const DiffView = ({
 			{content}
 		</Box>
 	);
-};
+}

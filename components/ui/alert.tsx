@@ -12,13 +12,13 @@ const ICONS: Record<AlertVariant, string> = {
 	warning: '⚠',
 };
 
-export interface AlertProps {
-	variant?: AlertVariant;
-	title?: string;
-	children?: ReactNode;
-	icon?: string;
-	bordered?: boolean;
-	borderStyle?:
+export type AlertProps = {
+	readonly variant?: AlertVariant;
+	readonly title?: string;
+	readonly children?: ReactNode;
+	readonly icon?: string;
+	readonly bordered?: boolean;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -26,12 +26,12 @@ export interface AlertProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	color?: string;
-	paddingX?: number;
-	paddingY?: number;
-}
+	readonly color?: string;
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+};
 
-export const Alert = ({
+export function Alert({
 	variant = 'info',
 	title,
 	children,
@@ -41,7 +41,7 @@ export const Alert = ({
 	color,
 	paddingX = 1,
 	paddingY = 0,
-}: AlertProps) => {
+}: AlertProps) {
 	const theme = useTheme();
 
 	const variantColor =
@@ -51,12 +51,15 @@ export const Alert = ({
 				case 'success': {
 					return theme.colors.success;
 				}
+
 				case 'error': {
 					return theme.colors.error;
 				}
+
 				case 'warning': {
 					return theme.colors.warning;
 				}
+
 				default: {
 					return theme.colors.info;
 				}
@@ -68,7 +71,7 @@ export const Alert = ({
 	const inner = (
 		<>
 			<Box gap={1}>
-				<Text color={variantColor} bold>
+				<Text bold color={variantColor}>
 					{resolvedIcon}
 				</Text>
 				{title && (
@@ -100,4 +103,4 @@ export const Alert = ({
 			{inner}
 		</Box>
 	);
-};
+}

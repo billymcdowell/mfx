@@ -8,7 +8,7 @@ const SEP = ';';
 const BEL = '\u0007';
 
 const supportsHyperlinks = (): boolean => {
-	const term = process.env['TERM_PROGRAM'] ?? '';
+	const term = process.env.TERM_PROGRAM ?? '';
 	if (
 		term === 'iTerm.app' ||
 		term === 'WezTerm' ||
@@ -17,30 +17,32 @@ const supportsHyperlinks = (): boolean => {
 	) {
 		return true;
 	}
-	if (process.env['TERM']?.startsWith('xterm')) {
+
+	if (process.env.TERM?.startsWith('xterm')) {
 		return true;
 	}
+
 	return false;
 };
 
 const wrapWithLink = (text: string, url: string): string =>
 	`${OSC}8${SEP}${SEP}${url}${BEL}${text}${OSC}8${SEP}${SEP}${BEL}`;
 
-export interface LinkProps {
-	children: ReactNode;
-	href: string;
-	color?: string;
-	showHref?: boolean;
-	fallback?: boolean | ((text: string, url: string) => string);
-}
+export type LinkProps = {
+	readonly children: ReactNode;
+	readonly href: string;
+	readonly color?: string;
+	readonly showHref?: boolean;
+	readonly fallback?: boolean | ((text: string, url: string) => string);
+};
 
-export const Link = ({
+export function Link({
 	children,
 	href,
 	color,
 	showHref = false,
 	fallback = true,
-}: LinkProps) => {
+}: LinkProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.info;
 	const hasSupport = supportsHyperlinks();
@@ -65,7 +67,7 @@ export const Link = ({
 		return (
 			<Box flexDirection="row">
 				<Transform transform={transformOutput}>
-					<Text color={resolvedColor} underline>
+					<Text underline color={resolvedColor}>
 						{children}
 					</Text>
 				</Transform>
@@ -75,10 +77,10 @@ export const Link = ({
 
 	return (
 		<Box flexDirection="row">
-			<Text color={resolvedColor} underline>
+			<Text underline color={resolvedColor}>
 				{children}
 			</Text>
 			{(showHref || fallback === true) && <Text dimColor>{` (${href})`}</Text>}
 		</Box>
 	);
-};
+}

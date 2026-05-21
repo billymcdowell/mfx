@@ -4,21 +4,21 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface PopoverProps {
-	trigger: ReactNode;
-	children: ReactNode;
-	isOpen?: boolean;
-	onClose?: () => void;
-	title?: string;
-}
+export type PopoverProps = {
+	readonly trigger: ReactNode;
+	readonly children: ReactNode;
+	readonly isOpen?: boolean;
+	readonly onClose?: () => void;
+	readonly title?: string;
+};
 
-export const Popover = ({
+export function Popover({
 	trigger,
 	children,
 	isOpen = false,
 	onClose,
 	title,
-}: PopoverProps) => {
+}: PopoverProps) {
 	const theme = useTheme();
 
 	useInput(
@@ -26,6 +26,7 @@ export const Popover = ({
 			if (!isOpen) {
 				return;
 			}
+
 			if (key.escape) {
 				onClose?.();
 			}
@@ -54,7 +55,7 @@ export const Popover = ({
 					)}
 					<Box flexDirection="column">{children}</Box>
 					<Box marginTop={1}>
-						<Text color={theme.colors.mutedForeground} dimColor>
+						<Text dimColor color={theme.colors.mutedForeground}>
 							Press Esc to close
 						</Text>
 					</Box>
@@ -62,4 +63,4 @@ export const Popover = ({
 			)}
 		</Box>
 	);
-};
+}

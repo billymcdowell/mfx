@@ -4,20 +4,20 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface TagInputProps {
-	value?: string[];
-	onChange?: (tags: string[]) => void;
-	placeholder?: string;
-	maxTags?: number;
-	delimiter?: string;
-}
+export type TagInputProps = {
+	readonly value?: string[];
+	readonly onChange?: (tags: string[]) => void;
+	readonly placeholder?: string;
+	readonly maxTags?: number;
+	readonly delimiter?: string;
+};
 
-export const TagInput = ({
+export function TagInput({
 	value: controlledValue,
 	onChange,
 	placeholder = 'Type and press Enter…',
 	maxTags,
-}: TagInputProps) => {
+}: TagInputProps) {
 	const theme = useTheme();
 	const [internalTags, setInternalTags] = useState<string[]>([]);
 	const [inputText, setInputText] = useState('');
@@ -28,6 +28,7 @@ export const TagInput = ({
 		if (controlledValue === undefined) {
 			setInternalTags(next);
 		}
+
 		onChange?.(next);
 	};
 
@@ -36,9 +37,11 @@ export const TagInput = ({
 		if (!trimmed) {
 			return;
 		}
+
 		if (maxTags !== undefined && tags.length >= maxTags) {
 			return;
 		}
+
 		updateTags([...tags, trimmed]);
 		setInputText('');
 	};
@@ -47,6 +50,7 @@ export const TagInput = ({
 		if (tags.length === 0) {
 			return;
 		}
+
 		updateTags(tags.slice(0, -1));
 	};
 
@@ -90,7 +94,7 @@ export const TagInput = ({
 			<Box gap={1}>
 				<Text color={theme.colors.primary}>›</Text>
 				{atMax ? (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{`Max ${maxTags} tag${maxTags === 1 ? '' : 's'} reached`}
 					</Text>
 				) : (
@@ -105,4 +109,4 @@ export const TagInput = ({
 			</Box>
 		</Box>
 	);
-};
+}

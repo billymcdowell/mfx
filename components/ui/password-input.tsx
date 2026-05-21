@@ -5,16 +5,16 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface PasswordInputProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	placeholder?: string;
-	mask?: string;
-	showToggle?: boolean;
-	label?: string;
-	id?: string;
-	borderStyle?:
+export type PasswordInputProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly placeholder?: string;
+	readonly mask?: string;
+	readonly showToggle?: boolean;
+	readonly label?: string;
+	readonly id?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -22,12 +22,12 @@ export interface PasswordInputProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	width?: number;
-	cursor?: string;
-}
+	readonly paddingX?: number;
+	readonly width?: number;
+	readonly cursor?: string;
+};
 
-export const PasswordInput = ({
+export function PasswordInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -40,7 +40,7 @@ export const PasswordInput = ({
 	paddingX = 1,
 	width,
 	cursor = '█',
-}: PasswordInputProps) => {
+}: PasswordInputProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const [isVisible, setIsVisible] = useState(false);
 	const theme = useTheme();
@@ -48,11 +48,11 @@ export const PasswordInput = ({
 
 	const value = controlledValue ?? internalValue;
 
-	const setValue = (newVal: string) => {
+	const setValue = (newValue: string) => {
 		if (onChange) {
-			onChange(newVal);
+			onChange(newValue);
 		} else {
-			setInternalValue(newVal);
+			setInternalValue(newValue);
 		}
 	};
 
@@ -115,4 +115,4 @@ export const PasswordInput = ({
 			</Box>
 		</Box>
 	);
-};
+}

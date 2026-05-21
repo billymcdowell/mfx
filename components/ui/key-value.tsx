@@ -4,37 +4,39 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface KeyValueItem {
+export type KeyValueItem = {
 	key: string;
 	value: ReactNode;
 	color?: string;
-}
+};
 
-export interface KeyValueProps {
-	items: KeyValueItem[];
-	keyWidth?: number;
-	separator?: string;
-	keyColor?: string;
-	valueColor?: string;
-}
+export type KeyValueProps = {
+	readonly items: KeyValueItem[];
+	readonly keyWidth?: number;
+	readonly separator?: string;
+	readonly keyColor?: string;
+	readonly valueColor?: string;
+};
 
-export const KeyValue = ({
+export function KeyValue({
 	items,
 	keyWidth,
 	separator = ':',
 	keyColor,
 	valueColor,
-}: KeyValueProps) => {
+}: KeyValueProps) {
 	const theme = useTheme();
 
 	const resolvedKeyWidth = useMemo(() => {
 		if (keyWidth !== undefined) {
 			return keyWidth;
 		}
+
 		let max = 0;
 		for (const item of items) {
 			max = Math.max(max, item.key.length);
 		}
+
 		return max + 1;
 	}, [items, keyWidth]);
 
@@ -55,4 +57,4 @@ export const KeyValue = ({
 			})}
 		</Box>
 	);
-};
+}

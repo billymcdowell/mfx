@@ -3,40 +3,40 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface InfoBoxProps {
-	borderStyle?: 'single' | 'round' | 'double' | 'bold';
-	borderColor?: string;
-	padding?: [number, number];
-	width?: number | 'full';
-	children: ReactNode;
-}
+export type InfoBoxProps = {
+	readonly borderStyle?: 'single' | 'round' | 'double' | 'bold';
+	readonly borderColor?: string;
+	readonly padding?: [number, number];
+	readonly width?: number | 'full';
+	readonly children: ReactNode;
+};
 
-export interface InfoBoxHeaderProps {
-	icon?: string;
-	iconColor?: string;
-	label: string;
-	description?: string;
-	version?: string;
-	versionColor?: string;
-}
+export type InfoBoxHeaderProps = {
+	readonly icon?: string;
+	readonly iconColor?: string;
+	readonly label: string;
+	readonly description?: string;
+	readonly version?: string;
+	readonly versionColor?: string;
+};
 
-export interface InfoBoxRowProps {
-	label: string;
-	value?: string;
-	valueDetail?: string;
-	valueColor?: string;
-	bold?: boolean;
-	tree?: boolean;
-	color?: string;
-}
+export type InfoBoxRowProps = {
+	readonly label: string;
+	readonly value?: string;
+	readonly valueDetail?: string;
+	readonly valueColor?: string;
+	readonly bold?: boolean;
+	readonly tree?: boolean;
+	readonly color?: string;
+};
 
-const InfoBoxRoot = ({
+function InfoBoxRoot({
 	borderStyle = 'single',
 	borderColor,
 	padding = [0, 1],
 	width,
 	children,
-}: InfoBoxProps) => {
+}: InfoBoxProps) {
 	const theme = useTheme();
 	const resolvedBorderColor = borderColor ?? theme.colors.border;
 
@@ -53,25 +53,27 @@ const InfoBoxRoot = ({
 			{children}
 		</Box>
 	);
-};
+}
 
-const InfoBoxHeader = ({
+function InfoBoxHeader({
 	icon,
 	iconColor = 'green',
 	label,
 	description,
 	version,
 	versionColor = 'cyan',
-}: InfoBoxHeaderProps) => (
-	<Box flexDirection="row" gap={1}>
-		{icon && <Text color={iconColor}>{icon}</Text>}
-		<Text bold>{label}</Text>
-		{description && <Text dimColor>{description}</Text>}
-		{version && <Text color={versionColor}>{version}</Text>}
-	</Box>
-);
+}: InfoBoxHeaderProps) {
+	return (
+		<Box flexDirection="row" gap={1}>
+			{icon && <Text color={iconColor}>{icon}</Text>}
+			<Text bold>{label}</Text>
+			{description && <Text dimColor>{description}</Text>}
+			{version && <Text color={versionColor}>{version}</Text>}
+		</Box>
+	);
+}
 
-const InfoBoxRow = ({
+function InfoBoxRow({
 	label,
 	value,
 	valueDetail,
@@ -79,7 +81,7 @@ const InfoBoxRow = ({
 	bold: boldValue = false,
 	tree = false,
 	color,
-}: InfoBoxRowProps) => {
+}: InfoBoxRowProps) {
 	const theme = useTheme();
 	const prefix = tree ? '└' : '';
 
@@ -92,7 +94,6 @@ const InfoBoxRow = ({
 			</Text>
 			{value && (
 				<Text bold={boldValue} color={color}>
-					{''}
 					{value}
 				</Text>
 			)}
@@ -101,11 +102,11 @@ const InfoBoxRow = ({
 			)}
 		</Box>
 	);
-};
+}
 
-const InfoBoxTreeRow = (props: Omit<InfoBoxRowProps, 'tree'>) => (
-	<InfoBoxRow {...props} tree />
-);
+function InfoBoxTreeRow(props: Omit<InfoBoxRowProps, 'tree'>) {
+	return <InfoBoxRow {...props} tree />;
+}
 
 export const InfoBox = Object.assign(InfoBoxRoot, {
 	Header: InfoBoxHeader,

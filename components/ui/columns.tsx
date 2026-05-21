@@ -2,11 +2,11 @@ import {Box} from 'ink';
 import type {ReactNode} from 'react';
 import React from 'react';
 
-export interface ColumnsProps {
-	children: ReactNode;
-	gap?: number;
-	align?: 'top' | 'center' | 'bottom';
-}
+export type ColumnsProps = {
+	readonly children: ReactNode;
+	readonly gap?: number;
+	readonly align?: 'top' | 'center' | 'bottom';
+};
 
 const ALIGN_MAP: Record<
 	NonNullable<ColumnsProps['align']>,
@@ -17,7 +17,7 @@ const ALIGN_MAP: Record<
 	top: 'flex-start',
 };
 
-export const Columns = ({children, gap = 0, align = 'top'}: ColumnsProps) => {
+export function Columns({children, gap = 0, align = 'top'}: ColumnsProps) {
 	const items = React.Children.toArray(children);
 
 	return (
@@ -29,4 +29,4 @@ export const Columns = ({children, gap = 0, align = 'top'}: ColumnsProps) => {
 			))}
 		</Box>
 	);
-};
+}

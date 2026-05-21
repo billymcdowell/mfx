@@ -5,13 +5,13 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 import {useInterval} from '@/hooks/use-interval';
 
-export interface StopwatchProps {
-	autoStart?: boolean;
-	color?: string;
-	showLaps?: boolean;
-}
+export type StopwatchProps = {
+	readonly autoStart?: boolean;
+	readonly color?: string;
+	readonly showLaps?: boolean;
+};
 
-const pad = (n: number, len = 2) => String(n).padStart(len, '0');
+const pad = (n: number, length = 2) => String(n).padStart(length, '0');
 
 const formatElapsed = (ms: number): string => {
 	const totalSeconds = Math.floor(ms / 1000);
@@ -27,9 +27,11 @@ const getStatus = (running: boolean, elapsed: number): string => {
 	if (running) {
 		return 'Running';
 	}
+
 	if (elapsed === 0) {
 		return 'Ready';
 	}
+
 	return 'Stopped';
 };
 
@@ -42,17 +44,19 @@ const getStatusColor = (
 	if (running) {
 		return resolvedColor;
 	}
+
 	if (elapsed === 0) {
 		return theme.colors.mutedForeground;
 	}
+
 	return theme.colors.warning;
 };
 
-export const Stopwatch = ({
+export function Stopwatch({
 	autoStart = false,
 	color,
 	showLaps = true,
-}: StopwatchProps) => {
+}: StopwatchProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
@@ -70,16 +74,17 @@ export const Stopwatch = ({
 		setElapsed(elapsedRef.current);
 	}, []);
 
-	useInterval(tick, running ? 50 : null);
+	useInterval(tick, running ? 50 : undefined);
 
 	useInput(input => {
 		if (input === '') {
 			if (!running) {
 				lastTickRef.current = Date.now();
 			}
+
 			setRunning(r => !r);
 		} else if (input === 'l' && running) {
-			setLaps(prev => [...prev, elapsedRef.current]);
+			setLaps(previous => [...previous, elapsedRef.current]);
 		} else if (input === 'r') {
 			setRunning(false);
 			setElapsed(0);
@@ -94,29 +99,29 @@ export const Stopwatch = ({
 	return (
 		<Box flexDirection="column" gap={0}>
 			<Box gap={2} alignItems="center">
-				<Text color={resolvedColor} bold>
+				<Text bold color={resolvedColor}>
 					{formatElapsed(elapsed)}
 				</Text>
 				<Text color={statusColor}>[{status}]</Text>
 			</Box>
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				space start/stop · l lap · r reset
 			</Text>
 			{showLaps && laps.length > 0 && (
 				<Box flexDirection="column" marginTop={1}>
-					<Text color={theme.colors.mutedForeground} bold>
+					<Text bold color={theme.colors.mutedForeground}>
 						Laps:
 					</Text>
 					{laps.map((lapTime, i) => {
-						const prevLap = laps[i - 1] ?? 0;
-						const split = i === 0 ? lapTime : lapTime - prevLap;
+						const previousLap = laps[i - 1] ?? 0;
+						const split = i === 0 ? lapTime : lapTime - previousLap;
 						return (
 							<Box key={i} gap={2}>
 								<Text color={theme.colors.mutedForeground}>
 									#{String(i + 1).padStart(2, '0')}
 								</Text>
 								<Text color={resolvedColor}>{formatElapsed(lapTime)}</Text>
-								<Text color={theme.colors.mutedForeground} dimColor>
+								<Text dimColor color={theme.colors.mutedForeground}>
 									+{formatElapsed(split)}
 								</Text>
 							</Box>
@@ -126,4 +131,4 @@ export const Stopwatch = ({
 			)}
 		</Box>
 	);
-};
+}

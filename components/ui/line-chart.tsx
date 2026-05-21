@@ -7,28 +7,28 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type LineChartDataPoint = number | {label?: string; value: number};
 
-export interface LineChartProps {
-	data: LineChartDataPoint[];
-	width?: number;
-	height?: number;
-	title?: string;
-	color?: string;
-	showAxes?: boolean;
-}
+export type LineChartProps = {
+	readonly data: LineChartDataPoint[];
+	readonly width?: number;
+	readonly height?: number;
+	readonly title?: string;
+	readonly color?: string;
+	readonly showAxes?: boolean;
+};
 
 const getValue = (d: LineChartDataPoint): number =>
 	typeof d === 'number' ? d : d.value;
 
-const toPoints = (data: LineChartDataPoint[]): [number, number][] =>
+const toPoints = (data: LineChartDataPoint[]): Array<[number, number]> =>
 	data.map((d, i) => [i, getValue(d)]);
 
-export const LineChart = ({
+export function LineChart({
 	data,
 	width = 40,
 	height = 10,
 	title,
 	showAxes = true,
-}: LineChartProps) => {
+}: LineChartProps) {
 	const theme = useTheme();
 
 	const lines = useMemo(() => {
@@ -42,7 +42,7 @@ export const LineChart = ({
 
 		const lastX = Math.max(0, points.length - 1);
 		const tickSpan = lastX < 2 ? [0, lastX] : [0, Math.floor(lastX / 2), lastX];
-		const customXAxisTicks = [...new Set(tickSpan)].toSorted((a, b) => a - b);
+		const customXAxisTicks = [...new Set(tickSpan)].sort((a, b) => a - b);
 
 		const settings: Settings = {
 			width: plotWidth,
@@ -76,4 +76,4 @@ export const LineChart = ({
 			))}
 		</Box>
 	);
-};
+}

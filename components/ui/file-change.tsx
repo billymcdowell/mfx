@@ -1,26 +1,25 @@
 import {Box, Text} from 'ink';
 import React, {useState} from 'react';
 
+import {DiffView} from './diff-view';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-import {DiffView} from './diff-view';
-
 export type FileChangeType = 'modify' | 'create' | 'delete';
 
-export interface FileChangeItem {
+export type FileChangeItem = {
 	path: string;
 	type: FileChangeType;
 	diff?: string;
 	content?: string;
-}
+};
 
-export interface FileChangeProps {
-	changes: FileChangeItem[];
-	onAccept?: (path: string) => void;
-	onReject?: (path: string) => void;
-	onAcceptAll?: () => void;
-}
+export type FileChangeProps = {
+	readonly changes: FileChangeItem[];
+	readonly onAccept?: (path: string) => void;
+	readonly onReject?: (path: string) => void;
+	readonly onAcceptAll?: () => void;
+};
 
 const TYPE_ICON: Record<FileChangeType, string> = {
 	create: 'A',
@@ -50,6 +49,7 @@ const parseDiff = (
 		) {
 			continue;
 		}
+
 		if (line.startsWith('-')) {
 			oldLines.push(line.slice(1));
 		} else if (line.startsWith('+')) {
@@ -67,12 +67,12 @@ const parseDiff = (
 	return {newText: newLines.join(''), oldText: oldLines.join('')};
 };
 
-export const FileChange = ({
+export function FileChange({
 	changes,
 	onAccept,
 	onReject,
 	onAcceptAll,
-}: FileChangeProps) => {
+}: FileChangeProps) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
@@ -89,42 +89,63 @@ export const FileChange = ({
 			if (!item) {
 				return;
 			}
-			setExpandedPaths(prev => {
-				const next = new Set(prev);
+
+			setExpandedPaths(previous => {
+				const next = new Set(previous);
 				if (next.has(item.path)) {
 					next.delete(item.path);
 				} else {
 					next.add(item.path);
 				}
+
 				return next;
 			});
-		} else if (input === 'y' || input === 'Y') {
-			const item = changes[activeIndex];
-			if (!item) {
-				return;
+		} else
+			switch (input) {
+				case 'y':
+				case 'Y': {
+					const item = changes[activeIndex];
+					if (!item) {
+						return;
+					}
+
+					setAcceptedPaths(previous => new Set([...previous, item.path]));
+					setRejectedPaths(previous => {
+						const next = new Set(previous);
+						next.delete(item.path);
+						return next;
+					});
+					onAccept?.(item.path);
+
+					break;
+				}
+
+				case 'n':
+				case 'N': {
+					const item = changes[activeIndex];
+					if (!item) {
+						return;
+					}
+
+					setRejectedPaths(previous => new Set([...previous, item.path]));
+					setAcceptedPaths(previous => {
+						const next = new Set(previous);
+						next.delete(item.path);
+						return next;
+					});
+					onReject?.(item.path);
+
+					break;
+				}
+
+				case 'a':
+				case 'A': {
+					onAcceptAll?.();
+
+					break;
+				}
+				// No default
 			}
-			setAcceptedPaths(prev => new Set([...prev, item.path]));
-			setRejectedPaths(prev => {
-				const next = new Set(prev);
-				next.delete(item.path);
-				return next;
-			});
-			onAccept?.(item.path);
-		} else if (input === 'n' || input === 'N') {
-			const item = changes[activeIndex];
-			if (!item) {
-				return;
-			}
-			setRejectedPaths(prev => new Set([...prev, item.path]));
-			setAcceptedPaths(prev => {
-				const next = new Set(prev);
-				next.delete(item.path);
-				return next;
-			});
-			onReject?.(item.path);
-		} else if (input === 'a' || input === 'A') {
-			onAcceptAll?.();
-		}
 	});
 
 	const typeColor = (type: FileChangeType): string => {
@@ -132,12 +153,15 @@ export const FileChange = ({
 			case 'create': {
 				return theme.colors.success ?? 'green';
 			}
+
 			case 'delete': {
 				return theme.colors.error ?? 'red';
 			}
+
 			case 'modify': {
 				return theme.colors.warning ?? 'yellow';
 			}
+
 			default: {
 				return theme.colors.mutedForeground;
 			}
@@ -198,10 +222,10 @@ export const FileChange = ({
 							<Box paddingLeft={2} marginTop={1}>
 								{item.diff && diffParts && (
 									<DiffView
+										showLineNumbers
 										oldText={diffParts.oldText}
 										newText={diffParts.newText}
 										filename={item.path}
-										showLineNumbers
 									/>
 								)}
 								{!(item.diff && diffParts) && item.content && (
@@ -220,4 +244,4 @@ export const FileChange = ({
 			})}
 		</Box>
 	);
-};
+}

@@ -3,14 +3,14 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface CardProps {
-	title?: string;
-	subtitle?: string;
-	children: ReactNode;
-	footer?: ReactNode;
-	borderColor?: string;
-	width?: number;
-	borderStyle?:
+export type CardProps = {
+	readonly title?: string;
+	readonly subtitle?: string;
+	readonly children: ReactNode;
+	readonly footer?: ReactNode;
+	readonly borderColor?: string;
+	readonly width?: number;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -18,12 +18,12 @@ export interface CardProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	paddingY?: number;
-	footerDividerChar?: string;
-}
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+	readonly footerDividerChar?: string;
+};
 
-export const Card = ({
+export function Card({
 	title,
 	subtitle,
 	children,
@@ -34,7 +34,7 @@ export const Card = ({
 	paddingX = 1,
 	paddingY = 0,
 	footerDividerChar = '─',
-}: CardProps) => {
+}: CardProps) {
 	const theme = useTheme();
 	const resolvedBorderColor = borderColor ?? theme.colors.border;
 
@@ -72,4 +72,4 @@ export const Card = ({
 			)}
 		</Box>
 	);
-};
+}

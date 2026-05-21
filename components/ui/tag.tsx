@@ -5,19 +5,19 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type TagVariant = 'default' | 'outline';
 
-export interface TagProps {
-	children: ReactNode;
-	onRemove?: () => void;
-	color?: string;
-	variant?: TagVariant;
-}
+export type TagProps = {
+	readonly children: ReactNode;
+	readonly onRemove?: () => void;
+	readonly color?: string;
+	readonly variant?: TagVariant;
+};
 
-export const Tag = ({
+export function Tag({
 	children,
 	onRemove,
 	color,
 	variant = 'default',
-}: TagProps) => {
+}: TagProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 	const borderColor =
@@ -37,7 +37,7 @@ export const Tag = ({
 			>
 				{children}
 			</Text>
-			{onRemove && <Text color={theme.colors.mutedForeground}>{'×'}</Text>}
+			{onRemove && <Text color={theme.colors.mutedForeground}>×</Text>}
 		</Box>
 	);
-};
+}

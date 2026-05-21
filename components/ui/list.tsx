@@ -4,28 +4,28 @@ import React, {useState, useMemo} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ListItem {
+export type ListItem = {
 	key: string;
 	label: string;
 	description?: string;
 	color?: string;
-}
+};
 
-export interface ListProps {
-	items: ListItem[];
-	onSelect?: (item: ListItem) => void;
-	filterable?: boolean;
-	height?: number;
-	cursor?: string;
-}
+export type ListProps = {
+	readonly items: ListItem[];
+	readonly onSelect?: (item: ListItem) => void;
+	readonly filterable?: boolean;
+	readonly height?: number;
+	readonly cursor?: string;
+};
 
-export const List = ({
+export function List({
 	items,
 	onSelect,
 	filterable = false,
 	height = 10,
 	cursor = '›',
-}: ListProps) => {
+}: ListProps) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [filter, setFilter] = useState('');
@@ -34,6 +34,7 @@ export const List = ({
 		if (!filter) {
 			return items;
 		}
+
 		const q = filter.toLowerCase();
 		return items.filter(item => item.label.toLowerCase().includes(q));
 	}, [items, filter]);
@@ -92,7 +93,7 @@ export const List = ({
 							{item.label}
 						</Text>
 						{item.description && (
-							<Text color={theme.colors.mutedForeground} dimColor>
+							<Text dimColor color={theme.colors.mutedForeground}>
 								{item.description}
 							</Text>
 						)}
@@ -100,10 +101,10 @@ export const List = ({
 				);
 			})}
 			{filtered.length > height && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					{filtered.length - height} more…
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

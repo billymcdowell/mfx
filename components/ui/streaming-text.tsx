@@ -3,17 +3,17 @@ import React, {useState, useEffect, useRef} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface StreamingTextProps {
-	text?: string;
-	stream?: AsyncIterable<string>;
-	cursor?: boolean;
-	animate?: boolean;
-	speed?: number;
-	onComplete?: (fullText: string) => void;
-	cursorColor?: string;
-}
+export type StreamingTextProps = {
+	readonly text?: string;
+	readonly stream?: AsyncIterable<string>;
+	readonly cursor?: boolean;
+	readonly animate?: boolean;
+	readonly speed?: number;
+	readonly onComplete?: (fullText: string) => void;
+	readonly cursorColor?: string;
+};
 
-export const StreamingText = ({
+export function StreamingText({
 	text: controlledText,
 	stream,
 	cursor = true,
@@ -21,7 +21,7 @@ export const StreamingText = ({
 	speed = 30,
 	onComplete,
 	cursorColor,
-}: StreamingTextProps) => {
+}: StreamingTextProps) {
 	const theme = useTheme();
 	const [internalText, setInternalText] = useState('');
 	const [isStreaming, setIsStreaming] = useState(false);
@@ -37,16 +37,20 @@ export const StreamingText = ({
 		if (!cursor) {
 			return;
 		}
+
 		const id = setInterval(() => {
 			setCursorVisible(v => !v);
 		}, 530);
-		return () => clearInterval(id);
+		return () => {
+			clearInterval(id);
+		};
 	}, [cursor]);
 
 	useEffect(() => {
 		if (!stream) {
 			return;
 		}
+
 		let cancelled = false;
 		setInternalText('');
 		setIsStreaming(true);
@@ -58,12 +62,14 @@ export const StreamingText = ({
 					if (cancelled) {
 						break;
 					}
+
 					full += chunk;
 					setInternalText(full);
 				}
 			} catch {
-				/* noop */
+				/* Noop */
 			}
+
 			if (!cancelled) {
 				setIsStreaming(false);
 				onCompleteRef.current?.(full);
@@ -79,6 +85,7 @@ export const StreamingText = ({
 		if (!animate || !controlledText || stream) {
 			return;
 		}
+
 		setAnimatedIndex(0);
 		setIsStreaming(true);
 		let idx = 0;
@@ -91,7 +98,9 @@ export const StreamingText = ({
 				onCompleteRef.current?.(controlledText);
 			}
 		}, speed);
-		return () => clearInterval(id);
+		return () => {
+			clearInterval(id);
+		};
 	}, [controlledText, animate, speed, stream]);
 
 	let displayText: string;
@@ -112,4 +121,4 @@ export const StreamingText = ({
 			{showCursor && <Text color={resolvedCursorColor}>▌</Text>}
 		</Text>
 	);
-};
+}

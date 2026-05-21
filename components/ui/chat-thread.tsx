@@ -1,23 +1,23 @@
 import {Box} from 'ink';
 import type {ReactNode} from 'react';
 
-export interface ChatThreadProps {
-	maxHeight?: number;
-	autoScroll?: boolean;
-	children?: ReactNode;
-}
+export type ChatThreadProps = {
+	readonly maxHeight?: number;
+	readonly autoScroll?: boolean;
+	readonly children?: ReactNode;
+};
 
-export const ChatThread = ({
+export function ChatThread({
 	maxHeight,
 	autoScroll = true,
 	children,
-}: ChatThreadProps) => {
+}: ChatThreadProps) {
 	void autoScroll;
 
 	const containerProps = maxHeight
 		? {height: maxHeight, overflow: 'hidden' as const}
 		: {
-				/* noop */
+				/* Noop */
 		  };
 
 	return (
@@ -25,4 +25,4 @@ export const ChatThread = ({
 			{children}
 		</Box>
 	);
-};
+}

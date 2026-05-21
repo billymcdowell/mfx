@@ -17,8 +17,8 @@ export function ArticleDetailScreen({
 	mainInputActive,
 	articleId,
 }: {
-	mainInputActive: boolean;
-	articleId: string;
+	readonly mainInputActive: boolean;
+	readonly articleId: string;
 }) {
 	const theme = useTheme();
 	const {mainInnerWidth, shellMainColumnHeight} = useTerminalViewport();
@@ -102,9 +102,9 @@ export function ArticleDetailScreen({
 							const st = newsTagStyle(t);
 							return (
 								<Text
+									key={t}
 									backgroundColor={st.backgroundColor}
 									color={st.color}
-									key={t}
 								>
 									{` ${t.toUpperCase()} `}
 								</Text>
@@ -124,10 +124,10 @@ export function ArticleDetailScreen({
 			<ScrollView
 				contentHeight={contentLines + 12}
 				height={scrollHeight}
+				scrollInputActive={mainInputActive}
 				onScrollTopChange={(top, max) => {
 					setScrollPair({max, top});
 				}}
-				scrollInputActive={mainInputActive}
 			>
 				<Markdown width={wrapWidth}>{article.body}</Markdown>
 			</ScrollView>

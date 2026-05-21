@@ -4,13 +4,13 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type ProgressCircleSize = 'sm' | 'md' | 'lg';
 
-export interface ProgressCircleProps {
-	value: number;
-	size?: ProgressCircleSize;
-	color?: string;
-	label?: string;
-	showPercent?: boolean;
-}
+export type ProgressCircleProps = {
+	readonly value: number;
+	readonly size?: ProgressCircleSize;
+	readonly color?: string;
+	readonly label?: string;
+	readonly showPercent?: boolean;
+};
 
 const BRAILLE_CHARS = ['○', '◔', '◑', '◕', '●', '◉', '⬤', '●'];
 
@@ -25,13 +25,13 @@ const getSmChar = (value: number): string => {
 	return BRAILLE_CHARS[step];
 };
 
-export const ProgressCircle = ({
+export function ProgressCircle({
 	value,
 	size = 'sm',
 	color,
 	label,
 	showPercent = false,
-}: ProgressCircleProps) => {
+}: ProgressCircleProps) {
 	const theme = useTheme();
 	const clamped = Math.max(0, Math.min(100, value));
 	const resolvedColor = color ?? theme.colors.primary;
@@ -58,7 +58,7 @@ export const ProgressCircle = ({
 			<Box flexDirection="column" alignItems="flex-start">
 				<Box flexDirection="row">
 					<Text color={resolvedColor}>⟨</Text>
-					<Text color={resolvedColor} bold>
+					<Text bold color={resolvedColor}>
 						{percentLabel}
 					</Text>
 					<Text color={resolvedColor}>⟩</Text>
@@ -90,4 +90,4 @@ export const ProgressCircle = ({
 			{label && <Text color={theme.colors.muted}>{label}</Text>}
 		</Box>
 	);
-};
+}

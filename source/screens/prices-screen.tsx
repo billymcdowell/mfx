@@ -44,9 +44,11 @@ function filterLabel(f: Filter): string {
 		case 'commodity': {
 			return 'Commodities';
 		}
+
 		case 'forex': {
 			return 'Forex';
 		}
+
 		default: {
 			return 'All';
 		}
@@ -57,8 +59,8 @@ export function PricesScreen({
 	mainInputActive,
 	themeColors,
 }: {
-	mainInputActive: boolean;
-	themeColors: Pick<
+	readonly mainInputActive: boolean;
+	readonly themeColors: Pick<
 		ColorTokens,
 		| 'border'
 		| 'error'
@@ -157,26 +159,52 @@ export function PricesScreen({
 				return;
 			}
 
-			if (input === '1') {
-				setFilter('all');
-			} else if (input === '2') {
-				setFilter('commodity');
-			} else if (input === '3') {
-				setFilter('forex');
-			} else if (input === 'f' || input === 'F') {
-				setFilter(f =>
-					f === 'all' ? 'commodity' : f === 'commodity' ? 'forex' : 'all',
-				);
-			} else if (input === 'r' || input === 'R') {
-				void refresh();
-			} else if (key.upArrow || input === 'k' || input === 'K') {
-				setRow(r => Math.max(0, r - 1));
-			} else if (key.downArrow || input === 'j' || input === 'J') {
-				setRow(r => Math.min(Math.max(0, filtered.length - 1), r + 1));
-			} else if (key.return) {
-				const rowData = filtered[row];
-				if (rowData) {
-					navigate('priceDetail', {symbol: rowData.symbol});
+			switch (input) {
+				case '1': {
+					setFilter('all');
+
+					break;
+				}
+
+				case '2': {
+					setFilter('commodity');
+
+					break;
+				}
+
+				case '3': {
+					setFilter('forex');
+
+					break;
+				}
+
+				case 'f':
+				case 'F': {
+					setFilter(f =>
+						f === 'all' ? 'commodity' : f === 'commodity' ? 'forex' : 'all',
+					);
+
+					break;
+				}
+
+				case 'r':
+				case 'R': {
+					void refresh();
+
+					break;
+				}
+
+				default: {
+					if (key.upArrow || input === 'k' || input === 'K') {
+						setRow(r => Math.max(0, r - 1));
+					} else if (key.downArrow || input === 'j' || input === 'J') {
+						setRow(r => Math.min(Math.max(0, filtered.length - 1), r + 1));
+					} else if (key.return) {
+						const rowData = filtered[row];
+						if (rowData) {
+							navigate('priceDetail', {symbol: rowData.symbol});
+						}
+					}
 				}
 			}
 		},
@@ -228,13 +256,13 @@ export function PricesScreen({
 				<Text color={themeColors.mutedForeground}>Filter:</Text>
 				{(['all', 'commodity', 'forex'] as const).map(f => (
 					<Text
+						key={f}
 						backgroundColor={filter === f ? themeColors.selection : undefined}
 						color={
 							filter === f
 								? themeColors.foreground
 								: themeColors.mutedForeground
 						}
-						key={f}
 					>
 						[{filterLabel(f)} ▾]
 					</Text>
@@ -268,13 +296,13 @@ export function PricesScreen({
 							</Text>
 						</Box>
 					</Box>
-					<Text color={themeColors.mutedForeground} dimColor>
+					<Text dimColor color={themeColors.mutedForeground}>
 						{filtered.length} results for &quot;{query}&quot;
 					</Text>
 				</Box>
 			) : query.trim() ? (
 				<Box marginBottom={1}>
-					<Text color={themeColors.mutedForeground} dimColor>
+					<Text dimColor color={themeColors.mutedForeground}>
 						{filtered.length} results for &quot;{query}&quot; · [/] edit search
 					</Text>
 				</Box>
@@ -295,11 +323,11 @@ export function PricesScreen({
 					<Text color={themeColors.mutedForeground}>{midRule}</Text>
 					{filtered.map((inst, i) => (
 						<InstrumentTableRow
+							key={inst.symbol}
 							active={i === row}
 							col={col}
 							favorite={isFavorite(inst.symbol)}
 							inst={inst}
-							key={inst.symbol}
 							midRule={midRule}
 							themeColors={themeColors}
 						/>
@@ -308,7 +336,7 @@ export function PricesScreen({
 				</Box>
 			</ScrollView>
 			<Box marginTop={1}>
-				<Text color={themeColors.mutedForeground} dimColor>
+				<Text dimColor color={themeColors.mutedForeground}>
 					{filtered.length} instruments
 					{favoritesOnly ? ' · watchlist' : ''}
 					{intervalSec > 0
@@ -329,14 +357,14 @@ function InstrumentTableRow({
 	col,
 	midRule,
 }: {
-	inst: Instrument;
-	active: boolean;
-	favorite: boolean;
-	themeColors: Pick<
+	readonly inst: Instrument;
+	readonly active: boolean;
+	readonly favorite: boolean;
+	readonly themeColors: Pick<
 		ColorTokens,
 		'error' | 'foreground' | 'mutedForeground' | 'selection' | 'success'
 	>;
-	col: {
+	readonly col: {
 		ask: number;
 		bid: number;
 		chg: number;
@@ -345,7 +373,7 @@ function InstrumentTableRow({
 		sym: number;
 		trend: number;
 	};
-	midRule: string;
+	readonly midRule: string;
 }) {
 	const t: InstrumentType = inst.type;
 	const up = inst.change24h >= 0;

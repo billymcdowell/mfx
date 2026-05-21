@@ -8,24 +8,26 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type ImageProtocol = 'auto' | 'iterm2' | 'kitty' | 'ascii';
 
-export interface ImageProps {
-	src: string;
-	width?: number;
-	height?: number;
-	protocol?: ImageProtocol;
-	alt?: string;
-}
+export type ImageProps = {
+	readonly src: string;
+	readonly width?: number;
+	readonly height?: number;
+	readonly protocol?: ImageProtocol;
+	readonly alt?: string;
+};
 
 const detectProtocol = (): Exclude<ImageProtocol, 'auto'> => {
-	const termProgram = process.env['TERM_PROGRAM'] ?? '';
-	const term = process.env['TERM'] ?? '';
+	const termProgram = process.env.TERM_PROGRAM ?? '';
+	const term = process.env.TERM ?? '';
 
 	if (termProgram === 'iTerm.app') {
 		return 'iterm2';
 	}
-	if (term === 'xterm-kitty' || process.env['KITTY_WINDOW_ID']) {
+
+	if (term === 'xterm-kitty' || process.env.KITTY_WINDOW_ID) {
 		return 'kitty';
 	}
+
 	return 'ascii';
 };
 
@@ -42,13 +44,14 @@ const writeIterm2 = (src: string, width?: number, height?: number): void => {
 		if (width) {
 			args += `;width=${width}`;
 		}
+
 		if (height) {
 			args += `;height=${height}`;
 		}
 
 		process.stdout.write(`\u001B]1337;File=${args}:${base64}\u0007`);
 	} catch {
-		/* noop */
+		/* Noop */
 	}
 };
 
@@ -79,20 +82,20 @@ const writeKitty = (src: string, width?: number, height?: number): void => {
 			process.stdout.write(`\u001B_G${header};${chunk}\u001B\\`);
 		}
 	} catch {
-		/* noop */
+		/* Noop */
 	}
 };
 
-export const Image = ({
+export function Image({
 	src,
 	width = 20,
 	height,
 	protocol = 'auto',
 	alt,
-}: ImageProps) => {
+}: ImageProps) {
 	const theme = useTheme();
 	const [, setRendered] = useState(false);
-	const [renderError, setRenderError] = useState<string | null>(null);
+	const [renderError, setRenderError] = useState<string | undefined>();
 
 	const resolvedProtocol = protocol === 'auto' ? detectProtocol() : protocol;
 	const filename = path.basename(src);
@@ -145,11 +148,11 @@ export const Image = ({
 					</Text>
 				))}
 				{alt && (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{alt}
 					</Text>
 				)}
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					[
 					{resolvedProtocol === 'ascii'
 						? 'ascii fallback'
@@ -162,9 +165,9 @@ export const Image = ({
 
 	return (
 		<Box flexDirection="column" gap={0}>
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				{alt ?? filename} [{resolvedProtocol}]
 			</Text>
 		</Box>
 	);
-};
+}

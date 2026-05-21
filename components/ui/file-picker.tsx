@@ -8,25 +8,25 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface FilePickerProps {
-	value?: string;
-	onChange?: (path: string) => void;
-	onSubmit?: (path: string) => void;
-	label?: string;
-	startDir?: string;
-	extensions?: string[];
-	dirsOnly?: boolean;
-	autoFocus?: boolean;
-	id?: string;
-	width?: number;
-	maxVisible?: number;
-}
+export type FilePickerProps = {
+	readonly value?: string;
+	readonly onChange?: (path: string) => void;
+	readonly onSubmit?: (path: string) => void;
+	readonly label?: string;
+	readonly startDir?: string;
+	readonly extensions?: string[];
+	readonly dirsOnly?: boolean;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+	readonly width?: number;
+	readonly maxVisible?: number;
+};
 
-interface FileEntry {
+type FileEntry = {
 	name: string;
 	path: string;
 	isDir: boolean;
-}
+};
 
 const readDir = (
 	dir: string,
@@ -45,6 +45,7 @@ const readDir = (
 				if (dirsOnly && !isDir) {
 					continue;
 				}
+
 				if (
 					extensions &&
 					!isDir &&
@@ -52,9 +53,10 @@ const readDir = (
 				) {
 					continue;
 				}
+
 				result.push({isDir, name, path: fullPath});
 			} catch {
-				/* noop */
+				/* Noop */
 			}
 		}
 
@@ -62,9 +64,11 @@ const readDir = (
 			if (a.isDir && !b.isDir) {
 				return -1;
 			}
+
 			if (!a.isDir && b.isDir) {
 				return 1;
 			}
+
 			return a.name.localeCompare(b.name);
 		});
 
@@ -74,7 +78,7 @@ const readDir = (
 	}
 };
 
-export const FilePicker = ({
+export function FilePicker({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -86,7 +90,7 @@ export const FilePicker = ({
 	id,
 	width = 50,
 	maxVisible = 8,
-}: FilePickerProps) => {
+}: FilePickerProps) {
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 	const [currentDir, setCurrentDir] = useState(resolve(startDir));
@@ -120,6 +124,7 @@ export const FilePicker = ({
 			if (!entry) {
 				return;
 			}
+
 			if (entry.isDir) {
 				setCurrentDir(entry.path);
 				setCursor(0);
@@ -129,6 +134,7 @@ export const FilePicker = ({
 				} else {
 					setInternalValue(entry.path);
 				}
+
 				onSubmit?.(entry.path);
 			}
 		} else if (input === '') {
@@ -156,7 +162,7 @@ export const FilePicker = ({
 				width={width}
 				paddingX={1}
 			>
-				<Text color={theme.colors.primary} bold>
+				<Text bold color={theme.colors.primary}>
 					{currentDir}
 				</Text>
 			</Box>
@@ -197,7 +203,7 @@ export const FilePicker = ({
 				})}
 				{allEntries.length > maxVisible && (
 					<Box paddingX={1}>
-						<Text color={theme.colors.mutedForeground} dimColor>
+						<Text dimColor color={theme.colors.mutedForeground}>
 							... {allEntries.length - maxVisible} more
 						</Text>
 					</Box>
@@ -212,10 +218,10 @@ export const FilePicker = ({
 			)}
 
 			{isFocused && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					↑↓: navigate · Enter: open/select · Esc: up
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

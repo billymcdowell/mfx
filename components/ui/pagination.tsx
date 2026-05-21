@@ -4,24 +4,24 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface PaginationProps {
-	total: number;
-	current: number;
-	onChange?: (page: number) => void;
-	showEdges?: boolean;
-	siblings?: number;
-}
+export type PaginationProps = {
+	readonly total: number;
+	readonly current: number;
+	readonly onChange?: (page: number) => void;
+	readonly showEdges?: boolean;
+	readonly siblings?: number;
+};
 
 const buildPages = (
 	total: number,
 	current: number,
 	siblings: number,
-): (number | '...')[] => {
+): Array<number | '...'> => {
 	if (total <= 7) {
 		return Array.from({length: total}, (_, i) => i + 1);
 	}
 
-	const pages: (number | '...')[] = [1];
+	const pages: Array<number | '...'> = [1];
 
 	const leftSibling = Math.max(2, current - siblings);
 	const rightSibling = Math.min(total - 1, current + siblings);
@@ -43,13 +43,13 @@ const buildPages = (
 	return pages;
 };
 
-export const Pagination = ({
+export function Pagination({
 	total,
 	current,
 	onChange,
 	showEdges = true,
 	siblings = 1,
-}: PaginationProps) => {
+}: PaginationProps) {
 	const theme = useTheme();
 	const [internalPage, setInternalPage] = useState(current);
 	const activePage = current ?? internalPage;
@@ -59,6 +59,7 @@ export const Pagination = ({
 		if (clamped === activePage) {
 			return;
 		}
+
 		if (onChange) {
 			onChange(clamped);
 		} else {
@@ -70,6 +71,7 @@ export const Pagination = ({
 		if (key.leftArrow) {
 			goTo(activePage - 1);
 		}
+
 		if (key.rightArrow) {
 			goTo(activePage + 1);
 		}
@@ -98,6 +100,7 @@ export const Pagination = ({
 						</Text>
 					);
 				}
+
 				const isActive = p === activePage;
 				return (
 					<Text
@@ -124,4 +127,4 @@ export const Pagination = ({
 			</Text>
 		</Box>
 	);
-};
+}

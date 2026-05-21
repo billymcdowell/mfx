@@ -2,50 +2,60 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface Shortcut {
+export type Shortcut = {
 	key: string;
 	description: string;
 	category?: string;
+};
+
+export type KeyboardShortcutsProps = {
+	readonly shortcuts: Shortcut[];
+	readonly columns?: number;
+	readonly title?: string;
+};
+
+function KeyLabel({
+	label,
+	color,
+}: {
+	readonly label: string;
+	readonly color: string;
+}) {
+	return (
+		<Box borderStyle="single" borderColor={color} paddingX={1}>
+			<Text bold color={color}>
+				{label}
+			</Text>
+		</Box>
+	);
 }
 
-export interface KeyboardShortcutsProps {
-	shortcuts: Shortcut[];
-	columns?: number;
-	title?: string;
-}
-
-const KeyLabel = ({label, color}: {label: string; color: string}) => (
-	<Box borderStyle="single" borderColor={color} paddingX={1}>
-		<Text color={color} bold>
-			{label}
-		</Text>
-	</Box>
-);
-
-const ShortcutRow = ({
+function ShortcutRow({
 	shortcut,
 	keyColor,
 	descColor,
 }: {
-	shortcut: Shortcut;
-	keyColor: string;
-	descColor: string;
-}) => (
-	<Box gap={1} alignItems="center">
-		<KeyLabel label={shortcut.key} color={keyColor} />
-		<Text color={descColor}>{shortcut.description}</Text>
-	</Box>
-);
+	readonly shortcut: Shortcut;
+	readonly keyColor: string;
+	readonly descColor: string;
+}) {
+	return (
+		<Box gap={1} alignItems="center">
+			<KeyLabel label={shortcut.key} color={keyColor} />
+			<Text color={descColor}>{shortcut.description}</Text>
+		</Box>
+	);
+}
 
-const ShortcutGrid = ({
+function ShortcutGrid({
 	items,
 	columns,
 	theme,
 }: {
-	items: Shortcut[];
-	columns: number;
-	theme: ReturnType<typeof useTheme>;
-}) => {
+	readonly items: Shortcut[];
+	readonly columns: number;
+	readonly theme: ReturnType<typeof useTheme>;
+}) {
 	const rows: Shortcut[][] = [];
 	for (let i = 0; i < items.length; i += columns) {
 		rows.push(items.slice(i, i + columns));
@@ -67,39 +77,40 @@ const ShortcutGrid = ({
 			))}
 		</Box>
 	);
-};
+}
 
-export const KeyboardShortcuts = ({
+export function KeyboardShortcuts({
 	shortcuts,
 	columns = 1,
 	title,
-}: KeyboardShortcutsProps) => {
+}: KeyboardShortcutsProps) {
 	const theme = useTheme();
 
 	const hasCategories = shortcuts.some(s => s.category);
 
 	if (hasCategories) {
 		const grouped: Record<string, Shortcut[]> = {
-			/* noop */
+			/* Noop */
 		};
 		for (const s of shortcuts) {
 			const cat = s.category ?? 'General';
 			if (!grouped[cat]) {
 				grouped[cat] = [];
 			}
+
 			grouped[cat].push(s);
 		}
 
 		return (
 			<Box flexDirection="column" gap={1}>
 				{title && (
-					<Text color={theme.colors.primary} bold>
+					<Text bold color={theme.colors.primary}>
 						⌨ {title}
 					</Text>
 				)}
 				{Object.entries(grouped).map(([category, items]) => (
 					<Box key={category} flexDirection="column" gap={0}>
-						<Text color={theme.colors.mutedForeground} bold underline>
+						<Text bold underline color={theme.colors.mutedForeground}>
 							{category}
 						</Text>
 						{columns > 1 ? (
@@ -123,7 +134,7 @@ export const KeyboardShortcuts = ({
 	return (
 		<Box flexDirection="column" gap={1}>
 			{title && (
-				<Text color={theme.colors.primary} bold>
+				<Text bold color={theme.colors.primary}>
 					⌨ {title}
 				</Text>
 			)}
@@ -141,4 +152,4 @@ export const KeyboardShortcuts = ({
 			)}
 		</Box>
 	);
-};
+}

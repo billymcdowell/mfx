@@ -4,31 +4,31 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface SidebarItem {
+export type SidebarItem = {
 	key: string;
 	label: string;
 	icon?: string;
 	badge?: string | number;
 	children?: SidebarItem[];
-}
+};
 
-export interface SidebarProps {
-	items: SidebarItem[];
-	activeKey?: string;
-	onSelect?: (key: string) => void;
-	collapsed?: boolean;
-	width?: number;
-	title?: string;
-	brandedTitle?: boolean;
-	inputActive?: boolean;
-}
+export type SidebarProps = {
+	readonly items: SidebarItem[];
+	readonly activeKey?: string;
+	readonly onSelect?: (key: string) => void;
+	readonly collapsed?: boolean;
+	readonly width?: number;
+	readonly title?: string;
+	readonly brandedTitle?: boolean;
+	readonly inputActive?: boolean;
+};
 
 const flattenItems = (
 	items: SidebarItem[],
 	expandedKeys: Set<string>,
 	depth = 0,
-): {item: SidebarItem; depth: number}[] => {
-	const result: {item: SidebarItem; depth: number}[] = [];
+): Array<{item: SidebarItem; depth: number}> => {
+	const result: Array<{item: SidebarItem; depth: number}> = [];
 	for (const item of items) {
 		result.push({depth, item});
 		if (item.children && expandedKeys.has(item.key)) {
@@ -39,7 +39,7 @@ const flattenItems = (
 	return result;
 };
 
-export const Sidebar = ({
+export function Sidebar({
 	items,
 	activeKey,
 	onSelect,
@@ -48,7 +48,7 @@ export const Sidebar = ({
 	title,
 	brandedTitle = false,
 	inputActive = true,
-}: SidebarProps) => {
+}: SidebarProps) {
 	const theme = useTheme();
 	const [focusIndex, setFocusIndex] = useState(0);
 	const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
@@ -57,8 +57,8 @@ export const Sidebar = ({
 	const flatItems = flattenItems(items, expandedKeys);
 
 	const toggleExpand = (key: string) => {
-		setExpandedKeys(prev => {
-			const next = new Set(prev);
+		setExpandedKeys(previous => {
+			const next = new Set(previous);
 			if (next.has(key)) {
 				next.delete(key);
 			} else {
@@ -74,9 +74,9 @@ export const Sidebar = ({
 			const up = key.upArrow || input === 'k' || input === 'K';
 			const down = key.downArrow || input === 'j' || input === 'J';
 			if (up) {
-				setFocusIndex(prev => Math.max(0, prev - 1));
+				setFocusIndex(previous => Math.max(0, previous - 1));
 			} else if (down) {
-				setFocusIndex(prev => Math.min(flatItems.length - 1, prev + 1));
+				setFocusIndex(previous => Math.min(flatItems.length - 1, previous + 1));
 			} else if (key.return) {
 				const entry = flatItems[focusIndex];
 				if (!entry) {
@@ -91,15 +91,15 @@ export const Sidebar = ({
 			} else if (key.rightArrow) {
 				const entry = flatItems[focusIndex];
 				if (entry?.item.children && entry.item.children.length > 0) {
-					setExpandedKeys(prev => new Set([...prev, entry.item.key]));
+					setExpandedKeys(previous => new Set([...previous, entry.item.key]));
 				} else if (entry) {
 					onSelect?.(entry.item.key);
 				}
 			} else if (key.leftArrow) {
 				const entry = flatItems[focusIndex];
 				if (entry?.item.children && expandedKeys.has(entry.item.key)) {
-					setExpandedKeys(prev => {
-						const next = new Set(prev);
+					setExpandedKeys(previous => {
+						const next = new Set(previous);
 						next.delete(entry.item.key);
 						return next;
 					});
@@ -166,7 +166,7 @@ export const Sidebar = ({
 				const chevron = isActive ? '❯ ' : '  ';
 
 				return (
-					<Box backgroundColor={rowBg} flexDirection="row" key={item.key}>
+					<Box key={item.key} backgroundColor={rowBg} flexDirection="row">
 						<Text color={isActive ? theme.colors.success : 'transparent'}>
 							{chevron}
 						</Text>
@@ -211,4 +211,4 @@ export const Sidebar = ({
 			})}
 		</Box>
 	);
-};
+}

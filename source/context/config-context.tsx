@@ -15,7 +15,11 @@ export type ConfigContextValue = {
 
 const ConfigContext = createContext<ConfigContextValue | undefined>(undefined);
 
-export function ConfigProvider({children}: {children: React.ReactNode}) {
+export function ConfigProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
 	const [config, setState] = useState(() => loadConfig());
 	const setConfig = useCallback((patch: Partial<MfxConfig>) => {
 		setState(c => {

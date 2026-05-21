@@ -4,24 +4,24 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface MultiSelectOption<T = string> {
+export type MultiSelectOption<T = string> = {
 	value: T;
 	label: string;
 	hint?: string;
 	disabled?: boolean;
-}
+};
 
-export interface MultiSelectProps<T = string> {
-	options: MultiSelectOption<T>[];
-	value?: T[];
-	onChange?: (values: T[]) => void;
-	onSubmit?: (values: T[]) => void;
-	cursor?: string;
-	checkmark?: string;
-	height?: number;
-}
+export type MultiSelectProps<T = string> = {
+	readonly options: Array<MultiSelectOption<T>>;
+	readonly value?: T[];
+	readonly onChange?: (values: T[]) => void;
+	readonly onSubmit?: (values: T[]) => void;
+	readonly cursor?: string;
+	readonly checkmark?: string;
+	readonly height?: number;
+};
 
-export const MultiSelect = <T = string,>({
+export function MultiSelect<T = string>({
 	options,
 	value: controlledValue,
 	onChange,
@@ -29,7 +29,7 @@ export const MultiSelect = <T = string,>({
 	cursor = '›',
 	checkmark = '◉',
 	height,
-}: MultiSelectProps<T>) => {
+}: MultiSelectProps<T>) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [internalSelected, setInternalSelected] = useState<T[]>([]);
@@ -40,15 +40,18 @@ export const MultiSelect = <T = string,>({
 		if (!height) {
 			return 0;
 		}
+
 		const half = Math.floor(height / 2);
 		const maxOffset = options.length - height;
 		const offset = activeIndex - half;
 		if (offset < 0) {
 			return 0;
 		}
+
 		if (offset > maxOffset) {
 			return Math.max(0, maxOffset);
 		}
+
 		return offset;
 	})();
 
@@ -63,6 +66,7 @@ export const MultiSelect = <T = string,>({
 				while (next >= 0 && options[next]?.disabled) {
 					next -= 1;
 				}
+
 				return next < 0 ? i : next;
 			});
 		} else if (key.downArrow) {
@@ -71,6 +75,7 @@ export const MultiSelect = <T = string,>({
 				while (next < options.length && options[next]?.disabled) {
 					next += 1;
 				}
+
 				return next >= options.length ? i : next;
 			});
 		} else if (input === '') {
@@ -78,6 +83,7 @@ export const MultiSelect = <T = string,>({
 			if (!opt || opt.disabled) {
 				return;
 			}
+
 			const isSelected = selected.includes(opt.value);
 			const next = isSelected
 				? selected.filter(v => v !== opt.value)
@@ -85,6 +91,7 @@ export const MultiSelect = <T = string,>({
 			if (controlledValue === undefined) {
 				setInternalSelected(next);
 			}
+
 			onChange?.(next);
 		} else if (key.return) {
 			onSubmit?.(selected);
@@ -129,7 +136,7 @@ export const MultiSelect = <T = string,>({
 							{opt.label}
 						</Text>
 						{opt.hint && (
-							<Text color={theme.colors.mutedForeground} dimColor>
+							<Text dimColor color={theme.colors.mutedForeground}>
 								{opt.hint}
 							</Text>
 						)}
@@ -138,4 +145,4 @@ export const MultiSelect = <T = string,>({
 			})}
 		</Box>
 	);
-};
+}

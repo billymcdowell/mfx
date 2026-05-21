@@ -5,16 +5,16 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 import {useInterval} from '@/hooks/use-interval';
 
-export interface TimerProps {
-	duration: number;
-	onComplete?: () => void;
-	autoStart?: boolean;
-	format?: 'hms' | 'ms' | 's';
-	color?: string;
-	label?: string;
-}
+export type TimerProps = {
+	readonly duration: number;
+	readonly onComplete?: () => void;
+	readonly autoStart?: boolean;
+	readonly format?: 'hms' | 'ms' | 's';
+	readonly color?: string;
+	readonly label?: string;
+};
 
-const padNum = (n: number) => String(n).padStart(2, '0');
+const padNumber = (n: number) => String(n).padStart(2, '0');
 
 const formatTime = (seconds: number, format: 'hms' | 'ms' | 's'): string => {
 	const h = Math.floor(seconds / 3600);
@@ -24,20 +24,22 @@ const formatTime = (seconds: number, format: 'hms' | 'ms' | 's'): string => {
 	if (format === 's') {
 		return `${seconds}s`;
 	}
+
 	if (format === 'ms') {
-		return `${padNum(m)}:${padNum(s)}`;
+		return `${padNumber(m)}:${padNumber(s)}`;
 	}
-	return `${padNum(h)}:${padNum(m)}:${padNum(s)}`;
+
+	return `${padNumber(h)}:${padNumber(m)}:${padNumber(s)}`;
 };
 
-export const Timer = ({
+export function Timer({
 	duration,
 	onComplete,
 	autoStart = false,
 	format = 'hms',
 	color,
 	label,
-}: TimerProps) => {
+}: TimerProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
@@ -46,18 +48,19 @@ export const Timer = ({
 	const [completed, setCompleted] = useState(false);
 
 	const tick = useCallback(() => {
-		setRemaining(prev => {
-			if (prev <= 1) {
+		setRemaining(previous => {
+			if (previous <= 1) {
 				setRunning(false);
 				setCompleted(true);
 				onComplete?.();
 				return 0;
 			}
-			return prev - 1;
+
+			return previous - 1;
 		});
 	}, [onComplete]);
 
-	useInterval(tick, running ? 1000 : null);
+	useInterval(tick, running ? 1000 : undefined);
 
 	useInput(input => {
 		if (input === '') {
@@ -82,14 +85,14 @@ export const Timer = ({
 		<Box flexDirection="column" gap={0}>
 			{label && <Text color={theme.colors.mutedForeground}>{label}</Text>}
 			<Box gap={2} alignItems="center">
-				<Text color={resolvedColor} bold>
+				<Text bold color={resolvedColor}>
 					{formatTime(remaining, format)}
 				</Text>
 				<Text color={statusColor}>[{status}]</Text>
 			</Box>
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				{completed ? 'r to reset' : 'space pause/resume · r reset'}
 			</Text>
 		</Box>
 	);
-};
+}

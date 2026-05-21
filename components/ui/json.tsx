@@ -4,14 +4,14 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface JSONViewProps {
-	data: unknown;
-	indent?: number;
-	collapsed?: boolean;
-	label?: string;
-}
+export type JSONViewProps = {
+	readonly data: unknown;
+	readonly indent?: number;
+	readonly collapsed?: boolean;
+	readonly label?: string;
+};
 
-interface JSONLine {
+type JSONLine = {
 	path: string;
 	depth: number;
 	key?: string;
@@ -21,7 +21,7 @@ interface JSONLine {
 	closeChar?: string;
 	isLast: boolean;
 	collapsible: boolean;
-}
+};
 
 const buildLines = (
 	data: unknown,
@@ -55,6 +55,7 @@ const buildLines = (
 			);
 			lines.push(...childLines);
 		}
+
 		lines.push({
 			closeChar: ']',
 			collapsible: false,
@@ -90,6 +91,7 @@ const buildLines = (
 			);
 			lines.push(...childLines);
 		}
+
 		lines.push({
 			closeChar: '}',
 			collapsible: false,
@@ -114,12 +116,12 @@ const buildLines = (
 	];
 };
 
-export const JSONView = ({
+export function JSONView({
 	data,
 	indent = 2,
 	collapsed = false,
 	label,
-}: JSONViewProps) => {
+}: JSONViewProps) {
 	const theme = useTheme();
 	const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(new Set());
 	const [cursor, setCursor] = useState(0);
@@ -164,13 +166,14 @@ export const JSONView = ({
 		} else if (input === '') {
 			const line = visibleLines[cursor];
 			if (line && line.collapsible) {
-				setCollapsedPaths(prev => {
-					const next = new Set(prev);
+				setCollapsedPaths(previous => {
+					const next = new Set(previous);
 					if (next.has(line.path)) {
 						next.delete(line.path);
 					} else {
 						next.add(line.path);
 					}
+
 					return next;
 				});
 			}
@@ -181,12 +184,15 @@ export const JSONView = ({
 		if (value === null) {
 			return <Text color={theme.colors.mutedForeground}>null</Text>;
 		}
+
 		if (typeof value === 'string') {
 			return <Text color={theme.colors.success}>&quot;{value}&quot;</Text>;
 		}
+
 		if (typeof value === 'number' || typeof value === 'boolean') {
 			return <Text color={theme.colors.warning}>{String(value)}</Text>;
 		}
+
 		return <Text color={theme.colors.foreground}>{String(value)}</Text>;
 	};
 
@@ -272,4 +278,4 @@ export const JSONView = ({
 			})}
 		</Box>
 	);
-};
+}

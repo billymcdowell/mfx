@@ -4,23 +4,23 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ThinkingBlockProps {
-	content: string;
-	streaming?: boolean;
-	defaultCollapsed?: boolean;
-	label?: string;
-	tokenCount?: number;
-	duration?: number;
-}
+export type ThinkingBlockProps = {
+	readonly content: string;
+	readonly streaming?: boolean;
+	readonly defaultCollapsed?: boolean;
+	readonly label?: string;
+	readonly tokenCount?: number;
+	readonly duration?: number;
+};
 
-export const ThinkingBlock = ({
+export function ThinkingBlock({
 	content,
 	streaming = false,
 	defaultCollapsed = true,
 	label = 'Reasoning',
 	tokenCount,
 	duration,
-}: ThinkingBlockProps) => {
+}: ThinkingBlockProps) {
 	const theme = useTheme();
 	const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
@@ -30,15 +30,15 @@ export const ThinkingBlock = ({
 		}
 	});
 
-	const tokenStr =
+	const tokenString =
 		tokenCount === undefined ? null : `${tokenCount.toLocaleString()} tokens`;
-	const durationStr =
+	const durationString =
 		duration === undefined ? null : `${(duration / 1000).toFixed(1)}s`;
 
 	const headerParts = [
 		streaming ? 'Thinking...' : label,
-		tokenStr,
-		durationStr,
+		tokenString,
+		durationString,
 	].filter(Boolean);
 
 	const headerText = headerParts.join('·');
@@ -66,11 +66,11 @@ export const ThinkingBlock = ({
 
 			{!collapsed && (
 				<Box flexDirection="column" paddingTop={1}>
-					<Text color={theme.colors.mutedForeground} dimColor wrap="wrap">
+					<Text dimColor color={theme.colors.mutedForeground} wrap="wrap">
 						{content}
 					</Text>
 				</Box>
 			)}
 		</Box>
 	);
-};
+}

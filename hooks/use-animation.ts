@@ -48,10 +48,15 @@ export const useAnimation = (
 		typeof rate === 'number' ? Math.round(1000 / rate) : rate.intervalMs;
 
 	React.useEffect(() => {
-		const callback: Subscriber = tick => setFrame(tick);
+		const callback: Subscriber = tick => {
+			setFrame(tick);
+		};
+
 		subscribe(milliseconds, callback);
 
-		return () => unsubscribe(milliseconds, callback);
+		return () => {
+			unsubscribe(milliseconds, callback);
+		};
 	}, [milliseconds]);
 
 	return frame;

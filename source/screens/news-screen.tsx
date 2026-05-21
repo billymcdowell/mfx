@@ -9,7 +9,11 @@ import {useTerminalViewport} from '@/source/context/terminal-viewport-context';
 import {newsTagStyle} from '@/source/lib/news-tag-colors';
 import {formatNewsTime} from '@/source/lib/relative-time';
 
-export function NewsScreen({mainInputActive}: {mainInputActive: boolean}) {
+export function NewsScreen({
+	mainInputActive,
+}: {
+	readonly mainInputActive: boolean;
+}) {
 	const theme = useTheme();
 	const {mainInnerWidth} = useTerminalViewport();
 	const {articles, lastUpdated, loading, refresh} = useNews();
@@ -152,7 +156,7 @@ export function NewsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					const hi = idx === row;
 					const selBg = hi ? theme.colors.selection : undefined;
 					return (
-						<Box flexDirection="column" key={article.id} width="100%">
+						<Box key={article.id} flexDirection="column" width="100%">
 							<Box backgroundColor={selBg} flexDirection="column" width="100%">
 								<Box flexDirection="row" width="100%">
 									<Box
@@ -184,9 +188,9 @@ export function NewsScreen({mainInputActive}: {mainInputActive: boolean}) {
 											const st = newsTagStyle(t);
 											return (
 												<Text
+													key={t}
 													backgroundColor={st.backgroundColor}
 													color={st.color}
-													key={t}
 												>
 													{` ${t.toUpperCase()} `}
 												</Text>

@@ -6,7 +6,7 @@ export function openUrlInBrowser(url: string): void {
 		return;
 	}
 
-	const platform = process.platform;
+	const {platform} = process;
 	if (platform === 'darwin') {
 		execFile('open', [url], {windowsHide: true}, () => {});
 	} else if (platform === 'win32') {

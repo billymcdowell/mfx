@@ -12,19 +12,19 @@ function ohlcFromHistory(history: number[], bid: number, ask: number) {
 	const open = history[0] ?? 0;
 	const high = Math.max(...history);
 	const low = Math.min(...history);
-	const closePrev =
+	const closePrevious =
 		history.length > 1 ? history.at(-2)! : history.at(-1) ?? open;
 	const mid = (bid + ask) / 2;
 	const spread = Math.abs(ask - bid);
-	return {closePrev, high, low, mid, open, spread};
+	return {closePrev: closePrevious, high, low, mid, open, spread};
 }
 
 export function PriceDetailScreen({
 	symbol,
 	mainInputActive,
 }: {
-	mainInputActive: boolean;
-	symbol: string;
+	readonly mainInputActive: boolean;
+	readonly symbol: string;
 }) {
 	const theme = useTheme();
 	const {instruments, refresh} = usePrices();
@@ -161,7 +161,7 @@ export function PriceDetailScreen({
 					title=""
 					width={chartWidth}
 				/>
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					00:00 04:00 08:00 12:00 16:00 20:00 now · current ●
 				</Text>
 			</Box>

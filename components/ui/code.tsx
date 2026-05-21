@@ -2,11 +2,11 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface CodeProps {
-	children: string;
-	language?: string;
-	inline?: boolean;
-	borderStyle?:
+export type CodeProps = {
+	readonly children: string;
+	readonly language?: string;
+	readonly inline?: boolean;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -14,15 +14,15 @@ export interface CodeProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	showLineNumbers?: boolean;
-	lineNumberSeparator?: string;
-	keywordColor?: string;
-	stringColor?: string;
-	numberColor?: string;
-	commentColor?: string;
-	operatorColor?: string;
-	plainColor?: string;
-}
+	readonly showLineNumbers?: boolean;
+	readonly lineNumberSeparator?: string;
+	readonly keywordColor?: string;
+	readonly stringColor?: string;
+	readonly numberColor?: string;
+	readonly commentColor?: string;
+	readonly operatorColor?: string;
+	readonly plainColor?: string;
+};
 
 const KEYWORDS = new Set([
 	'const',
@@ -78,10 +78,10 @@ const KEYWORDS = new Set([
 
 const OPERATORS = /^[=+\-*/<>!&|?%^~]+$/;
 
-interface Token {
+type Token = {
 	text: string;
 	kind: 'keyword' | 'string' | 'number' | 'comment' | 'operator' | 'plain';
-}
+};
 
 const tokenizeLine = (line: string): Token[] => {
 	const trimmed = line.trimStart();
@@ -105,19 +105,22 @@ const tokenizeLine = (line: string): Token[] => {
 				if (line[j] === '\\') {
 					j += 1;
 				}
+
 				j += 1;
 			}
+
 			j += 1;
 			tokens.push({kind: 'string', text: line.slice(i, j)});
 			i = j;
 			continue;
 		}
 
-		if (/[0-9]/.test(line[i])) {
+		if (/\d/.test(line[i])) {
 			let j = i;
-			while (j < line.length && /[0-9._xXa-fA-FbBoO]/.test(line[j])) {
+			while (j < line.length && /[\d._xXa-fA-FbBoO]/.test(line[j])) {
 				j += 1;
 			}
+
 			tokens.push({kind: 'number', text: line.slice(i, j)});
 			i = j;
 			continue;
@@ -125,9 +128,10 @@ const tokenizeLine = (line: string): Token[] => {
 
 		if (/[a-zA-Z_$]/.test(line[i])) {
 			let j = i;
-			while (j < line.length && /[a-zA-Z0-9_$]/.test(line[j])) {
+			while (j < line.length && /[\w$]/.test(line[j])) {
 				j += 1;
 			}
+
 			const word = line.slice(i, j);
 			tokens.push({
 				kind: KEYWORDS.has(word) ? 'keyword' : 'plain',
@@ -142,6 +146,7 @@ const tokenizeLine = (line: string): Token[] => {
 			while (j < line.length && OPERATORS.test(line[j])) {
 				j += 1;
 			}
+
 			tokens.push({kind: 'operator', text: line.slice(i, j)});
 			i = j;
 			continue;
@@ -154,7 +159,7 @@ const tokenizeLine = (line: string): Token[] => {
 	return tokens;
 };
 
-const CodeLine = ({
+function CodeLine({
 	line,
 	keywordColor,
 	stringColor,
@@ -163,14 +168,14 @@ const CodeLine = ({
 	operatorColor,
 	plainColor,
 }: {
-	line: string;
-	keywordColor: string;
-	stringColor: string;
-	numberColor: string;
-	commentColor: string;
-	operatorColor: string;
-	plainColor: string;
-}) => {
+	readonly line: string;
+	readonly keywordColor: string;
+	readonly stringColor: string;
+	readonly numberColor: string;
+	readonly commentColor: string;
+	readonly operatorColor: string;
+	readonly plainColor: string;
+}) {
 	const tokens = tokenizeLine(line);
 
 	return (
@@ -184,6 +189,7 @@ const CodeLine = ({
 							</Text>
 						);
 					}
+
 					case 'string': {
 						return (
 							<Text key={idx} color={stringColor}>
@@ -191,6 +197,7 @@ const CodeLine = ({
 							</Text>
 						);
 					}
+
 					case 'number': {
 						return (
 							<Text key={idx} color={numberColor}>
@@ -198,6 +205,7 @@ const CodeLine = ({
 							</Text>
 						);
 					}
+
 					case 'comment': {
 						return (
 							<Text key={idx} dimColor>
@@ -205,6 +213,7 @@ const CodeLine = ({
 							</Text>
 						);
 					}
+
 					case 'operator': {
 						return (
 							<Text key={idx} color={operatorColor}>
@@ -212,6 +221,7 @@ const CodeLine = ({
 							</Text>
 						);
 					}
+
 					default: {
 						return (
 							<Text key={idx} color={plainColor}>
@@ -223,9 +233,9 @@ const CodeLine = ({
 			})}
 		</Box>
 	);
-};
+}
 
-export const Code = ({
+export function Code({
 	children,
 	language,
 	inline = false,
@@ -238,7 +248,7 @@ export const Code = ({
 	commentColor: commentColorProp,
 	operatorColor: operatorColorProp,
 	plainColor: plainColorProp,
-}: CodeProps) => {
+}: CodeProps) {
 	const theme = useTheme();
 
 	const keywordColor = keywordColorProp ?? theme.colors.accent;
@@ -290,7 +300,6 @@ export const Code = ({
 						<>
 							<Text color={theme.colors.mutedForeground}>
 								{String(idx + 1).padStart(lineNumberWidth, '')}
-								{''}
 							</Text>
 							<Text color={theme.colors.mutedForeground}>
 								{lineNumberSeparator}
@@ -310,4 +319,4 @@ export const Code = ({
 			))}
 		</Box>
 	);
-};
+}

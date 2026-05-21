@@ -5,17 +5,17 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface SearchInputProps<T = string> {
-	options?: T[];
-	getValue?: (item: T) => string;
-	value?: string;
-	onChange?: (query: string) => void;
-	onSelect?: (item: T) => void;
-	placeholder?: string;
-	label?: string;
-	maxResults?: number;
-	id?: string;
-	borderStyle?:
+export type SearchInputProps<T = string> = {
+	readonly options?: T[];
+	readonly getValue?: (item: T) => string;
+	readonly value?: string;
+	readonly onChange?: (query: string) => void;
+	readonly onSelect?: (item: T) => void;
+	readonly placeholder?: string;
+	readonly label?: string;
+	readonly maxResults?: number;
+	readonly id?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -23,13 +23,13 @@ export interface SearchInputProps<T = string> {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	cursor?: string;
-	searchIcon?: string;
-	resultCursor?: string;
-}
+	readonly paddingX?: number;
+	readonly cursor?: string;
+	readonly searchIcon?: string;
+	readonly resultCursor?: string;
+};
 
-export const SearchInput = <T = string,>({
+export function SearchInput<T = string>({
 	options,
 	getValue,
 	value: controlledValue,
@@ -44,7 +44,7 @@ export const SearchInput = <T = string,>({
 	cursor = '█',
 	searchIcon = '🔍',
 	resultCursor = '›',
-}: SearchInputProps<T>) => {
+}: SearchInputProps<T>) {
 	const [internalValue, setInternalValue] = useState('');
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [showResults, setShowResults] = useState(false);
@@ -58,6 +58,7 @@ export const SearchInput = <T = string,>({
 			if (getValue) {
 				return getValue(item);
 			}
+
 			return String(item);
 		},
 		[getValue],
@@ -75,9 +76,11 @@ export const SearchInput = <T = string,>({
 		if (!options || options.length === 0) {
 			return [];
 		}
+
 		if (!query) {
 			return options.slice(0, maxResults);
 		}
+
 		const lower = query.toLowerCase();
 		return options
 			.filter(item => getItemValue(item).toLowerCase().includes(lower))
@@ -100,6 +103,7 @@ export const SearchInput = <T = string,>({
 			if (showResults && filteredResults.length > 0) {
 				setSelectedIndex(i => Math.max(0, i - 1));
 			}
+
 			return;
 		}
 
@@ -108,6 +112,7 @@ export const SearchInput = <T = string,>({
 				setShowResults(true);
 				setSelectedIndex(i => Math.min(filteredResults.length - 1, i + 1));
 			}
+
 			return;
 		}
 
@@ -118,6 +123,7 @@ export const SearchInput = <T = string,>({
 				setShowResults(false);
 				setSelectedIndex(0);
 			}
+
 			return;
 		}
 
@@ -128,6 +134,7 @@ export const SearchInput = <T = string,>({
 			if (newQuery.length === 0) {
 				setShowResults(false);
 			}
+
 			return;
 		}
 
@@ -195,4 +202,4 @@ export const SearchInput = <T = string,>({
 			)}
 		</Box>
 	);
-};
+}

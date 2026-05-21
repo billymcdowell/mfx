@@ -5,16 +5,16 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface DatePickerProps {
-	value?: Date;
-	onChange?: (date: Date) => void;
-	onSubmit?: (date: Date) => void;
-	label?: string;
-	minDate?: Date;
-	maxDate?: Date;
-	autoFocus?: boolean;
-	id?: string;
-}
+export type DatePickerProps = {
+	readonly value?: Date;
+	readonly onChange?: (date: Date) => void;
+	readonly onSubmit?: (date: Date) => void;
+	readonly label?: string;
+	readonly minDate?: Date;
+	readonly maxDate?: Date;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+};
 
 const MONTHS = [
 	'January',
@@ -34,8 +34,8 @@ const MONTHS = [
 const daysInMonth = (month: number, year: number): number =>
 	new Date(year, month + 1, 0).getDate();
 
-const clamp = (val: number, min: number, max: number): number =>
-	Math.min(Math.max(val, min), max);
+const clamp = (value: number, min: number, max: number): number =>
+	Math.min(Math.max(value, min), max);
 
 const buildDate = (m: number, d: number, y: number): Date => new Date(y, m, d);
 
@@ -45,13 +45,15 @@ const getNextField = (
 	if (f === 'month') {
 		return 'day';
 	}
+
 	if (f === 'day') {
 		return 'year';
 	}
+
 	return 'month';
 };
 
-export const DatePicker = ({
+export function DatePicker({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -60,7 +62,7 @@ export const DatePicker = ({
 	maxDate,
 	autoFocus = false,
 	id,
-}: DatePickerProps) => {
+}: DatePickerProps) {
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 
@@ -77,9 +79,11 @@ export const DatePicker = ({
 		if (minDate && date < minDate) {
 			return;
 		}
+
 		if (maxDate && date > maxDate) {
 			return;
 		}
+
 		onChange?.(date);
 	};
 
@@ -200,10 +204,10 @@ export const DatePicker = ({
 				</Box>
 			</Box>
 			{isFocused && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					↑↓: change · Tab: next field · Enter: confirm
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

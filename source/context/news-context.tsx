@@ -30,7 +30,7 @@ function shuffleHeadlines(input: Article[]): Article[] {
 	return copy;
 }
 
-export function NewsProvider({children}: {children: React.ReactNode}) {
+export function NewsProvider({children}: {readonly children: React.ReactNode}) {
 	const {isAuthenticated} = useAuth();
 	const {config} = useConfig();
 	const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
@@ -51,7 +51,7 @@ export function NewsProvider({children}: {children: React.ReactNode}) {
 		() => {
 			void refresh();
 		},
-		isAuthenticated ? config.newsRefreshMinutes * 60_000 : null,
+		isAuthenticated ? config.newsRefreshMinutes * 60_000 : undefined,
 	);
 
 	const value = useMemo(

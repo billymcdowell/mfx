@@ -17,15 +17,19 @@ type PricesContextValue = {
 	lastUpdated: Date;
 	loading: boolean;
 	refresh: () => Promise<void>;
-	/** Wall-clock estimate of next auto-refresh; null when auto-refresh off. */
-	nextRefreshAt: Date | null;
+	/** Wall-clock estimate of next auto-refresh; undefined when auto-refresh off. */
+	nextRefreshAt: Date | undefined;
 	/** Seconds until next auto-refresh; 0 when due or manual-only. */
 	secondsUntilRefresh: number;
 };
 
 const PricesContext = createContext<PricesContextValue | undefined>(undefined);
 
-export function PricesProvider({children}: {children: React.ReactNode}) {
+export function PricesProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
 	const {isAuthenticated} = useAuth();
 	const {config} = useConfig();
 	const [instruments, setInstruments] = useState(seedInstruments);
@@ -38,7 +42,7 @@ export function PricesProvider({children}: {children: React.ReactNode}) {
 		await new Promise<void>(r => {
 			setTimeout(r, 320);
 		});
-		setInstruments(prev => jitterInstruments(prev));
+		setInstruments(previous => jitterInstruments(previous));
 		setLastUpdated(new Date());
 		setLoading(false);
 	}, []);
@@ -46,7 +50,7 @@ export function PricesProvider({children}: {children: React.ReactNode}) {
 	const intervalMs =
 		isAuthenticated && config.priceRefreshSeconds > 0
 			? config.priceRefreshSeconds * 1000
-			: null;
+			: undefined;
 
 	useInterval(() => {
 		void refresh();
@@ -56,12 +60,12 @@ export function PricesProvider({children}: {children: React.ReactNode}) {
 		() => {
 			setTick(t => t + 1);
 		},
-		isAuthenticated && config.priceRefreshSeconds > 0 ? 1000 : null,
+		isAuthenticated && config.priceRefreshSeconds > 0 ? 1000 : undefined,
 	);
 
 	const nextRefreshAt = useMemo(() => {
 		if (!isAuthenticated || !config.priceRefreshSeconds) {
-			return null;
+			return undefined;
 		}
 
 		return new Date(lastUpdated.getTime() + config.priceRefreshSeconds * 1000);

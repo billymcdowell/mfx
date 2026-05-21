@@ -4,40 +4,42 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ModelOption {
+export type ModelOption = {
 	id: string;
 	name: string;
 	provider: string;
 	context?: number;
-}
+};
 
-export interface ModelSelectorProps {
-	models: ModelOption[];
-	selected: string;
-	onSelect?: (id: string) => void;
-	showContext?: boolean;
-	showProvider?: boolean;
-	groupByProvider?: boolean;
-}
+export type ModelSelectorProps = {
+	readonly models: ModelOption[];
+	readonly selected: string;
+	readonly onSelect?: (id: string) => void;
+	readonly showContext?: boolean;
+	readonly showProvider?: boolean;
+	readonly groupByProvider?: boolean;
+};
 
 const formatContext = (ctx: number): string => {
 	if (ctx >= 1_000_000) {
 		return `${(ctx / 1_000_000).toFixed(0)}M ctx`;
 	}
+
 	if (ctx >= 1000) {
 		return `${(ctx / 1000).toFixed(0)}k ctx`;
 	}
+
 	return `${ctx} ctx`;
 };
 
-interface ModelRowProps {
-	model: ModelOption;
-	isActive: boolean;
-	isSelected: boolean;
-	showContext: boolean;
-	showProvider: boolean;
-	theme: ReturnType<typeof useTheme>;
-}
+type ModelRowProps = {
+	readonly model: ModelOption;
+	readonly isActive: boolean;
+	readonly isSelected: boolean;
+	readonly showContext: boolean;
+	readonly showProvider: boolean;
+	readonly theme: ReturnType<typeof useTheme>;
+};
 
 const getModelColor = (
 	isSelected: boolean,
@@ -47,52 +49,56 @@ const getModelColor = (
 	if (isSelected) {
 		return theme.colors.success ?? 'green';
 	}
+
 	if (isActive) {
 		return theme.colors.primary;
 	}
+
 	return theme.colors.foreground;
 };
 
-const ModelRow = ({
+function ModelRow({
 	model,
 	isActive,
 	isSelected,
 	showContext,
 	showProvider,
 	theme,
-}: ModelRowProps) => (
-	<Box gap={1}>
-		<Text color={isActive ? theme.colors.primary : undefined}>
-			{isActive ? '›' : ''}
-		</Text>
-		<Text
-			bold={isActive || isSelected}
-			color={getModelColor(isSelected, isActive, theme)}
-		>
-			{model.name}
-		</Text>
-		{isSelected && <Text color={theme.colors.success ?? 'green'}>✓</Text>}
-		{showProvider && (
-			<Text dimColor color={theme.colors.mutedForeground}>
-				{model.provider}
+}: ModelRowProps) {
+	return (
+		<Box gap={1}>
+			<Text color={isActive ? theme.colors.primary : undefined}>
+				{isActive ? '›' : ''}
 			</Text>
-		)}
-		{showContext && model.context !== undefined && (
-			<Text dimColor color={theme.colors.mutedForeground}>
-				{formatContext(model.context)}
+			<Text
+				bold={isActive || isSelected}
+				color={getModelColor(isSelected, isActive, theme)}
+			>
+				{model.name}
 			</Text>
-		)}
-	</Box>
-);
+			{isSelected && <Text color={theme.colors.success ?? 'green'}>✓</Text>}
+			{showProvider && (
+				<Text dimColor color={theme.colors.mutedForeground}>
+					{model.provider}
+				</Text>
+			)}
+			{showContext && model.context !== undefined && (
+				<Text dimColor color={theme.colors.mutedForeground}>
+					{formatContext(model.context)}
+				</Text>
+			)}
+		</Box>
+	);
+}
 
-export const ModelSelector = ({
+export function ModelSelector({
 	models,
 	selected,
 	onSelect,
 	showContext = true,
 	showProvider = true,
 	groupByProvider = false,
-}: ModelSelectorProps) => {
+}: ModelSelectorProps) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(() => {
 		const idx = models.findIndex(m => m.id === selected);
@@ -114,12 +120,13 @@ export const ModelSelector = ({
 
 	if (groupByProvider) {
 		const providerGroups: Record<string, ModelOption[]> = {
-			/* noop */
+			/* Noop */
 		};
 		for (const m of models) {
 			if (!providerGroups[m.provider]) {
 				providerGroups[m.provider] = [];
 			}
+
 			providerGroups[m.provider]?.push(m);
 		}
 
@@ -171,4 +178,4 @@ export const ModelSelector = ({
 			})}
 		</Box>
 	);
-};
+}

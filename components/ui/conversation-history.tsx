@@ -5,12 +5,12 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ConversationHistoryProps {
-	maxHeight?: number;
-	children?: ReactNode;
-	showScrollHint?: boolean;
-	isActive?: boolean;
-}
+export type ConversationHistoryProps = {
+	readonly maxHeight?: number;
+	readonly children?: ReactNode;
+	readonly showScrollHint?: boolean;
+	readonly isActive?: boolean;
+};
 
 export function ConversationHistory({
 	maxHeight = 20,

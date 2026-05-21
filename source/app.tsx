@@ -15,13 +15,13 @@ import {SetupScreen} from '@/source/screens/setup-screen';
 import {LoginScreen} from '@/source/screens/login-screen';
 import {AuthenticatedShell} from '@/source/screens/authenticated-shell';
 
-function ThemedApp({children}: {children: React.ReactNode}) {
+function ThemedApp({children}: {readonly children: React.ReactNode}) {
 	const {config} = useConfig();
-	const themeObj = useMemo(
+	const themeObject = useMemo(
 		() => getThemeForKey(config.themeKey),
 		[config.themeKey],
 	);
-	return <ThemeProvider theme={themeObj}>{children}</ThemeProvider>;
+	return <ThemeProvider theme={themeObject}>{children}</ThemeProvider>;
 }
 
 const authedBootstrap: RouteFrame = {params: {}, screen: 'prices'};

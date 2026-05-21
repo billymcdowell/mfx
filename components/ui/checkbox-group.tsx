@@ -4,29 +4,29 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface CheckboxGroupOption {
+export type CheckboxGroupOption = {
 	value: string;
 	label: string;
 	disabled?: boolean;
-}
+};
 
-export interface CheckboxGroupProps {
-	label?: string;
-	options: CheckboxGroupOption[];
-	value?: string[];
-	onChange?: (values: string[]) => void;
-	min?: number;
-	max?: number;
-}
+export type CheckboxGroupProps = {
+	readonly label?: string;
+	readonly options: CheckboxGroupOption[];
+	readonly value?: string[];
+	readonly onChange?: (values: string[]) => void;
+	readonly min?: number;
+	readonly max?: number;
+};
 
-export const CheckboxGroup = ({
+export function CheckboxGroup({
 	label,
 	options,
 	value: controlledValue,
 	onChange,
 	min,
 	max,
-}: CheckboxGroupProps) => {
+}: CheckboxGroupProps) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [internalSelected, setInternalSelected] = useState<string[]>([]);
@@ -43,9 +43,11 @@ export const CheckboxGroup = ({
 		} else {
 			setError(undefined);
 		}
+
 		if (controlledValue === undefined) {
 			setInternalSelected(next);
 		}
+
 		onChange?.(next);
 	};
 
@@ -56,6 +58,7 @@ export const CheckboxGroup = ({
 				while (next >= 0 && options[next]?.disabled) {
 					next -= 1;
 				}
+
 				return next < 0 ? i : next;
 			});
 		} else if (key.downArrow) {
@@ -64,6 +67,7 @@ export const CheckboxGroup = ({
 				while (next < options.length && options[next]?.disabled) {
 					next += 1;
 				}
+
 				return next >= options.length ? i : next;
 			});
 		} else if (input === '') {
@@ -71,6 +75,7 @@ export const CheckboxGroup = ({
 			if (!opt || opt.disabled) {
 				return;
 			}
+
 			const isSelected = selected.includes(opt.value);
 			const next = isSelected
 				? selected.filter(v => v !== opt.value)
@@ -124,4 +129,4 @@ export const CheckboxGroup = ({
 			{error && <Text color={theme.colors.error}>{error}</Text>}
 		</Box>
 	);
-};
+}

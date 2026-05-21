@@ -4,11 +4,11 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type BigTextFont = 'block' | 'simple' | 'shade' | 'slim';
 
-export interface BigTextProps {
-	children: string;
-	color?: string;
-	font?: BigTextFont;
-}
+export type BigTextProps = {
+	readonly children: string;
+	readonly color?: string;
+	readonly font?: BigTextFont;
+};
 
 const FONT: Record<string, number[][]> = {
 	'': [
@@ -376,7 +376,7 @@ const SHADE_CHARS: Record<number, string> = {
 const renderShadeRow = (row: number[]): string =>
 	row.map(p => (p ? SHADE_CHARS[3] ?? '▓' : ' ')).join('');
 
-export const BigText = ({children, color, font = 'block'}: BigTextProps) => {
+export function BigText({children, color, font = 'block'}: BigTextProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
@@ -408,6 +408,7 @@ export const BigText = ({children, color, font = 'block'}: BigTextProps) => {
 	if (font === 'block') {
 		onChar = '█';
 	}
+
 	/** Keep a fixed cell width so letters (e.g. M/F/X) don’t collapse together. */
 	const offChar = ' ';
 	const rows = 5;
@@ -419,13 +420,13 @@ export const BigText = ({children, color, font = 'block'}: BigTextProps) => {
 					{chars.map((ch, charIdx) => {
 						const charRows = getCharRows(ch);
 						const row = charRows[rowIdx] ?? [0, 0, 0];
-						const rowStr =
+						const rowString =
 							font === 'shade'
 								? renderShadeRow(row)
 								: row.map(pixel => (pixel ? onChar : offChar)).join('');
 						return (
 							<Text key={charIdx} color={resolvedColor}>
-								{`${rowStr} `}
+								{`${rowString} `}
 							</Text>
 						);
 					})}
@@ -433,4 +434,4 @@ export const BigText = ({children, color, font = 'block'}: BigTextProps) => {
 			))}
 		</Box>
 	);
-};
+}

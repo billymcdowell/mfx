@@ -9,21 +9,21 @@ export type SpinnerType = SpinnerName;
 
 export const spinnerNames = Object.keys(cliSpinners) as SpinnerName[];
 
-export interface SpinnerProps {
-	type?: SpinnerType;
-	label?: string;
-	color?: string;
-	fps?: number;
-	frames?: string[];
-}
+export type SpinnerProps = {
+	readonly type?: SpinnerType;
+	readonly label?: string;
+	readonly color?: string;
+	readonly fps?: number;
+	readonly frames?: string[];
+};
 
-export const Spinner = ({
+export function Spinner({
 	type: spinnerType = 'dots',
 	label,
 	color,
 	fps = 12,
 	frames: customFrames,
-}: SpinnerProps) => {
+}: SpinnerProps) {
 	const theme = useTheme();
 	const builtin = cliSpinners[spinnerType] ?? cliSpinners.dots;
 	const useCustomFrames = customFrames !== undefined;
@@ -40,4 +40,4 @@ export const Spinner = ({
 			{label && <Text> {label}</Text>}
 		</Text>
 	);
-};
+}

@@ -3,12 +3,12 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface TooltipProps {
-	children: ReactNode;
-	content: string;
-	position?: 'top' | 'bottom' | 'left' | 'right';
-	isVisible?: boolean;
-	borderStyle?:
+export type TooltipProps = {
+	readonly children: ReactNode;
+	readonly content: string;
+	readonly position?: 'top' | 'bottom' | 'left' | 'right';
+	readonly isVisible?: boolean;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -16,15 +16,15 @@ export interface TooltipProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	borderColor?: string;
-	paddingX?: number;
-	paddingY?: number;
-	gap?: number;
-	arrowDown?: string;
-	arrowUp?: string;
-}
+	readonly borderColor?: string;
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+	readonly gap?: number;
+	readonly arrowDown?: string;
+	readonly arrowUp?: string;
+};
 
-export const Tooltip = ({
+export function Tooltip({
 	children,
 	content,
 	position = 'top',
@@ -36,7 +36,7 @@ export const Tooltip = ({
 	gap = 1,
 	arrowDown = '↓',
 	arrowUp = '↑',
-}: TooltipProps) => {
+}: TooltipProps) {
 	const theme = useTheme();
 	const resolvedBorderColor = borderColor ?? theme.colors.border;
 
@@ -90,4 +90,4 @@ export const Tooltip = ({
 			{tooltipBox}
 		</Box>
 	);
-};
+}

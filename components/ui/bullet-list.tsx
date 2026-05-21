@@ -3,39 +3,39 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface BulletListItemProps {
-	label: string;
-	bold?: boolean;
-	color?: string;
-	children?: ReactNode;
+export type BulletListItemProps = {
+	readonly label: string;
+	readonly bold?: boolean;
+	readonly color?: string;
+	readonly children?: ReactNode;
+};
+
+export type BulletListTreeItemProps = {
+	readonly label: string;
+	readonly color?: string;
+};
+
+export type BulletListCheckItemProps = {
+	readonly label: string;
+	readonly done?: boolean;
+	readonly color?: string;
+};
+
+function BulletListRoot({children}: {readonly children: ReactNode}) {
+	return <Box flexDirection="column">{children}</Box>;
 }
 
-export interface BulletListTreeItemProps {
-	label: string;
-	color?: string;
-}
-
-export interface BulletListCheckItemProps {
-	label: string;
-	done?: boolean;
-	color?: string;
-}
-
-const BulletListRoot = ({children}: {children: ReactNode}) => (
-	<Box flexDirection="column">{children}</Box>
-);
-
-const BulletListItem = ({
+function BulletListItem({
 	label,
 	bold: boldText = false,
 	color,
 	children,
-}: BulletListItemProps) => {
+}: BulletListItemProps) {
 	const theme = useTheme();
 	return (
 		<Box flexDirection="column">
 			<Box flexDirection="row">
-				<Text color={color ?? theme.colors.primary}>{'●'}</Text>
+				<Text color={color ?? theme.colors.primary}>●</Text>
 				<Text bold={boldText} color={color}>
 					{label}
 				</Text>
@@ -43,29 +43,31 @@ const BulletListItem = ({
 			{children}
 		</Box>
 	);
-};
+}
 
-const BulletListSub = ({children}: {children: ReactNode}) => (
-	<Box flexDirection="column" paddingLeft={2}>
-		{children}
-	</Box>
-);
+function BulletListSub({children}: {readonly children: ReactNode}) {
+	return (
+		<Box flexDirection="column" paddingLeft={2}>
+			{children}
+		</Box>
+	);
+}
 
-const BulletListTreeItem = ({label, color}: BulletListTreeItemProps) => {
+function BulletListTreeItem({label, color}: BulletListTreeItemProps) {
 	const theme = useTheme();
 	return (
 		<Box flexDirection="row">
-			<Text color={theme.colors.mutedForeground}>{'└'}</Text>
+			<Text color={theme.colors.mutedForeground}>└</Text>
 			<Text color={color}>{label}</Text>
 		</Box>
 	);
-};
+}
 
-const BulletListCheckItem = ({
+function BulletListCheckItem({
 	label,
 	done = false,
 	color,
-}: BulletListCheckItemProps) => {
+}: BulletListCheckItemProps) {
 	const theme = useTheme();
 	const icon = done ? '■' : '□';
 	const resolvedColor =
@@ -76,7 +78,7 @@ const BulletListCheckItem = ({
 			<Text color={done ? undefined : color}>{label}</Text>
 		</Box>
 	);
-};
+}
 
 export const BulletList = Object.assign(BulletListRoot, {
 	CheckItem: BulletListCheckItem,

@@ -9,7 +9,7 @@ import {getConfigFilePath} from '@/source/lib/paths';
 import {THEME_OPTIONS} from '@/source/theme-registry';
 import type {ThemeKey} from '@/source/types';
 
-function PreviewQuotes({colors}: {colors: ColorTokens}) {
+function PreviewQuotes({colors}: {readonly colors: ColorTokens}) {
 	return (
 		<Box
 			borderColor={colors.border}
@@ -121,7 +121,7 @@ export function SetupScreen() {
 								opt.theme.colors.error,
 							];
 							return (
-								<Box flexDirection="row" key={opt.key} paddingY={0}>
+								<Box key={opt.key} flexDirection="row" paddingY={0}>
 									<Text
 										backgroundColor={active ? theme.colors.success : undefined}
 										color={
@@ -144,7 +144,7 @@ export function SetupScreen() {
 									</Text>
 									<Box flexDirection="row" gap={0}>
 										{swatch.slice(0, 4).map((c, si) => (
-											<Text backgroundColor={c} key={`${opt.key}-s${si}`}>
+											<Text key={`${opt.key}-s${si}`} backgroundColor={c}>
 												████
 											</Text>
 										))}
@@ -165,7 +165,7 @@ export function SetupScreen() {
 					</Text>
 					<PreviewQuotes colors={draftColors} />
 					<Box marginTop={1}>
-						<Text color={theme.colors.mutedForeground} dimColor>
+						<Text dimColor color={theme.colors.mutedForeground}>
 							↑↓ to select · Enter to confirm · Esc to quit
 						</Text>
 					</Box>

@@ -69,7 +69,7 @@ export function seedInstruments(): Instrument[] {
 			type: 'forex',
 			spotPrice: eurusdHist.at(-1)!,
 			change24h: -0.11,
-			bid: eurusdHist.at(-1)! - 0.00012,
+			bid: eurusdHist.at(-1)! - 0.000_12,
 			ask: eurusdHist.at(-1)! + 0.0001,
 			history: eurusdHist,
 		},
@@ -79,8 +79,8 @@ export function seedInstruments(): Instrument[] {
 			type: 'forex',
 			spotPrice: gbpusdHist.at(-1)!,
 			change24h: 0.28,
-			bid: gbpusdHist.at(-1)! - 0.00015,
-			ask: gbpusdHist.at(-1)! + 0.00012,
+			bid: gbpusdHist.at(-1)! - 0.000_15,
+			ask: gbpusdHist.at(-1)! + 0.000_12,
 			history: gbpusdHist,
 		},
 		{
@@ -99,8 +99,8 @@ export function seedInstruments(): Instrument[] {
 			type: 'forex',
 			spotPrice: usdchfHist.at(-1)!,
 			change24h: -0.07,
-			bid: usdchfHist.at(-1)! - 0.00012,
-			ask: usdchfHist.at(-1)! + 0.00012,
+			bid: usdchfHist.at(-1)! - 0.000_12,
+			ask: usdchfHist.at(-1)! + 0.000_12,
 			history: usdchfHist,
 		},
 	];
@@ -218,9 +218,9 @@ export function jitterInstruments(previous: Instrument[]): Instrument[] {
 			(nextSpot + spread / 2).toFixed(row.type === 'forex' ? 5 : 3),
 		);
 		const hist = [...row.history.slice(1), nextSpot];
-		const prevHist = row.history[row.history.length - 2] ?? hist[0]!;
+		const previousHist = row.history.at(-2) ?? hist[0]!;
 		const change24h = Number(
-			(((nextSpot - prevHist) / prevHist) * 100).toFixed(2),
+			(((nextSpot - previousHist) / previousHist) * 100).toFixed(2),
 		);
 		return {
 			...row,

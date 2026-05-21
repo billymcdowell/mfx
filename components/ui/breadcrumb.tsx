@@ -3,23 +3,23 @@ import {Box, Text} from 'ink';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface BreadcrumbItem {
+export type BreadcrumbItem = {
 	label: string;
 	key: string;
 	onSelect?: () => void;
-}
+};
 
-export interface BreadcrumbProps {
-	items: BreadcrumbItem[];
-	separator?: string;
-	activeKey?: string;
-}
+export type BreadcrumbProps = {
+	readonly items: BreadcrumbItem[];
+	readonly separator?: string;
+	readonly activeKey?: string;
+};
 
-export const Breadcrumb = ({
+export function Breadcrumb({
 	items,
 	separator = '›',
 	activeKey,
-}: BreadcrumbProps) => {
+}: BreadcrumbProps) {
 	const theme = useTheme();
 
 	const activeIndex =
@@ -29,9 +29,9 @@ export const Breadcrumb = ({
 
 	useInput((_input, key) => {
 		if (key.leftArrow && activeIndex > 0) {
-			const prev = items[activeIndex - 1];
-			if (prev?.onSelect) {
-				prev.onSelect();
+			const previous = items[activeIndex - 1];
+			if (previous?.onSelect) {
+				previous.onSelect();
 			}
 		}
 	});
@@ -58,4 +58,4 @@ export const Breadcrumb = ({
 			})}
 		</Box>
 	);
-};
+}

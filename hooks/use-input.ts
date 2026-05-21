@@ -1,6 +1,6 @@
 import {useInput as inkUseInput} from 'ink';
 
-export interface Key {
+export type Key = {
 	upArrow: boolean;
 	downArrow: boolean;
 	leftArrow: boolean;
@@ -19,7 +19,7 @@ export interface Key {
 	home?: boolean;
 	end?: boolean;
 	fn?: boolean;
-}
+};
 
 export type InputHandler = (input: string, key: Key) => void;
 

@@ -7,17 +7,17 @@ import {useInput} from '@/hooks/use-input';
 
 export type ToolCallStatus = 'pending' | 'running' | 'success' | 'error';
 
-export interface ToolCallProps {
-	name: string;
-	args?: Record<string, unknown>;
-	status: ToolCallStatus;
-	result?: unknown;
-	duration?: number;
-	collapsible?: boolean;
-	defaultCollapsed?: boolean;
-}
+export type ToolCallProps = {
+	readonly name: string;
+	readonly args?: Record<string, unknown>;
+	readonly status: ToolCallStatus;
+	readonly result?: unknown;
+	readonly duration?: number;
+	readonly collapsible?: boolean;
+	readonly defaultCollapsed?: boolean;
+};
 
-export const ToolCall = ({
+export function ToolCall({
 	name,
 	args,
 	status,
@@ -25,7 +25,7 @@ export const ToolCall = ({
 	duration,
 	collapsible = true,
 	defaultCollapsed = true,
-}: ToolCallProps) => {
+}: ToolCallProps) {
 	const theme = useTheme();
 	const [collapsed, setCollapsed] = useState(defaultCollapsed);
 	const [elapsed, setElapsed] = useState(0);
@@ -39,11 +39,14 @@ export const ToolCall = ({
 		if (status !== 'running') {
 			return;
 		}
+
 		startRef.current = Date.now();
 		const id = setInterval(() => {
 			setElapsed(Date.now() - startRef.current);
 		}, 100);
-		return () => clearInterval(id);
+		return () => {
+			clearInterval(id);
+		};
 	}, [status]);
 
 	useInput((input, key) => {
@@ -57,37 +60,55 @@ export const ToolCall = ({
 			case 'pending': {
 				return <Text dimColor>○</Text>;
 			}
+
 			case 'running': {
 				return <Text color={theme.colors.primary}>{spinnerIcon}</Text>;
 			}
+
 			case 'success': {
 				return <Text color={theme.colors.success ?? 'green'}>✓</Text>;
 			}
+
 			case 'error': {
 				return <Text color={theme.colors.error ?? 'red'}>✗</Text>;
 			}
+
 			default: {
 				return null;
 			}
 		}
 	};
 
-	let durationText: string | null;
+	let durationText: string | undefined;
 	if (duration === undefined) {
-		durationText = status === 'running' ? `${elapsed}ms` : null;
+		durationText = status === 'running' ? `${elapsed}ms` : undefined;
 	} else {
 		durationText = `${duration}ms`;
 	}
 
 	let nameColor: string;
-	if (status === 'error') {
-		nameColor = theme.colors.error ?? 'red';
-	} else if (status === 'success') {
-		nameColor = theme.colors.success ?? 'green';
-	} else if (status === 'running') {
-		nameColor = theme.colors.primary;
-	} else {
-		nameColor = theme.colors.mutedForeground;
+	switch (status) {
+		case 'error': {
+			nameColor = theme.colors.error ?? 'red';
+
+			break;
+		}
+
+		case 'success': {
+			nameColor = theme.colors.success ?? 'green';
+
+			break;
+		}
+
+		case 'running': {
+			nameColor = theme.colors.primary;
+
+			break;
+		}
+
+		default: {
+			nameColor = theme.colors.mutedForeground;
+		}
 	}
 
 	return (
@@ -140,4 +161,4 @@ export const ToolCall = ({
 			)}
 		</Box>
 	);
-};
+}

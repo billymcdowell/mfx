@@ -4,27 +4,27 @@ import React, {useState, useMemo} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface TreeNode {
+export type TreeNode = {
 	key: string;
 	label: string;
 	children?: TreeNode[];
 	icon?: string;
-}
+};
 
-export interface TreeProps {
-	nodes: TreeNode[];
-	onSelect?: (node: TreeNode) => void;
-	defaultExpanded?: string[];
-	expandedIcon?: string;
-	collapsedIcon?: string;
-	leafIcon?: string;
-}
+export type TreeProps = {
+	readonly nodes: TreeNode[];
+	readonly onSelect?: (node: TreeNode) => void;
+	readonly defaultExpanded?: string[];
+	readonly expandedIcon?: string;
+	readonly collapsedIcon?: string;
+	readonly leafIcon?: string;
+};
 
-interface FlatNode {
+type FlatNode = {
 	node: TreeNode;
 	depth: number;
 	hasChildren: boolean;
-}
+};
 
 const flattenTree = (
 	nodes: TreeNode[],
@@ -44,17 +44,18 @@ const flattenTree = (
 			result.push(...childFlat);
 		}
 	}
+
 	return result;
 };
 
-export const Tree = ({
+export function Tree({
 	nodes,
 	onSelect,
 	defaultExpanded = [],
 	expandedIcon = '▼',
 	collapsedIcon = '▶',
 	leafIcon = '•',
-}: TreeProps) => {
+}: TreeProps) {
 	const theme = useTheme();
 	const [expandedKeys, setExpandedKeys] = useState<Set<string>>(
 		new Set(defaultExpanded),
@@ -75,12 +76,12 @@ export const Tree = ({
 			setActiveIndex(i => Math.min(flatNodes.length - 1, i + 1));
 		} else if (key.rightArrow || _input === '') {
 			if (current?.hasChildren && !expandedKeys.has(current.node.key)) {
-				setExpandedKeys(prev => new Set([...prev, current.node.key]));
+				setExpandedKeys(previous => new Set([...previous, current.node.key]));
 			}
 		} else if (key.leftArrow) {
 			if (current?.hasChildren && expandedKeys.has(current.node.key)) {
-				setExpandedKeys(prev => {
-					const next = new Set(prev);
+				setExpandedKeys(previous => {
+					const next = new Set(previous);
 					next.delete(current.node.key);
 					return next;
 				});
@@ -113,7 +114,6 @@ export const Tree = ({
 							}
 						>
 							{indicator}
-							{''}
 						</Text>
 						<Text
 							bold={isActive}
@@ -126,4 +126,4 @@ export const Tree = ({
 			})}
 		</Box>
 	);
-};
+}

@@ -5,21 +5,21 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface TextInputProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	placeholder?: string;
-	mask?: string;
-	showCursor?: boolean;
-	highlightPastedText?: boolean;
-	validate?: (value: string) => string | null;
-	width?: number;
-	label?: string;
-	autoFocus?: boolean;
-	id?: string;
-	bordered?: boolean;
-	borderStyle?:
+export type TextInputProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly placeholder?: string;
+	readonly mask?: string;
+	readonly showCursor?: boolean;
+	readonly highlightPastedText?: boolean;
+	readonly validate?: (value: string) => string | undefined;
+	readonly width?: number;
+	readonly label?: string;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+	readonly bordered?: boolean;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -27,11 +27,11 @@ export interface TextInputProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	cursor?: string;
-}
+	readonly paddingX?: number;
+	readonly cursor?: string;
+};
 
-export const TextInput = ({
+export function TextInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -48,11 +48,11 @@ export const TextInput = ({
 	borderStyle = 'round',
 	paddingX = 1,
 	cursor = '█',
-}: TextInputProps) => {
+}: TextInputProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const [cursorOffset, setCursorOffset] = useState(0);
 	const [cursorWidth, setCursorWidth] = useState(0);
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState<string | undefined>();
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 
@@ -88,12 +88,13 @@ export const TextInput = ({
 		}
 
 		if (key.return) {
-			const err = validate ? validate(value) : null;
-			if (err) {
-				setError(err);
+			const error_ = validate ? validate(value) : undefined;
+			if (error_) {
+				setError(error_);
 				return;
 			}
-			setError(null);
+
+			setError(undefined);
 			onSubmit?.(value);
 			return;
 		}
@@ -161,6 +162,7 @@ export const TextInput = ({
 					</Text>
 				);
 			}
+
 			return <Text color={theme.colors.mutedForeground}>{placeholder}</Text>;
 		}
 
@@ -209,4 +211,4 @@ export const TextInput = ({
 			{error && <Text color={theme.colors.error}>{error}</Text>}
 		</Box>
 	);
-};
+}

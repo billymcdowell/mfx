@@ -2,46 +2,48 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface BarChartItem {
+export type BarChartItem = {
 	label: string;
 	value: number;
 	color?: string;
-}
+};
 
-export interface BarChartProps {
-	data: BarChartItem[];
-	direction?: 'horizontal' | 'vertical';
-	width?: number;
-	height?: number;
-	showValues?: boolean;
-	title?: string;
-}
+export type BarChartProps = {
+	readonly data: BarChartItem[];
+	readonly direction?: 'horizontal' | 'vertical';
+	readonly width?: number;
+	readonly height?: number;
+	readonly showValues?: boolean;
+	readonly title?: string;
+};
 
 const BAR_CHAR = '█';
 const EMPTY_CHAR = '░';
 
-const pad = (str: string, length: number): string => {
-	if (str.length >= length) {
-		return str.slice(0, length);
+const pad = (string_: string, length: number): string => {
+	if (string_.length >= length) {
+		return string_.slice(0, length);
 	}
-	return `${str} `.repeat(length - str.length);
+
+	return `${string_} `.repeat(length - string_.length);
 };
 
-const padStart = (str: string, length: number): string => {
-	if (str.length >= length) {
-		return str.slice(0, length);
+const padStart = (string_: string, length: number): string => {
+	if (string_.length >= length) {
+		return string_.slice(0, length);
 	}
-	return ''.repeat(length - str.length) + str;
+
+	return ''.repeat(length - string_.length) + string_;
 };
 
-export const BarChart = ({
+export function BarChart({
 	data,
 	direction = 'horizontal',
 	width = 30,
 	height = 10,
 	showValues = true,
 	title,
-}: BarChartProps) => {
+}: BarChartProps) {
 	const theme = useTheme();
 
 	if (data.length === 0) {
@@ -51,9 +53,9 @@ export const BarChart = ({
 	const maxValue = Math.max(...data.map(d => d.value));
 
 	if (direction === 'horizontal') {
-		const maxLabelLen = Math.max(...data.map(d => d.label.length));
-		const maxValLen = Math.max(...data.map(d => String(d.value).length));
-		const barWidth = width - maxLabelLen - maxValLen - 3;
+		const maxLabelLength = Math.max(...data.map(d => d.label.length));
+		const maxValueLength = Math.max(...data.map(d => String(d.value).length));
+		const barWidth = width - maxLabelLength - maxValueLength - 3;
 
 		return (
 			<Box flexDirection="column">
@@ -68,18 +70,18 @@ export const BarChart = ({
 							? 0
 							: Math.round((item.value / maxValue) * Math.max(1, barWidth));
 					const empty = Math.max(0, barWidth - filled);
-					const barStr = BAR_CHAR.repeat(filled) + EMPTY_CHAR.repeat(empty);
+					const barString = BAR_CHAR.repeat(filled) + EMPTY_CHAR.repeat(empty);
 					const resolvedColor = item.color ?? theme.colors.primary;
 
 					return (
 						<Box key={idx} flexDirection="row" gap={1}>
 							<Text color={theme.colors.foreground}>
-								{pad(item.label, maxLabelLen)}
+								{pad(item.label, maxLabelLength)}
 							</Text>
-							<Text color={resolvedColor}>{barStr}</Text>
+							<Text color={resolvedColor}>{barString}</Text>
 							{showValues && (
 								<Text color={theme.colors.mutedForeground}>
-									{padStart(String(item.value), maxValLen)}
+									{padStart(String(item.value), maxValueLength)}
 								</Text>
 							)}
 						</Box>
@@ -149,4 +151,4 @@ export const BarChart = ({
 			</Box>
 		</Box>
 	);
-};
+}

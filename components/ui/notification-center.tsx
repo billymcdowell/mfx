@@ -9,22 +9,25 @@ import {
 } from '@/hooks/use-notifications';
 import type {NotificationVariant} from '@/hooks/use-notifications';
 
-export interface NotificationCenterProps {
-	maxVisible?: number;
-	width?: number;
-}
+export type NotificationCenterProps = {
+	readonly maxVisible?: number;
+	readonly width?: number;
+};
 
 const variantIcon = (v: NotificationVariant): string => {
 	switch (v) {
 		case 'success': {
 			return '✓';
 		}
+
 		case 'warning': {
 			return '!';
 		}
+
 		case 'error': {
 			return '✗';
 		}
+
 		default: {
 			return 'i';
 		}
@@ -39,22 +42,25 @@ const variantColor = (
 		case 'success': {
 			return colors.success;
 		}
+
 		case 'warning': {
 			return colors.warning;
 		}
+
 		case 'error': {
 			return colors.error;
 		}
+
 		default: {
 			return colors.info;
 		}
 	}
 };
 
-export const NotificationCenter = ({
+export function NotificationCenter({
 	maxVisible = 5,
 	width = 40,
-}: NotificationCenterProps) => {
+}: NotificationCenterProps) {
 	const ctx = useNotificationsProvider();
 	const theme = useTheme();
 	const {notifications, dismiss, clear} = ctx;
@@ -71,8 +77,12 @@ export const NotificationCenter = ({
 				if (remaining <= 0) {
 					dismiss(n.id);
 				} else {
-					const t = setTimeout(() => dismiss(n.id), remaining);
-					return () => clearTimeout(t);
+					const t = setTimeout(() => {
+						dismiss(n.id);
+					}, remaining);
+					return () => {
+						clearTimeout(t);
+					};
 				}
 			}
 		}
@@ -101,7 +111,7 @@ export const NotificationCenter = ({
 					<Text bold color={theme.colors.primary}>
 						Notifications {unread > 0 ? `[${unread} unread]` : ''}
 					</Text>
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						Esc: clear
 					</Text>
 				</Box>
@@ -121,7 +131,7 @@ export const NotificationCenter = ({
 							width={width}
 						>
 							<Box flexDirection="row" gap={1}>
-								<Text color={color} bold>
+								<Text bold color={color}>
 									{icon}
 								</Text>
 								<Text
@@ -136,7 +146,7 @@ export const NotificationCenter = ({
 								</Text>
 							</Box>
 							{n.body && (
-								<Text color={theme.colors.mutedForeground} dimColor>
+								<Text dimColor color={theme.colors.mutedForeground}>
 									{n.body}
 								</Text>
 							)}
@@ -146,4 +156,4 @@ export const NotificationCenter = ({
 			</Box>
 		</NotificationsContext.Provider>
 	);
-};
+}

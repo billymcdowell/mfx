@@ -3,18 +3,18 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface FormFieldProps {
-	label: string;
-	children: ReactNode;
-	error?: string;
-	hint?: string;
-	required?: boolean;
-	gap?: number;
-	errorIcon?: string;
-	labelColor?: string;
-}
+export type FormFieldProps = {
+	readonly label: string;
+	readonly children: ReactNode;
+	readonly error?: string;
+	readonly hint?: string;
+	readonly required?: boolean;
+	readonly gap?: number;
+	readonly errorIcon?: string;
+	readonly labelColor?: string;
+};
 
-export const FormField = ({
+export function FormField({
 	label,
 	children,
 	error,
@@ -23,7 +23,7 @@ export const FormField = ({
 	gap = 0,
 	errorIcon = '✗',
 	labelColor,
-}: FormFieldProps) => {
+}: FormFieldProps) {
 	const theme = useTheme();
 	const resolvedLabelColor = labelColor ?? theme.colors.foreground;
 
@@ -37,7 +37,7 @@ export const FormField = ({
 			</Box>
 			<Box>{children}</Box>
 			{hint && !error && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					{hint}
 				</Text>
 			)}
@@ -48,4 +48,4 @@ export const FormField = ({
 			)}
 		</Box>
 	);
-};
+}

@@ -2,14 +2,14 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface HeatMapProps {
-	data: number[][];
-	rowLabels?: string[];
-	colLabels?: string[];
-	colorScale?: string[];
-	cellWidth?: number;
-	showValues?: boolean;
-}
+export type HeatMapProps = {
+	readonly data: number[][];
+	readonly rowLabels?: string[];
+	readonly colLabels?: string[];
+	readonly colorScale?: string[];
+	readonly cellWidth?: number;
+	readonly showValues?: boolean;
+};
 
 const DEFAULT_COLOR_SCALE = [
 	'#1e3a5f',
@@ -34,6 +34,7 @@ const getColorForValue = (
 	if (max === min) {
 		return scale[Math.floor(scale.length / 2)] ?? '#888888';
 	}
+
 	const t = (value - min) / (max - min);
 	const idx = Math.min(scale.length - 1, Math.round(t * (scale.length - 1)));
 	return scale[idx] ?? scale[0] ?? '#888888';
@@ -43,6 +44,7 @@ const getShadeForValue = (value: number, min: number, max: number): string => {
 	if (max === min) {
 		return SHADE_CHARS[2] ?? '▒';
 	}
+
 	const t = (value - min) / (max - min);
 	const idx = Math.min(
 		SHADE_CHARS.length - 1,
@@ -51,39 +53,41 @@ const getShadeForValue = (value: number, min: number, max: number): string => {
 	return SHADE_CHARS[idx] ?? SHADE_CHARS[0] ?? '';
 };
 
-const padCenter = (str: string, width: number): string => {
-	if (str.length >= width) {
-		return str.slice(0, width);
+const padCenter = (string_: string, width: number): string => {
+	if (string_.length >= width) {
+		return string_.slice(0, width);
 	}
-	const total = width - str.length;
+
+	const total = width - string_.length;
 	const left = Math.floor(total / 2);
 	const right = total - left;
-	return ''.repeat(left) + `${str} `.repeat(right);
+	return ''.repeat(left) + `${string_} `.repeat(right);
 };
 
-const padStart = (str: string, width: number): string => {
-	if (str.length >= width) {
-		return str.slice(0, width);
+const padStart = (string_: string, width: number): string => {
+	if (string_.length >= width) {
+		return string_.slice(0, width);
 	}
-	return ''.repeat(width - str.length) + str;
+
+	return ''.repeat(width - string_.length) + string_;
 };
 
-export const HeatMap = ({
+export function HeatMap({
 	data,
 	rowLabels,
 	colLabels,
 	colorScale = DEFAULT_COLOR_SCALE,
 	cellWidth = 5,
 	showValues = false,
-}: HeatMapProps) => {
+}: HeatMapProps) {
 	const theme = useTheme();
 
 	if (data.length === 0 || data[0].length === 0) {
 		return <Text color={theme.colors.mutedForeground}>No data</Text>;
 	}
 
-	const _numRows = data.length;
-	const numCols = data[0].length;
+	const _numberRows = data.length;
+	const numberCols = data[0].length;
 
 	const allValues = data.flat();
 	const min = Math.min(...allValues);
@@ -98,7 +102,7 @@ export const HeatMap = ({
 			{colLabels && (
 				<Box flexDirection="row">
 					{rowLabelWidth > 0 && <Text>{''.repeat(rowLabelWidth + 1)}</Text>}
-					{Array.from({length: numCols}, (_, ci) => (
+					{Array.from({length: numberCols}, (_, ci) => (
 						<Text key={ci} color={theme.colors.mutedForeground}>
 							{padCenter(colLabels[ci] ?? String(ci), cellWidth)}
 						</Text>
@@ -111,15 +115,14 @@ export const HeatMap = ({
 					{rowLabels && (
 						<Text color={theme.colors.mutedForeground}>
 							{padStart(rowLabels[ri] ?? String(ri), rowLabelWidth)}
-							{''}
 						</Text>
 					)}
 
-					{row.map((val, ci) => {
-						const cellColor = getColorForValue(val, min, max, colorScale);
-						const shadeChar = getShadeForValue(val, min, max);
+					{row.map((value, ci) => {
+						const cellColor = getColorForValue(value, min, max, colorScale);
+						const shadeChar = getShadeForValue(value, min, max);
 						const cellContent = showValues
-							? padCenter(String(Math.round(val)), cellWidth)
+							? padCenter(String(Math.round(value)), cellWidth)
 							: shadeChar.repeat(cellWidth);
 
 						return (
@@ -142,4 +145,4 @@ export const HeatMap = ({
 			</Box>
 		</Box>
 	);
-};
+}

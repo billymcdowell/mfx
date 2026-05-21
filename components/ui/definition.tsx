@@ -2,17 +2,17 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface DefinitionItem {
+export type DefinitionItem = {
 	term: string;
 	description: string;
-}
+};
 
-export interface DefinitionProps {
-	items: DefinitionItem[];
-	termColor?: string;
-}
+export type DefinitionProps = {
+	readonly items: DefinitionItem[];
+	readonly termColor?: string;
+};
 
-export const Definition = ({items, termColor}: DefinitionProps) => {
+export function Definition({items, termColor}: DefinitionProps) {
 	const theme = useTheme();
 	const resolvedTermColor = termColor ?? theme.colors.primary;
 
@@ -34,4 +34,4 @@ export const Definition = ({items, termColor}: DefinitionProps) => {
 			))}
 		</Box>
 	);
-};
+}

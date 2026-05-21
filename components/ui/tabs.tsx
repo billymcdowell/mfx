@@ -5,19 +5,19 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface Tab {
+export type Tab = {
 	key: string;
 	label: string;
 	content: ReactNode;
-}
+};
 
-export interface TabsProps {
-	tabs: Tab[];
-	defaultTab?: string;
-	activeTab?: string;
-	onTabChange?: (key: string) => void;
-	borderColor?: string;
-	borderStyle?:
+export type TabsProps = {
+	readonly tabs: Tab[];
+	readonly defaultTab?: string;
+	readonly activeTab?: string;
+	readonly onTabChange?: (key: string) => void;
+	readonly borderColor?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -25,13 +25,13 @@ export interface TabsProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	separator?: string;
-	tabBarPaddingX?: number;
-	paddingX?: number;
-	paddingY?: number;
-}
+	readonly separator?: string;
+	readonly tabBarPaddingX?: number;
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+};
 
-export const Tabs = ({
+export function Tabs({
 	tabs,
 	defaultTab,
 	activeTab: controlledTab,
@@ -42,7 +42,7 @@ export const Tabs = ({
 	tabBarPaddingX = 2,
 	paddingX = 1,
 	paddingY = 0,
-}: TabsProps) => {
+}: TabsProps) {
 	const theme = useTheme();
 	const {stdout} = useStdout();
 	const [internalTab, setInternalTab] = useState(
@@ -57,6 +57,7 @@ export const Tabs = ({
 		if (!nextKey || nextKey === activeKey) {
 			return;
 		}
+
 		stdout.write('\u001B[2J\u001B[H');
 		if (onTabChange) {
 			onTabChange(nextKey);
@@ -108,4 +109,4 @@ export const Tabs = ({
 			</Box>
 		</Box>
 	);
-};
+}

@@ -29,7 +29,7 @@ async function mockAuthenticate(
 		throw new Error('Invalid email or password.');
 	}
 
-	const expiresAt = new Date(Date.now() + 30 * 86400_000).toISOString();
+	const expiresAt = new Date(Date.now() + 30 * 86_400_000).toISOString();
 	const token = Buffer.from(
 		JSON.stringify({demo: true, sub: email.trim(), iat: Date.now()}),
 		'utf8',
@@ -37,7 +37,7 @@ async function mockAuthenticate(
 	return {expiresAt, token};
 }
 
-export function AuthProvider({children}: {children: React.ReactNode}) {
+export function AuthProvider({children}: {readonly children: React.ReactNode}) {
 	const {config, setConfig} = useConfig();
 
 	const isAuthenticated =

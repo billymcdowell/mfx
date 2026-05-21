@@ -5,17 +5,17 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface ToggleProps {
-	checked?: boolean;
-	onChange?: (checked: boolean) => void;
-	label?: string;
-	onLabel?: string;
-	offLabel?: string;
-	id?: string;
-	disabled?: boolean;
-	checkedIcon?: string;
-	uncheckedIcon?: string;
-	borderStyle?:
+export type ToggleProps = {
+	readonly checked?: boolean;
+	readonly onChange?: (checked: boolean) => void;
+	readonly label?: string;
+	readonly onLabel?: string;
+	readonly offLabel?: string;
+	readonly id?: string;
+	readonly disabled?: boolean;
+	readonly checkedIcon?: string;
+	readonly uncheckedIcon?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -23,10 +23,10 @@ export interface ToggleProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-}
+	readonly paddingX?: number;
+};
 
-export const Toggle = ({
+export function Toggle({
 	checked: controlledChecked,
 	onChange,
 	label,
@@ -38,7 +38,7 @@ export const Toggle = ({
 	uncheckedIcon = '○',
 	borderStyle = 'round',
 	paddingX = 1,
-}: ToggleProps) => {
+}: ToggleProps) {
 	const theme = useTheme();
 	const {isFocused} = useFocus({id});
 	const [internalChecked, setInternalChecked] = useState(false);
@@ -48,6 +48,7 @@ export const Toggle = ({
 		if (!isFocused || disabled) {
 			return;
 		}
+
 		if (input === '') {
 			const next = !checked;
 			if (onChange) {
@@ -86,4 +87,4 @@ export const Toggle = ({
 			)}
 		</Box>
 	);
-};
+}

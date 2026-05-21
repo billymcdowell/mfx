@@ -2,18 +2,18 @@ import {Box, Text} from 'ink';
 import React, {Component} from 'react';
 import type {ReactNode} from 'react';
 
-export interface ErrorBoundaryProps {
-	children: ReactNode;
-	fallback?: ReactNode;
-	onError?: (error: Error, info: {componentStack: string}) => void;
-	title?: string;
-}
+export type ErrorBoundaryProps = {
+	readonly children: ReactNode;
+	readonly fallback?: ReactNode;
+	readonly onError?: (error: Error, info: {componentStack: string}) => void;
+	readonly title?: string;
+};
 
-interface ErrorBoundaryState {
+type ErrorBoundaryState = {
 	hasError: boolean;
-	error: Error | null;
+	error: Error | undefined;
 	componentStack: string;
-}
+};
 
 export class ErrorBoundary extends Component<
 	ErrorBoundaryProps,
@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<
 > {
 	constructor(props: ErrorBoundaryProps) {
 		super(props);
-		this.state = {componentStack: '', error: null, hasError: false};
+		this.state = {componentStack: '', error: undefined, hasError: false};
 	}
 
 	static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
@@ -58,28 +58,28 @@ export class ErrorBoundary extends Component<
 					paddingY={0}
 					gap={0}
 				>
-					<Text color="red" bold>
+					<Text bold color="red">
 						✖ {title}
 					</Text>
 					<Box marginTop={1}>
-						<Text color="white" bold>
+						<Text bold color="white">
 							{message}
 						</Text>
 					</Box>
 					{stackLines.length > 0 && (
 						<Box flexDirection="column" marginTop={1}>
-							<Text color="red" dimColor>
+							<Text dimColor color="red">
 								Stack trace:
 							</Text>
 							{stackLines.map((line, idx) => (
-								<Text key={idx} color="red" dimColor>
+								<Text key={idx} dimColor color="red">
 									{line}
 								</Text>
 							))}
 						</Box>
 					)}
 					<Box marginTop={1}>
-						<Text color="red" dimColor>
+						<Text dimColor color="red">
 							The application encountered an unexpected error.
 						</Text>
 					</Box>

@@ -2,18 +2,18 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface DividerProps {
-	variant?: 'single' | 'double' | 'bold';
-	orientation?: 'horizontal' | 'vertical';
-	color?: string;
-	label?: string;
-	labelColor?: string;
-	dividerChar?: string;
-	titlePadding?: number;
-	padding?: number;
-	height?: number;
-	width?: number | 'auto';
-}
+export type DividerProps = {
+	readonly variant?: 'single' | 'double' | 'bold';
+	readonly orientation?: 'horizontal' | 'vertical';
+	readonly color?: string;
+	readonly label?: string;
+	readonly labelColor?: string;
+	readonly dividerChar?: string;
+	readonly titlePadding?: number;
+	readonly padding?: number;
+	readonly height?: number;
+	readonly width?: number | 'auto';
+};
 
 const DIVIDER_CHARS: Record<NonNullable<DividerProps['variant']>, string> = {
 	bold: '┃',
@@ -21,7 +21,7 @@ const DIVIDER_CHARS: Record<NonNullable<DividerProps['variant']>, string> = {
 	single: '│',
 };
 
-export const Divider = ({
+export function Divider({
 	variant = 'single',
 	orientation = 'horizontal',
 	color,
@@ -32,7 +32,7 @@ export const Divider = ({
 	padding = 0,
 	height = 1,
 	width = 'auto',
-}: DividerProps) => {
+}: DividerProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.border;
 	const vChar = dividerChar ?? DIVIDER_CHARS[variant];
@@ -50,22 +50,22 @@ export const Divider = ({
 		);
 	}
 
-	const paddingStr = ''.repeat(padding);
+	const paddingString = ''.repeat(padding);
 	const titlePad = ''.repeat(titlePadding);
 
 	if (label) {
 		const resolvedLabelColor = labelColor ?? resolvedColor;
 		return (
 			<Box flexDirection="row" width={width === 'auto' ? undefined : width}>
-				{padding > 0 && <Text>{paddingStr}</Text>}
+				{padding > 0 && <Text>{paddingString}</Text>}
 				<Box
+					borderTop
 					flexGrow={1}
 					borderStyle="single"
 					borderColor={resolvedColor}
 					borderBottom={false}
 					borderLeft={false}
 					borderRight={false}
-					borderTop
 				/>
 				<Text color={resolvedLabelColor}>
 					{titlePad}
@@ -73,32 +73,32 @@ export const Divider = ({
 					{titlePad}
 				</Text>
 				<Box
+					borderTop
 					flexGrow={1}
 					borderStyle="single"
 					borderColor={resolvedColor}
 					borderBottom={false}
 					borderLeft={false}
 					borderRight={false}
-					borderTop
 				/>
-				{padding > 0 && <Text>{paddingStr}</Text>}
+				{padding > 0 && <Text>{paddingString}</Text>}
 			</Box>
 		);
 	}
 
 	return (
 		<Box flexDirection="row" width={width === 'auto' ? undefined : width}>
-			{padding > 0 && <Text>{paddingStr}</Text>}
+			{padding > 0 && <Text>{paddingString}</Text>}
 			<Box
+				borderTop
 				flexGrow={1}
 				borderStyle="single"
 				borderColor={resolvedColor}
 				borderBottom={false}
 				borderLeft={false}
 				borderRight={false}
-				borderTop
 			/>
-			{padding > 0 && <Text>{paddingStr}</Text>}
+			{padding > 0 && <Text>{paddingString}</Text>}
 		</Box>
 	);
-};
+}

@@ -5,19 +5,19 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface CheckboxProps {
-	checked?: boolean;
-	onChange?: (checked: boolean) => void;
-	label?: string;
-	indeterminate?: boolean;
-	disabled?: boolean;
-	id?: string;
-	checkedIcon?: string;
-	uncheckedIcon?: string;
-	indeterminateIcon?: string;
-}
+export type CheckboxProps = {
+	readonly checked?: boolean;
+	readonly onChange?: (checked: boolean) => void;
+	readonly label?: string;
+	readonly indeterminate?: boolean;
+	readonly disabled?: boolean;
+	readonly id?: string;
+	readonly checkedIcon?: string;
+	readonly uncheckedIcon?: string;
+	readonly indeterminateIcon?: string;
+};
 
-export const Checkbox = ({
+export function Checkbox({
 	checked: controlledChecked,
 	onChange,
 	label,
@@ -27,7 +27,7 @@ export const Checkbox = ({
 	checkedIcon = '■',
 	uncheckedIcon = '□',
 	indeterminateIcon = '▪',
-}: CheckboxProps) => {
+}: CheckboxProps) {
 	const [internalChecked, setInternalChecked] = useState(false);
 	const theme = useTheme();
 	const {isFocused} = useFocus({id});
@@ -38,6 +38,7 @@ export const Checkbox = ({
 		if (!isFocused || disabled) {
 			return;
 		}
+
 		if (input === '') {
 			const next = !checked;
 			if (onChange) {
@@ -74,4 +75,4 @@ export const Checkbox = ({
 			)}
 		</Box>
 	);
-};
+}

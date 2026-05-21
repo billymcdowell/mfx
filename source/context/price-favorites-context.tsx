@@ -43,7 +43,7 @@ function normalizeEntries(raw: PriceFavoriteEntry[]): PriceFavoriteEntry[] {
 export function PriceFavoritesProvider({
 	children,
 }: {
-	children: React.ReactNode;
+	readonly children: React.ReactNode;
 }) {
 	const [entries, setEntries] = useState(() =>
 		normalizeEntries(loadPriceFavorites()),

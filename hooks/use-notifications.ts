@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export type NotificationVariant = 'info' | 'success' | 'warning' | 'error';
 
-export interface Notification {
+export type Notification = {
 	body?: string;
 	duration?: number;
 	id: string;
@@ -11,28 +11,28 @@ export interface Notification {
 	timestamp: number;
 	title: string;
 	variant: NotificationVariant;
-}
+};
 
-export interface NotificationsContextValue {
+export type NotificationsContextValue = {
 	clear: () => void;
 	dismiss: (id: string) => void;
 	markRead: (id: string) => void;
 	notifications: Notification[];
 	notify: (options: Omit<Notification, 'id' | 'read' | 'timestamp'>) => string;
-}
+};
 
 let counter = 0;
 
 export const NotificationsContext =
 	React.createContext<NotificationsContextValue>({
-		clear: () => {
-			/* noop */
+		clear() {
+			/* Noop */
 		},
-		dismiss: () => {
-			/* noop */
+		dismiss() {
+			/* Noop */
 		},
-		markRead: () => {
-			/* noop */
+		markRead() {
+			/* Noop */
 		},
 		notifications: [],
 		notify: () => '',
@@ -75,7 +75,9 @@ export const useNotificationsProvider = (): NotificationsContextValue => {
 		);
 	}, []);
 
-	const clear = React.useCallback(() => setNotifications([]), []);
+	const clear = React.useCallback(() => {
+		setNotifications([]);
+	}, []);
 
 	return {clear, dismiss, markRead, notifications, notify};
 };

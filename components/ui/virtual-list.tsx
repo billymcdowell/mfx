@@ -5,40 +5,41 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface VirtualListProps<T> {
-	items: T[];
-	renderItem: (item: T, index: number, isActive: boolean) => ReactNode;
-	height: number;
-	onSelect?: (item: T, index: number) => void;
-	cursor?: string;
-	overscan?: number;
-}
+export type VirtualListProps<T> = {
+	readonly items: T[];
+	readonly renderItem: (item: T, index: number, isActive: boolean) => ReactNode;
+	readonly height: number;
+	readonly onSelect?: (item: T, index: number) => void;
+	readonly cursor?: string;
+	readonly overscan?: number;
+};
 
-export const VirtualList = <T,>({
+export function VirtualList<T>({
 	items,
 	renderItem,
 	height,
 	onSelect,
 	overscan = 2,
-}: VirtualListProps<T>) => {
+}: VirtualListProps<T>) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [windowStart, setWindowStart] = useState(0);
 
 	useInput((_input, key) => {
 		if (key.upArrow) {
-			setActiveIndex(prev => {
-				const next = Math.max(0, prev - 1);
+			setActiveIndex(previous => {
+				const next = Math.max(0, previous - 1);
 				setWindowStart(ws => Math.min(ws, next));
 				return next;
 			});
 		} else if (key.downArrow) {
-			setActiveIndex(prev => {
-				const next = Math.min(items.length - 1, prev + 1);
+			setActiveIndex(previous => {
+				const next = Math.min(items.length - 1, previous + 1);
 				setWindowStart(ws => {
 					if (next >= ws + height) {
 						return next - height + 1;
 					}
+
 					return ws;
 				});
 				return next;
@@ -70,6 +71,7 @@ export const VirtualList = <T,>({
 				if (i >= thumbPosition && i < thumbPosition + thumbSize) {
 					return '█';
 				}
+
 				return '│';
 			}),
 		[height, thumbPosition, thumbSize],
@@ -85,6 +87,7 @@ export const VirtualList = <T,>({
 					if (!isVisible) {
 						return null;
 					}
+
 					const isActive = globalIdx === activeIndex;
 					return (
 						<Box key={globalIdx}>{renderItem(item, globalIdx, isActive)}</Box>
@@ -109,4 +112,4 @@ export const VirtualList = <T,>({
 			)}
 		</Box>
 	);
-};
+}

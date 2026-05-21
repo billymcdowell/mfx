@@ -4,13 +4,13 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ModalProps {
-	open: boolean;
-	onClose?: () => void;
-	title?: string;
-	width?: number;
-	children?: ReactNode;
-	borderStyle?:
+export type ModalProps = {
+	readonly open: boolean;
+	readonly onClose?: () => void;
+	readonly title?: string;
+	readonly width?: number;
+	readonly children?: ReactNode;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -18,10 +18,10 @@ export interface ModalProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	borderColor?: string;
-	paddingX?: number;
-	paddingY?: number;
-	titleBorderStyle?:
+	readonly borderColor?: string;
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+	readonly titleBorderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -29,10 +29,10 @@ export interface ModalProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	closeHint?: string | false;
-}
+	readonly closeHint?: string | false;
+};
 
-export const Modal = ({
+export function Modal({
 	open,
 	onClose,
 	title,
@@ -44,7 +44,7 @@ export const Modal = ({
 	paddingY = 0,
 	titleBorderStyle = 'single',
 	closeHint = 'Press Esc to close',
-}: ModalProps) => {
+}: ModalProps) {
 	const theme = useTheme();
 	const resolvedBorderColor = borderColor ?? theme.colors.primary;
 
@@ -53,6 +53,7 @@ export const Modal = ({
 			if (!open) {
 				return;
 			}
+
 			if (key.escape) {
 				onClose?.();
 			}
@@ -88,11 +89,11 @@ export const Modal = ({
 			<Box flexDirection="column">{children}</Box>
 			{closeHint !== false && (
 				<Box marginTop={1}>
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{closeHint}
 					</Text>
 				</Box>
 			)}
 		</Box>
 	);
-};
+}

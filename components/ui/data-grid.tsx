@@ -4,7 +4,7 @@ import React, {useState, useMemo} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface DataGridColumn<T = Record<string, unknown>> {
+export type DataGridColumn<T = Record<string, unknown>> = {
 	key: keyof T & string;
 	header: string;
 	width?: number;
@@ -12,43 +12,46 @@ export interface DataGridColumn<T = Record<string, unknown>> {
 	render?: (value: unknown, row: T) => string;
 	filterable?: boolean;
 	sortable?: boolean;
-}
+};
 
-export interface DataGridProps<
+export type DataGridProps<
 	T extends Record<string, unknown> = Record<string, unknown>,
-> {
-	data: T[];
-	columns: DataGridColumn<T>[];
-	pageSize?: number;
-	onRowSelect?: (row: T) => void;
-	onCellEdit?: (row: T, key: string, value: string) => void;
-	borderColor?: string;
-	borderStyle?: 'single' | 'double' | 'round' | 'bold';
-	showRowNumbers?: boolean;
-	filterPlaceholder?: string;
-}
+> = {
+	readonly data: T[];
+	readonly columns: Array<DataGridColumn<T>>;
+	readonly pageSize?: number;
+	readonly onRowSelect?: (row: T) => void;
+	readonly onCellEdit?: (row: T, key: string, value: string) => void;
+	readonly borderColor?: string;
+	readonly borderStyle?: 'single' | 'double' | 'round' | 'bold';
+	readonly showRowNumbers?: boolean;
+	readonly filterPlaceholder?: string;
+};
 
 const pad = (
-	str: string,
+	string_: string,
 	width: number,
 	align: 'left' | 'right' | 'center' = 'left',
 ): string => {
-	const s = String(str);
+	const s = String(string_);
 	if (s.length >= width) {
 		return s.slice(0, width);
 	}
+
 	const diff = width - s.length;
 	if (align === 'right') {
 		return ''.repeat(diff) + s;
 	}
+
 	if (align === 'center') {
 		const left = Math.floor(diff / 2);
 		return ''.repeat(left) + `${s} `.repeat(diff - left);
 	}
+
 	return `${s} `.repeat(diff);
 };
 
-export const DataGrid = <
+export function DataGrid<
 	T extends Record<string, unknown> = Record<string, unknown>,
 >({
 	data,
@@ -58,11 +61,11 @@ export const DataGrid = <
 	borderColor,
 	borderStyle = 'single',
 	showRowNumbers = false,
-}: DataGridProps<T>) => {
+}: DataGridProps<T>) {
 	const theme = useTheme();
 	const [selectedRow, setSelectedRow] = useState(0);
 	const [page, setPage] = useState(0);
-	const [sortKey, setSortKey] = useState<string | null>(null);
+	const [sortKey, setSortKey] = useState<string | undefined>();
 	const [sortDir, _setSortDir] = useState<'asc' | 'desc'>('asc');
 	const [filter, setFilter] = useState('');
 	const [filterMode, setFilterMode] = useState(false);
@@ -75,11 +78,12 @@ export const DataGrid = <
 				if (col.width) {
 					return col.width;
 				}
-				const headerLen = col.header.length;
-				const dataLen = Math.max(
+
+				const headerLength = col.header.length;
+				const dataLength = Math.max(
 					...data.map(row => String(row[col.key] ?? '').length),
 				);
-				return Math.max(headerLen, dataLen, 6);
+				return Math.max(headerLength, dataLength, 6);
 			}),
 		[columns, data],
 	);
@@ -88,6 +92,7 @@ export const DataGrid = <
 		if (!filter) {
 			return data;
 		}
+
 		const q = filter.toLowerCase();
 		return data.filter(row =>
 			columns.some(col =>
@@ -102,7 +107,8 @@ export const DataGrid = <
 		if (!sortKey) {
 			return filtered;
 		}
-		return [...filtered].toSorted((a, b) => {
+
+		return [...filtered].sort((a, b) => {
 			const av = String(a[sortKey] ?? '');
 			const bv = String(b[sortKey] ?? '');
 			const cmp = av.localeCompare(bv);
@@ -124,6 +130,7 @@ export const DataGrid = <
 			} else if (input && !key.ctrl && !key.meta) {
 				setFilter(f => f + input);
 			}
+
 			return;
 		}
 
@@ -143,8 +150,8 @@ export const DataGrid = <
 			setSelectedRow(0);
 		} else if (input === '/') {
 			setFilterMode(true);
-		} else if (input === 's' && sortKey === null) {
-			setSortKey(columns[0]?.key ?? null);
+		} else if (input === 's' && !sortKey) {
+			setSortKey(columns[0]?.key);
 		}
 	});
 
@@ -158,13 +165,13 @@ export const DataGrid = <
 			return pad(raw, colWidths[ci], col.align);
 		});
 
-		const rowNumStr = showRowNumbers
+		const rowNumberString = showRowNumbers
 			? `${String(page * pageSize + rowIdx + 1).padStart(3)} `
 			: '';
 
 		return (
 			<Box key={rowIdx} flexDirection="row">
-				{rowNumStr && <Text dimColor>{rowNumStr}</Text>}
+				{rowNumberString && <Text dimColor>{rowNumberString}</Text>}
 				<Text
 					backgroundColor={isSelected ? theme.colors.primary : undefined}
 					color={isSelected ? theme.colors.background : undefined}
@@ -182,13 +189,13 @@ export const DataGrid = <
 		return pad(col.header + indicator, colWidths[ci], col.align);
 	});
 
-	const rowNumHeader = showRowNumbers ? '' : '';
+	const rowNumberHeader = showRowNumbers ? '' : '';
 
 	return (
 		<Box flexDirection="column">
 			{(filterMode || filter) && (
 				<Box flexDirection="row" marginBottom={1}>
-					<Text color={theme.colors.primary}>{'Filter:'}</Text>
+					<Text color={theme.colors.primary}>Filter:</Text>
 					<Text>{filter}</Text>
 					{filterMode && <Text color={theme.colors.focusRing}>█</Text>}
 				</Box>
@@ -200,7 +207,7 @@ export const DataGrid = <
 				flexDirection="column"
 			>
 				<Box flexDirection="row" paddingX={1}>
-					{rowNumHeader && <Text dimColor>{rowNumHeader}</Text>}
+					{rowNumberHeader && <Text dimColor>{rowNumberHeader}</Text>}
 					<Text bold color={theme.colors.primary}>
 						{headerCells.join(colSep)}
 					</Text>
@@ -230,4 +237,4 @@ export const DataGrid = <
 			</Box>
 		</Box>
 	);
-};
+}

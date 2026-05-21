@@ -5,17 +5,17 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface TimePickerProps {
-	value?: {hours: number; minutes: number};
-	onChange?: (time: {hours: number; minutes: number}) => void;
-	onSubmit?: (time: {hours: number; minutes: number}) => void;
-	label?: string;
-	format?: 12 | 24;
-	autoFocus?: boolean;
-	id?: string;
-}
+export type TimePickerProps = {
+	readonly value?: {hours: number; minutes: number};
+	readonly onChange?: (time: {hours: number; minutes: number}) => void;
+	readonly onSubmit?: (time: {hours: number; minutes: number}) => void;
+	readonly label?: string;
+	readonly format?: 12 | 24;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+};
 
-export const TimePicker = ({
+export function TimePicker({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -23,7 +23,7 @@ export const TimePicker = ({
 	format = 24,
 	autoFocus = false,
 	id,
-}: TimePickerProps) => {
+}: TimePickerProps) {
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 
@@ -50,6 +50,7 @@ export const TimePicker = ({
 				actualHours = h + 12;
 			}
 		}
+
 		onChange?.({hours: actualHours, minutes: m});
 	};
 
@@ -64,14 +65,17 @@ export const TimePicker = ({
 					if (f === 'hours') {
 						return 'minutes';
 					}
+
 					if (f === 'minutes') {
 						return 'ampm';
 					}
+
 					return 'hours';
 				});
 			} else {
 				setField(f => (f === 'hours' ? 'minutes' : 'hours'));
 			}
+
 			return;
 		}
 
@@ -84,37 +88,64 @@ export const TimePicker = ({
 					actualHours = hours + 12;
 				}
 			}
+
 			onSubmit?.({hours: actualHours, minutes});
 			return;
 		}
 
 		if (key.upArrow) {
-			if (field === 'hours') {
-				const newH = hours >= maxHours ? minHours : hours + 1;
-				setHours(newH);
-				notify(newH, minutes, ampm);
-			} else if (field === 'minutes') {
-				const newM = minutes >= 59 ? 0 : minutes + 1;
-				setMinutes(newM);
-				notify(hours, newM, ampm);
-			} else if (field === 'ampm') {
-				const newAp: 'AM' | 'PM' = ampm === 'AM' ? 'PM' : 'AM';
-				setAmPm(newAp);
-				notify(hours, minutes, newAp);
+			switch (field) {
+				case 'hours': {
+					const newH = hours >= maxHours ? minHours : hours + 1;
+					setHours(newH);
+					notify(newH, minutes, ampm);
+
+					break;
+				}
+
+				case 'minutes': {
+					const newM = minutes >= 59 ? 0 : minutes + 1;
+					setMinutes(newM);
+					notify(hours, newM, ampm);
+
+					break;
+				}
+
+				case 'ampm': {
+					const newAp: 'AM' | 'PM' = ampm === 'AM' ? 'PM' : 'AM';
+					setAmPm(newAp);
+					notify(hours, minutes, newAp);
+
+					break;
+				}
+				// No default
 			}
 		} else if (key.downArrow) {
-			if (field === 'hours') {
-				const newH = hours <= minHours ? maxHours : hours - 1;
-				setHours(newH);
-				notify(newH, minutes, ampm);
-			} else if (field === 'minutes') {
-				const newM = minutes <= 0 ? 59 : minutes - 1;
-				setMinutes(newM);
-				notify(hours, newM, ampm);
-			} else if (field === 'ampm') {
-				const newAp: 'AM' | 'PM' = ampm === 'AM' ? 'PM' : 'AM';
-				setAmPm(newAp);
-				notify(hours, minutes, newAp);
+			switch (field) {
+				case 'hours': {
+					const newH = hours <= minHours ? maxHours : hours - 1;
+					setHours(newH);
+					notify(newH, minutes, ampm);
+
+					break;
+				}
+
+				case 'minutes': {
+					const newM = minutes <= 0 ? 59 : minutes - 1;
+					setMinutes(newM);
+					notify(hours, newM, ampm);
+
+					break;
+				}
+
+				case 'ampm': {
+					const newAp: 'AM' | 'PM' = ampm === 'AM' ? 'PM' : 'AM';
+					setAmPm(newAp);
+					notify(hours, minutes, newAp);
+
+					break;
+				}
+				// No default
 			}
 		}
 	});
@@ -159,7 +190,7 @@ export const TimePicker = ({
 
 				<Box flexDirection="column" alignItems="center" justifyContent="center">
 					<Text color={theme.colors.border}> </Text>
-					<Text color={theme.colors.foreground} bold>
+					<Text bold color={theme.colors.foreground}>
 						:
 					</Text>
 					<Text color={theme.colors.border}> </Text>
@@ -203,10 +234,10 @@ export const TimePicker = ({
 				)}
 			</Box>
 			{isFocused && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					↑↓: change · Tab: next field · Enter: confirm
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

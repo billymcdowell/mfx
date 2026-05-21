@@ -7,14 +7,14 @@ import {useInput} from '@/hooks/use-input';
 
 export type ChatRole = 'user' | 'assistant' | 'system' | 'error';
 
-export interface ChatMessageProps {
-	sender: ChatRole;
-	name?: string;
-	timestamp?: Date;
-	streaming?: boolean;
-	collapsed?: boolean;
-	children?: ReactNode;
-}
+export type ChatMessageProps = {
+	readonly sender: ChatRole;
+	readonly name?: string;
+	readonly timestamp?: Date;
+	readonly streaming?: boolean;
+	readonly collapsed?: boolean;
+	readonly children?: ReactNode;
+};
 
 const formatTime = (date: Date): string =>
 	date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
@@ -26,14 +26,14 @@ const wrapPlainChildren = (node: ReactNode): ReactNode =>
 		node
 	);
 
-export const ChatMessage = ({
+export function ChatMessage({
 	sender,
 	name,
 	timestamp,
 	streaming = false,
 	collapsed: initialCollapsed = false,
 	children,
-}: ChatMessageProps) => {
+}: ChatMessageProps) {
 	const theme = useTheme();
 	const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
 	const [dotFrame, setDotFrame] = useState(0);
@@ -42,8 +42,13 @@ export const ChatMessage = ({
 		if (!streaming) {
 			return;
 		}
-		const id = setInterval(() => setDotFrame(f => (f + 1) % 4), 400);
-		return () => clearInterval(id);
+
+		const id = setInterval(() => {
+			setDotFrame(f => (f + 1) % 4);
+		}, 400);
+		return () => {
+			clearInterval(id);
+		};
 	}, [streaming]);
 
 	useInput((input, key) => {
@@ -80,13 +85,14 @@ export const ChatMessage = ({
 					{children ? (
 						wrapPlainChildren(children)
 					) : (
-						<Text color={color} dimColor>
+						<Text dimColor color={color}>
 							{dots}
 						</Text>
 					)}
 				</Box>
 			);
 		}
+
 		if (isCollapsed) {
 			return (
 				<Box>
@@ -97,13 +103,14 @@ export const ChatMessage = ({
 				</Box>
 			);
 		}
+
 		return <Box>{wrapPlainChildren(children)}</Box>;
 	};
 
 	return (
 		<Box flexDirection="column" marginBottom={1}>
 			<Box gap={1}>
-				<Text color={color} bold>
+				<Text bold color={color}>
 					{name ?? roleLabel[sender]}
 				</Text>
 				{timestamp && (
@@ -121,4 +128,4 @@ export const ChatMessage = ({
 			{renderContent()}
 		</Box>
 	);
-};
+}

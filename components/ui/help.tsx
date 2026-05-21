@@ -2,13 +2,13 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface HelpProps {
-	keymap: Record<string, string>;
-	title?: string;
-	compact?: boolean;
-}
+export type HelpProps = {
+	readonly keymap: Record<string, string>;
+	readonly title?: string;
+	readonly compact?: boolean;
+};
 
-export const Help = ({keymap, title, compact = false}: HelpProps) => {
+export function Help({keymap, title, compact = false}: HelpProps) {
 	const theme = useTheme();
 	const entries = Object.entries(keymap);
 
@@ -17,7 +17,7 @@ export const Help = ({keymap, title, compact = false}: HelpProps) => {
 		return (
 			<Box gap={1} flexWrap="wrap">
 				{title && (
-					<Text color={theme.colors.primary} bold>
+					<Text bold color={theme.colors.primary}>
 						{title} |
 					</Text>
 				)}
@@ -37,7 +37,7 @@ export const Help = ({keymap, title, compact = false}: HelpProps) => {
 			gap={0}
 		>
 			{title && (
-				<Text color={theme.colors.primary} bold>
+				<Text bold color={theme.colors.primary}>
 					{title}
 				</Text>
 			)}
@@ -49,7 +49,7 @@ export const Help = ({keymap, title, compact = false}: HelpProps) => {
 						paddingX={1}
 						minWidth={keyWidth + 4}
 					>
-						<Text color={theme.colors.primary} bold>
+						<Text bold color={theme.colors.primary}>
 							{key}
 						</Text>
 					</Box>
@@ -58,4 +58,4 @@ export const Help = ({keymap, title, compact = false}: HelpProps) => {
 			))}
 		</Box>
 	);
-};
+}

@@ -5,15 +5,15 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface TextAreaProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	placeholder?: string;
-	rows?: number;
-	label?: string;
-	id?: string;
-	borderStyle?:
+export type TextAreaProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly placeholder?: string;
+	readonly rows?: number;
+	readonly label?: string;
+	readonly id?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -21,15 +21,15 @@ export interface TextAreaProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	cursor?: string;
-}
+	readonly paddingX?: number;
+	readonly cursor?: string;
+};
 
 const getLines = (v: string): string[] => v.split('');
 
 const joinLines = (lines: string[]): string => lines.join('');
 
-export const TextArea = ({
+export function TextArea({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -40,7 +40,7 @@ export const TextArea = ({
 	borderStyle = 'round',
 	paddingX = 1,
 	cursor = '█',
-}: TextAreaProps) => {
+}: TextAreaProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const [cursorLine, setCursorLine] = useState(0);
 	const [cursorCol, setCursorCol] = useState(0);
@@ -50,11 +50,11 @@ export const TextArea = ({
 
 	const value = controlledValue ?? internalValue;
 
-	const setValue = (newVal: string) => {
+	const setValue = (newValue: string) => {
 		if (onChange) {
-			onChange(newVal);
+			onChange(newValue);
 		} else {
-			setInternalValue(newVal);
+			setInternalValue(newValue);
 		}
 	};
 
@@ -75,6 +75,7 @@ export const TextArea = ({
 			if (totalLines >= rows && cursorLine === rows - 1) {
 				return;
 			}
+
 			const currentLine = lines[cursorLine] ?? '';
 			const before = currentLine.slice(0, cursorCol);
 			const after = currentLine.slice(cursorCol);
@@ -91,6 +92,7 @@ export const TextArea = ({
 			if (newLine >= scrollOffset + rows) {
 				setScrollOffset(newLine - rows + 1);
 			}
+
 			return;
 		}
 
@@ -107,8 +109,8 @@ export const TextArea = ({
 				setValue(joinLines(newLines));
 				setCursorCol(cursorCol - 1);
 			} else if (cursorLine > 0) {
-				const prevLine = lines[cursorLine - 1] ?? '';
-				const mergedLine = prevLine + currentLine;
+				const previousLine = lines[cursorLine - 1] ?? '';
+				const mergedLine = previousLine + currentLine;
 				const newLines = [
 					...lines.slice(0, cursorLine - 1),
 					mergedLine,
@@ -117,11 +119,12 @@ export const TextArea = ({
 				setValue(joinLines(newLines));
 				const newLineIdx = cursorLine - 1;
 				setCursorLine(newLineIdx);
-				setCursorCol(prevLine.length);
+				setCursorCol(previousLine.length);
 				if (newLineIdx < scrollOffset) {
 					setScrollOffset(newLineIdx);
 				}
 			}
+
 			return;
 		}
 
@@ -129,14 +132,15 @@ export const TextArea = ({
 			if (cursorCol > 0) {
 				setCursorCol(cursorCol - 1);
 			} else if (cursorLine > 0) {
-				const prevLine = lines[cursorLine - 1] ?? '';
+				const previousLine = lines[cursorLine - 1] ?? '';
 				const newLineIdx = cursorLine - 1;
 				setCursorLine(newLineIdx);
-				setCursorCol(prevLine.length);
+				setCursorCol(previousLine.length);
 				if (newLineIdx < scrollOffset) {
 					setScrollOffset(newLineIdx);
 				}
 			}
+
 			return;
 		}
 
@@ -152,6 +156,7 @@ export const TextArea = ({
 					setScrollOffset(newLineIdx - rows + 1);
 				}
 			}
+
 			return;
 		}
 
@@ -165,6 +170,7 @@ export const TextArea = ({
 					setScrollOffset(newLineIdx);
 				}
 			}
+
 			return;
 		}
 
@@ -178,6 +184,7 @@ export const TextArea = ({
 					setScrollOffset(newLineIdx - rows + 1);
 				}
 			}
+
 			return;
 		}
 
@@ -255,4 +262,4 @@ export const TextArea = ({
 			</Box>
 		</Box>
 	);
-};
+}

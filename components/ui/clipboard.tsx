@@ -5,19 +5,19 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useClipboard} from '@/hooks/use-clipboard';
 import {useInput} from '@/hooks/use-input';
 
-export interface ClipboardProps {
-	value: string;
-	label?: string;
-	successMessage?: string;
-	timeout?: number;
-}
+export type ClipboardProps = {
+	readonly value: string;
+	readonly label?: string;
+	readonly successMessage?: string;
+	readonly timeout?: number;
+};
 
-export const Clipboard = ({
+export function Clipboard({
 	value,
 	label,
 	successMessage = 'Copied!',
 	timeout = 2000,
-}: ClipboardProps) => {
+}: ClipboardProps) {
 	const theme = useTheme();
 	const {write} = useClipboard();
 	const [copied, setCopied] = useState(false);
@@ -31,8 +31,13 @@ export const Clipboard = ({
 		if (!copied) {
 			return;
 		}
-		const timer = setTimeout(() => setCopied(false), timeout);
-		return () => clearTimeout(timer);
+
+		const timer = setTimeout(() => {
+			setCopied(false);
+		}, timeout);
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [copied, timeout]);
 
 	useInput(input => {
@@ -54,18 +59,18 @@ export const Clipboard = ({
 					paddingX={1}
 				>
 					<Text
-						color={copied ? theme.colors.success : theme.colors.primary}
 						bold
+						color={copied ? theme.colors.success : theme.colors.primary}
 					>
 						{copied ? `✓ ${successMessage}` : 'Copy'}
 					</Text>
 				</Box>
 			</Box>
 			{!copied && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					press c or space to copy
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

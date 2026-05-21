@@ -4,17 +4,17 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ConfirmProps {
-	message: string;
-	onConfirm?: () => void;
-	onCancel?: () => void;
-	confirmLabel?: string;
-	cancelLabel?: string;
-	defaultValue?: boolean;
-	variant?: 'default' | 'danger';
-}
+export type ConfirmProps = {
+	readonly message: string;
+	readonly onConfirm?: () => void;
+	readonly onCancel?: () => void;
+	readonly confirmLabel?: string;
+	readonly cancelLabel?: string;
+	readonly defaultValue?: boolean;
+	readonly variant?: 'default' | 'danger';
+};
 
-export const Confirm = ({
+export function Confirm({
 	message,
 	onConfirm,
 	onCancel,
@@ -22,7 +22,7 @@ export const Confirm = ({
 	cancelLabel = 'No',
 	defaultValue = false,
 	variant = 'default',
-}: ConfirmProps) => {
+}: ConfirmProps) {
 	const theme = useTheme();
 	const [selected, setSelected] = useState<boolean>(defaultValue);
 
@@ -31,6 +31,7 @@ export const Confirm = ({
 			onCancel?.();
 			return;
 		}
+
 		if (key.leftArrow || key.rightArrow) {
 			setSelected(s => !s);
 		} else if (key.return) {
@@ -52,37 +53,27 @@ export const Confirm = ({
 	return (
 		<Box flexDirection="column" gap={0}>
 			<Text>
-				<Text color={theme.colors.primary}>{'?'}</Text>
+				<Text color={theme.colors.primary}>?</Text>
 				{message}
 			</Text>
 			<Box gap={2} paddingLeft={2}>
 				<Box gap={1}>
 					{selected ? (
-						<Text color={yesColor} bold>
-							{'›'}
-							{confirmLabel}
+						<Text bold color={yesColor}>
+							›{confirmLabel}
 						</Text>
 					) : (
-						<Text color={theme.colors.mutedForeground}>
-							{''}
-							{confirmLabel}
-						</Text>
+						<Text color={theme.colors.mutedForeground}>{confirmLabel}</Text>
 					)}
 				</Box>
 				<Box gap={1}>
 					{selected ? (
-						<Text color={theme.colors.mutedForeground}>
-							{''}
-							{cancelLabel}
-						</Text>
+						<Text color={theme.colors.mutedForeground}>{cancelLabel}</Text>
 					) : (
-						<Text bold>
-							{'›'}
-							{cancelLabel}
-						</Text>
+						<Text bold>›{cancelLabel}</Text>
 					)}
 				</Box>
 			</Box>
 		</Box>
 	);
-};
+}

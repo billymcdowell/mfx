@@ -1,11 +1,11 @@
 import {Box} from 'ink';
 
-export interface SpacerProps {
-	size?: number;
-	direction?: 'horizontal' | 'vertical';
-}
+export type SpacerProps = {
+	readonly size?: number;
+	readonly direction?: 'horizontal' | 'vertical';
+};
 
-export const Spacer = ({size, direction = 'horizontal'}: SpacerProps) => {
+export function Spacer({size, direction = 'horizontal'}: SpacerProps) {
 	if (size === undefined) {
 		return <Box flexGrow={1} />;
 	}
@@ -15,4 +15,4 @@ export const Spacer = ({size, direction = 'horizontal'}: SpacerProps) => {
 	}
 
 	return <Box width={size} />;
-};
+}

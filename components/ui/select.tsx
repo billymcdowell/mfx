@@ -4,29 +4,29 @@ import React, {useEffect, useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface SelectOption<T = string> {
+export type SelectOption<T = string> = {
 	value: T;
 	label: string;
 	hint?: string;
 	disabled?: boolean;
-}
+};
 
-export interface SelectProps<T = string> {
-	options: SelectOption<T>[];
-	value?: T;
-	onChange?: (value: T) => void;
-	onSubmit?: (value: T) => void;
-	label?: string;
-	cursor?: string;
-	cursorColor?: string;
-	inputActive?: boolean;
+export type SelectProps<T = string> = {
+	readonly options: Array<SelectOption<T>>;
+	readonly value?: T;
+	readonly onChange?: (value: T) => void;
+	readonly onSubmit?: (value: T) => void;
+	readonly label?: string;
+	readonly cursor?: string;
+	readonly cursorColor?: string;
+	readonly inputActive?: boolean;
 	/** Fired when ↑ is pressed while the first option is focused. */
-	onFocusLeaveStart?: () => void;
+	readonly onFocusLeaveStart?: () => void;
 	/** Fired when ↓ is pressed while the last option is focused. */
-	onFocusLeaveEnd?: () => void;
-}
+	readonly onFocusLeaveEnd?: () => void;
+};
 
-export const Select = <T = string,>({
+export function Select<T = string>({
 	options,
 	value: controlledValue,
 	onChange,
@@ -37,7 +37,7 @@ export const Select = <T = string,>({
 	inputActive = true,
 	onFocusLeaveStart,
 	onFocusLeaveEnd,
-}: SelectProps<T>) => {
+}: SelectProps<T>) {
 	const theme = useTheme();
 	const [activeIndex, setActiveIndex] = useState(0);
 
@@ -62,10 +62,12 @@ export const Select = <T = string,>({
 					while (next >= 0 && options[next]?.disabled) {
 						next -= 1;
 					}
+
 					if (next < 0) {
 						onFocusLeaveStart?.();
 						return i;
 					}
+
 					return next;
 				});
 			} else if (down) {
@@ -74,10 +76,12 @@ export const Select = <T = string,>({
 					while (next < options.length && options[next]?.disabled) {
 						next += 1;
 					}
+
 					if (next >= options.length) {
 						onFocusLeaveEnd?.();
 						return i;
 					}
+
 					return next;
 				});
 			} else if (key.return) {
@@ -131,9 +135,9 @@ export const Select = <T = string,>({
 						</Text>
 						{opt.hint ? (
 							<Text
+								dimColor
 								backgroundColor={rowBg}
 								color={theme.colors.mutedForeground}
-								dimColor
 							>
 								{`  ${opt.hint}`}
 							</Text>
@@ -143,4 +147,4 @@ export const Select = <T = string,>({
 			})}
 		</Box>
 	);
-};
+}

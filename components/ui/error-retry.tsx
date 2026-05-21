@@ -4,14 +4,14 @@ import React from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ErrorRetryProps {
-	error: Error | string;
-	onRetry?: () => void;
-	onDismiss?: () => void;
-	retryCount?: number;
-	maxRetries?: number;
-	isActive?: boolean;
-}
+export type ErrorRetryProps = {
+	readonly error: Error | string;
+	readonly onRetry?: () => void;
+	readonly onDismiss?: () => void;
+	readonly retryCount?: number;
+	readonly maxRetries?: number;
+	readonly isActive?: boolean;
+};
 
 export function ErrorRetry({
 	error,
@@ -45,7 +45,7 @@ export function ErrorRetry({
 			paddingY={0}
 		>
 			<Box gap={1}>
-				<Text color={theme.colors.error ?? 'red'} bold>
+				<Text bold color={theme.colors.error ?? 'red'}>
 					✗
 				</Text>
 				<Text>{message}</Text>

@@ -11,7 +11,7 @@ type BorderStyle =
 	| 'doubleSingle'
 	| 'classic';
 
-export interface ColorTokens {
+export type ColorTokens = {
 	primary: string;
 	primaryForeground: string;
 	secondary: string;
@@ -36,9 +36,9 @@ export interface ColorTokens {
 	focusRing: string;
 	selection: string;
 	selectionForeground: string;
-}
+};
 
-export interface SpacingTokens {
+export type SpacingTokens = {
 	0: number;
 	1: number;
 	2: number;
@@ -46,37 +46,37 @@ export interface SpacingTokens {
 	4: number;
 	6: number;
 	8: number;
-}
+};
 
-export interface TypographyTokens {
+export type TypographyTokens = {
 	bold: boolean;
 	sm: string;
 	base: string;
 	lg: string;
 	xl: string;
-}
+};
 
-export interface BorderTokens {
+export type BorderTokens = {
 	style: BorderStyle;
 	color: string;
 	focusColor: string;
-}
+};
 
-export interface Theme {
+export type Theme = {
 	name: string;
 	colors: ColorTokens;
 	spacing: SpacingTokens;
 	typography: TypographyTokens;
 	border: BorderTokens;
-}
+};
 
-export interface MotionContextValue {
+export type MotionContextValue = {
 	reduced: boolean;
-}
+};
 
-export interface UnicodeContextValue {
+export type UnicodeContextValue = {
 	unicode: boolean;
-}
+};
 
 const getEnv = (name: string): string | undefined =>
 	typeof process !== 'undefined' && process.env ? process.env[name] : undefined;
@@ -101,15 +101,19 @@ const detectUnicodeSupport = (): boolean => {
 	if (getEnv('WSL_DISTRO_NAME')) {
 		return true;
 	}
+
 	if (getEnv('WT_SESSION')) {
 		return true;
 	}
+
 	if (getEnv('TERM_PROGRAM') === 'vscode') {
 		return true;
 	}
+
 	if (getEnv('MSYSTEM')) {
 		return false;
 	}
+
 	if (platform === 'darwin' || platform === 'linux') {
 		return true;
 	}
@@ -133,24 +137,24 @@ export const useMotion = (): MotionContextValue =>
 export const useUnicode = (): boolean =>
 	React.useContext(UnicodeContext).unicode;
 
-interface ThemeContextValue {
+type ThemeContextValue = {
 	setTheme: (theme: Theme) => void;
 	theme: Theme;
-}
+};
 
 const ThemeContext = React.createContext<ThemeContextValue>({
-	setTheme: () => {
-		/* noop */
+	setTheme() {
+		/* Noop */
 	},
 	theme: defaultTheme,
 });
 
-export interface ThemeProviderProps {
-	children: React.ReactNode;
-	noUnicode?: boolean;
-	reducedMotion?: boolean;
-	theme?: Theme;
-}
+export type ThemeProviderProps = {
+	readonly children: React.ReactNode;
+	readonly noUnicode?: boolean;
+	readonly reducedMotion?: boolean;
+	readonly theme?: Theme;
+};
 
 export const detectColorScheme = (): 'dark' | 'light' => {
 	const colorFgBg = getEnv('COLORFGBG');
@@ -166,6 +170,7 @@ export const detectColorScheme = (): 'dark' | 'light' => {
 	if (termBackground === 'light') {
 		return 'light';
 	}
+
 	if (termBackground === 'dark') {
 		return 'dark';
 	}
@@ -173,18 +178,18 @@ export const detectColorScheme = (): 'dark' | 'light' => {
 	return 'dark';
 };
 
-export interface AutoThemeProviderProps {
-	children: React.ReactNode;
-	darkTheme: Theme;
-	lightTheme: Theme;
-}
+export type AutoThemeProviderProps = {
+	readonly children: React.ReactNode;
+	readonly darkTheme: Theme;
+	readonly lightTheme: Theme;
+};
 
-export const ThemeProvider = ({
+export function ThemeProvider({
 	children,
 	noUnicode,
 	reducedMotion,
 	theme = defaultTheme,
-}: ThemeProviderProps) => {
+}: ThemeProviderProps) {
 	const [currentTheme, setCurrentTheme] = React.useState(theme);
 
 	React.useEffect(() => {
@@ -217,20 +222,20 @@ export const ThemeProvider = ({
 			</UnicodeContext.Provider>
 		</MotionContext.Provider>
 	);
-};
+}
 
-export const AutoThemeProvider = ({
+export function AutoThemeProvider({
 	children,
 	darkTheme,
 	lightTheme,
-}: AutoThemeProviderProps) => {
+}: AutoThemeProviderProps) {
 	const scheme = detectColorScheme();
 	return (
 		<ThemeProvider theme={scheme === 'dark' ? darkTheme : lightTheme}>
 			{children}
 		</ThemeProvider>
 	);
-};
+}
 
 export const useTheme = (): Theme => React.useContext(ThemeContext).theme;
 

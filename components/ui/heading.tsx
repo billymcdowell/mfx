@@ -5,17 +5,17 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type HeadingLevel = 1 | 2 | 3 | 4;
 
-export interface HeadingProps {
-	level?: HeadingLevel;
-	children: ReactNode;
-	color?: string;
-	prefix1?: string;
-	prefix2?: string;
-	prefix3?: string;
-	uppercase?: boolean;
-}
+export type HeadingProps = {
+	readonly level?: HeadingLevel;
+	readonly children: ReactNode;
+	readonly color?: string;
+	readonly prefix1?: string;
+	readonly prefix2?: string;
+	readonly prefix3?: string;
+	readonly uppercase?: boolean;
+};
 
-export const Heading = ({
+export function Heading({
 	level = 1,
 	children,
 	color,
@@ -23,7 +23,7 @@ export const Heading = ({
 	prefix2 = '▌',
 	prefix3 = '›',
 	uppercase = true,
-}: HeadingProps) => {
+}: HeadingProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
@@ -31,10 +31,10 @@ export const Heading = ({
 		case 1: {
 			return (
 				<Box>
-					<Text color={resolvedColor} bold>
+					<Text bold color={resolvedColor}>
 						{prefix1}
 					</Text>
-					<Text color={resolvedColor} bold>
+					<Text bold color={resolvedColor}>
 						{uppercase && typeof children === 'string'
 							? children.toUpperCase()
 							: children}
@@ -46,10 +46,10 @@ export const Heading = ({
 		case 2: {
 			return (
 				<Box>
-					<Text color={resolvedColor} bold>
+					<Text bold color={resolvedColor}>
 						{prefix2}
 					</Text>
-					<Text color={resolvedColor} bold>
+					<Text bold color={resolvedColor}>
 						{children}
 					</Text>
 				</Box>
@@ -83,4 +83,4 @@ export const Heading = ({
 			);
 		}
 	}
-};
+}

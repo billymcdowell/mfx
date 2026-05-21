@@ -2,19 +2,19 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface ProgressBarProps {
-	value: number;
-	total?: number;
-	width?: number;
-	showPercent?: boolean;
-	showEta?: boolean;
-	fillChar?: string;
-	emptyChar?: string;
-	color?: string;
-	label?: string;
-}
+export type ProgressBarProps = {
+	readonly value: number;
+	readonly total?: number;
+	readonly width?: number;
+	readonly showPercent?: boolean;
+	readonly showEta?: boolean;
+	readonly fillChar?: string;
+	readonly emptyChar?: string;
+	readonly color?: string;
+	readonly label?: string;
+};
 
-export const ProgressBar = ({
+export function ProgressBar({
 	value,
 	total,
 	width = 30,
@@ -24,7 +24,7 @@ export const ProgressBar = ({
 	emptyChar = '░',
 	color,
 	label,
-}: ProgressBarProps) => {
+}: ProgressBarProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
@@ -46,11 +46,11 @@ export const ProgressBar = ({
 					<Text color={theme.colors.mutedForeground}>{percent}%</Text>
 				)}
 				{total !== undefined && (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{value}/{total}
 					</Text>
 				)}
 			</Box>
 		</Box>
 	);
-};
+}

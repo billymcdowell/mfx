@@ -3,11 +3,11 @@ import type {ReactNode} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface PanelProps {
-	title?: string;
-	titleColor?: string;
-	borderColor?: string;
-	borderStyle?:
+export type PanelProps = {
+	readonly title?: string;
+	readonly titleColor?: string;
+	readonly borderColor?: string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -15,15 +15,15 @@ export interface PanelProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	bordered?: boolean;
-	width?: number;
-	height?: number;
-	paddingX?: number;
-	paddingY?: number;
-	children?: ReactNode;
-}
+	readonly bordered?: boolean;
+	readonly width?: number;
+	readonly height?: number;
+	readonly paddingX?: number;
+	readonly paddingY?: number;
+	readonly children?: ReactNode;
+};
 
-export const Panel = ({
+export function Panel({
 	title,
 	titleColor,
 	borderColor,
@@ -34,7 +34,7 @@ export const Panel = ({
 	paddingX = 1,
 	paddingY = 0,
 	children,
-}: PanelProps) => {
+}: PanelProps) {
 	const theme = useTheme();
 
 	const inner = (
@@ -75,4 +75,4 @@ export const Panel = ({
 			{inner}
 		</Box>
 	);
-};
+}

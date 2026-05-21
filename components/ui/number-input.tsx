@@ -5,18 +5,18 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface NumberInputProps {
-	value?: number;
-	onChange?: (value: number) => void;
-	onSubmit?: (value: number) => void;
-	min?: number;
-	max?: number;
-	step?: number;
-	placeholder?: string;
-	label?: string;
-	id?: string;
-	format?: (n: number) => string;
-	borderStyle?:
+export type NumberInputProps = {
+	readonly value?: number;
+	readonly onChange?: (value: number) => void;
+	readonly onSubmit?: (value: number) => void;
+	readonly min?: number;
+	readonly max?: number;
+	readonly step?: number;
+	readonly placeholder?: string;
+	readonly label?: string;
+	readonly id?: string;
+	readonly format?: (n: number) => string;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -24,12 +24,12 @@ export interface NumberInputProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-	cursor?: string;
-	stepHint?: string;
-}
+	readonly paddingX?: number;
+	readonly cursor?: string;
+	readonly stepHint?: string;
+};
 
-export const NumberInput = ({
+export function NumberInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -44,7 +44,7 @@ export const NumberInput = ({
 	paddingX = 1,
 	cursor = '█',
 	stepHint,
-}: NumberInputProps) => {
+}: NumberInputProps) {
 	const [internalValue, setInternalValue] = useState<number | undefined>();
 	const [buffer, setBuffer] = useState<string>('');
 	const theme = useTheme();
@@ -57,9 +57,11 @@ export const NumberInput = ({
 		if (min !== undefined) {
 			result = Math.max(min, result);
 		}
+
 		if (max !== undefined) {
 			result = Math.min(max, result);
 		}
+
 		return result;
 	};
 
@@ -100,6 +102,7 @@ export const NumberInput = ({
 				const clamped = clamp(parsed);
 				onSubmit?.(clamped);
 			}
+
 			return;
 		}
 
@@ -109,10 +112,12 @@ export const NumberInput = ({
 			if (newBuffer === '' || newBuffer === '-') {
 				return;
 			}
+
 			const parsed = Number.parseFloat(newBuffer);
 			if (!Number.isNaN(parsed)) {
 				applyValue(clamp(parsed));
 			}
+
 			return;
 		}
 
@@ -124,6 +129,7 @@ export const NumberInput = ({
 			if (input === '-' && buffer.length > 0) {
 				return;
 			}
+
 			if (input === '.' && buffer.includes('.')) {
 				return;
 			}
@@ -174,4 +180,4 @@ export const NumberInput = ({
 			</Box>
 		</Box>
 	);
-};
+}

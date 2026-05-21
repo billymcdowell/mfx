@@ -4,14 +4,14 @@ import {useTheme} from '@/components/ui/theme-provider';
 
 export type GaugeSize = 'sm' | 'md' | 'lg';
 
-export interface GaugeProps {
-	value: number;
-	min?: number;
-	max?: number;
-	label?: string;
-	color?: string;
-	size?: GaugeSize;
-}
+export type GaugeProps = {
+	readonly value: number;
+	readonly min?: number;
+	readonly max?: number;
+	readonly label?: string;
+	readonly color?: string;
+	readonly size?: GaugeSize;
+};
 
 const ARC_CHARS_FILL = '█';
 const ARC_CHARS_EMPTY = '░';
@@ -53,14 +53,14 @@ const renderMdGauge = (
 	const bottomFill = `${ARC_CHARS_FILL.repeat(filled)}${ARC_CHARS_EMPTY.repeat(
 		empty,
 	)}`;
-	const pctStr = `${Math.round(pct * 100)}%`;
+	const pctString = `${Math.round(pct * 100)}%`;
 
 	return (
 		<Box flexDirection="column">
 			<Text color={mutedColor}>{`╭${'─'.repeat(arcWidth)}╮`}</Text>
 			<Box flexDirection="row">
 				<Text color={mutedColor}>│</Text>
-				<Text color={fgColor}>{` ${pctStr} `.padEnd(arcWidth)}</Text>
+				<Text color={fgColor}>{` ${pctString} `.padEnd(arcWidth)}</Text>
 				<Text color={mutedColor}>│</Text>
 			</Box>
 			<Box flexDirection="row">
@@ -84,9 +84,9 @@ const renderLgGauge = (
 	const bottomFill = `${ARC_CHARS_FILL.repeat(filled)}${ARC_CHARS_EMPTY.repeat(
 		empty,
 	)}`;
-	const pctStr = `${Math.round(pct * 100)}%`;
-	const centeredPct = pctStr
-		.padStart(Math.floor((arcWidth + pctStr.length) / 2))
+	const pctString = `${Math.round(pct * 100)}%`;
+	const centeredPct = pctString
+		.padStart(Math.floor((arcWidth + pctString.length) / 2))
 		.padEnd(arcWidth);
 
 	return (
@@ -95,14 +95,14 @@ const renderLgGauge = (
 			<Text color={mutedColor}>{`╱${''.repeat(arcWidth)}╲`}</Text>
 			<Box flexDirection="row">
 				<Text color={mutedColor}>│</Text>
-				<Text color={fgColor} bold>
+				<Text bold color={fgColor}>
 					{centeredPct}
 				</Text>
 				<Text color={mutedColor}>│</Text>
 			</Box>
 			<Text color={mutedColor}>{`╲${''.repeat(arcWidth)}╱`}</Text>
 			<Box flexDirection="row">
-				<Text color={mutedColor}>{'╰'}</Text>
+				<Text color={mutedColor}>╰</Text>
 				<Text color={color}>{bottomFill}</Text>
 				<Text color={mutedColor}>╯</Text>
 			</Box>
@@ -110,14 +110,14 @@ const renderLgGauge = (
 	);
 };
 
-export const Gauge = ({
+export function Gauge({
 	value,
 	min = 0,
 	max = 100,
 	label,
 	color,
 	size = 'md',
-}: GaugeProps) => {
+}: GaugeProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 	const clamped = clamp(value, min, max);
@@ -148,4 +148,4 @@ export const Gauge = ({
 			{label && <Text color={theme.colors.mutedForeground}>{label}</Text>}
 		</Box>
 	);
-};
+}

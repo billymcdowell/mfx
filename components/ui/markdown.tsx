@@ -3,29 +3,30 @@ import React, {useState, useEffect} from 'react';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface MarkdownProps {
-	children: string;
-	width?: number;
-	streaming?: boolean;
-	cursor?: string;
-}
+export type MarkdownProps = {
+	readonly children: string;
+	readonly width?: number;
+	readonly streaming?: boolean;
+	readonly cursor?: string;
+};
 
-interface InlineSegment {
+type InlineSegment = {
 	text: string;
 	bold?: boolean;
 	italic?: boolean;
 	code?: boolean;
 	link?: boolean;
 	url?: string;
-}
+};
 
 const parseInline = (line: string): InlineSegment[] => {
 	const segments: InlineSegment[] = [];
-	const re = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\[(.+?)\]\((.+?)\))/g;
+	const re = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\[(.+?)]\((.+?)\))/g;
 	let last = 0;
-	let match: RegExpExecArray | null;
+	let execResult = re.exec(line);
 
-	while ((match = re.exec(line)) !== null) {
+	while (execResult !== null) {
+		const match = execResult;
 		if (match.index > last) {
 			segments.push({text: line.slice(last, match.index)});
 		}
@@ -42,6 +43,12 @@ const parseInline = (line: string): InlineSegment[] => {
 		}
 
 		last = match.index + full.length;
+
+		if (full.length === 0) {
+			break;
+		}
+
+		execResult = re.exec(line);
 	}
 
 	if (last < line.length) {
@@ -51,7 +58,7 @@ const parseInline = (line: string): InlineSegment[] => {
 	return segments;
 };
 
-const InlineLine = ({segments}: {segments: InlineSegment[]}) => {
+function InlineLine({segments}: {readonly segments: InlineSegment[]}) {
 	const theme = useTheme();
 
 	return (
@@ -87,22 +94,23 @@ const InlineLine = ({segments}: {segments: InlineSegment[]}) => {
 			})}
 		</Text>
 	);
-};
+}
 
 const sanitizePartialFences = (text: string): string => {
 	const fenceCount = (text.match(/```/g) ?? []).length;
 	if (fenceCount % 2 !== 0) {
 		return `${text}\n\`\`\``;
 	}
+
 	return text;
 };
 
-export const Markdown = ({
+export function Markdown({
 	children,
 	width,
 	streaming = false,
 	cursor = '▌',
-}: MarkdownProps) => {
+}: MarkdownProps) {
 	const theme = useTheme();
 	const [cursorVisible, setCursorVisible] = useState(true);
 
@@ -110,8 +118,13 @@ export const Markdown = ({
 		if (!streaming) {
 			return;
 		}
-		const id = setInterval(() => setCursorVisible(v => !v), 530);
-		return () => clearInterval(id);
+
+		const id = setInterval(() => {
+			setCursorVisible(v => !v);
+		}, 530);
+		return () => {
+			clearInterval(id);
+		};
 	}, [streaming]);
 
 	const safeChildren = streaming ? sanitizePartialFences(children) : children;
@@ -123,10 +136,10 @@ export const Markdown = ({
 	while (i < lines.length) {
 		const line = lines[i];
 
-		const h4 = line.match(/^####\s+(.*)/);
-		const h3 = line.match(/^###\s+(.*)/);
-		const h2 = line.match(/^##\s+(.*)/);
-		const h1 = line.match(/^#\s+(.*)/);
+		const h4 = /^#{4}\s+(.*)/.exec(line);
+		const h3 = /^###\s+(.*)/.exec(line);
+		const h2 = /^##\s+(.*)/.exec(line);
+		const h1 = /^#\s+(.*)/.exec(line);
 
 		if (h1) {
 			elements.push(
@@ -202,4 +215,4 @@ export const Markdown = ({
 	}
 
 	return <Box flexDirection="column">{elements}</Box>;
-};
+}

@@ -31,7 +31,11 @@ function inferBookmarkTag(title: string): string {
 	return 'NOTE';
 }
 
-export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
+export function BookmarksScreen({
+	mainInputActive,
+}: {
+	readonly mainInputActive: boolean;
+}) {
 	const theme = useTheme();
 	const {mainInnerWidth} = useTerminalViewport();
 	const {items, remove} = useBookmarks();
@@ -96,7 +100,7 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 						const tag = inferBookmarkTag(b.title);
 						const st = newsTagStyle(tag);
 						return (
-							<Box flexDirection="column" key={b.id} width="100%">
+							<Box key={b.id} flexDirection="column" width="100%">
 								<Box
 									backgroundColor={hi ? theme.colors.selection : undefined}
 									flexDirection="column"
@@ -171,6 +175,7 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 						cancelLabel="Cancel"
 						confirmLabel="Yes, delete"
 						message={`Remove bookmark?\n"${current.title.slice(0, 52)}…"`}
+						variant="danger"
 						onCancel={() => {
 							setPendingDelete(undefined);
 						}}
@@ -179,7 +184,6 @@ export function BookmarksScreen({mainInputActive}: {mainInputActive: boolean}) {
 							setPendingDelete(undefined);
 							setRow(r => Math.max(0, Math.min(r, items.length - 2)));
 						}}
-						variant="danger"
 					/>
 				</Box>
 			)}

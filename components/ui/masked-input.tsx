@@ -5,17 +5,17 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface MaskedInputProps {
-	mask: string;
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	label?: string;
-	placeholder?: string;
-	autoFocus?: boolean;
-	id?: string;
-	width?: number;
-}
+export type MaskedInputProps = {
+	readonly mask: string;
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly label?: string;
+	readonly placeholder?: string;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+	readonly width?: number;
+};
 
 /**
  * Returns true if the literal at `pos` "closes" a digit group, meaning there
@@ -27,9 +27,11 @@ const isClosingLiteral = (mask: string, pos: number): boolean => {
 		if (mask[j] === '#') {
 			continue;
 		}
+
 		const between = mask.slice(j + 1, pos);
 		return between.length > 0 && [...between].every(c => c === '#');
 	}
+
 	return false;
 };
 
@@ -48,6 +50,7 @@ const applyMask = (raw: string, mask: string): string => {
 			if (maskChar !== '#' && isClosingLiteral(mask, i)) {
 				result += maskChar;
 			}
+
 			break;
 		}
 
@@ -65,7 +68,7 @@ const applyMask = (raw: string, mask: string): string => {
 const maxDigits = (mask: string): number =>
 	[...mask].filter(c => c === '#').length;
 
-export const MaskedInput = ({
+export function MaskedInput({
 	mask,
 	value: controlledValue,
 	onChange,
@@ -75,7 +78,7 @@ export const MaskedInput = ({
 	autoFocus = false,
 	id,
 	width = 40,
-}: MaskedInputProps) => {
+}: MaskedInputProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
@@ -94,12 +97,13 @@ export const MaskedInput = ({
 		}
 
 		if (key.backspace || key.delete) {
-			const newVal = raw.slice(0, -1);
+			const newValue = raw.slice(0, -1);
 			if (onChange) {
-				onChange(newVal);
+				onChange(newValue);
 			} else {
-				setInternalValue(newVal);
+				setInternalValue(newValue);
 			}
+
 			return;
 		}
 
@@ -108,11 +112,11 @@ export const MaskedInput = ({
 		}
 
 		if (/^\d$/.test(input) && raw.length < max) {
-			const newVal = raw + input;
+			const newValue = raw + input;
 			if (onChange) {
-				onChange(newVal);
+				onChange(newValue);
 			} else {
-				setInternalValue(newVal);
+				setInternalValue(newValue);
 			}
 		}
 	});
@@ -144,11 +148,11 @@ export const MaskedInput = ({
 					<Text color={theme.colors.focusRing}>█</Text>
 				)}
 				{display.length > 0 && display.length < mask.length && (
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						{remainingMask}
 					</Text>
 				)}
 			</Box>
 		</Box>
 	);
-};
+}

@@ -7,21 +7,21 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface DirectoryTreeProps {
-	rootPath?: string;
-	onSelect?: (path: string) => void;
-	maxDepth?: number;
-	showHidden?: boolean;
-	label?: string;
-}
+export type DirectoryTreeProps = {
+	readonly rootPath?: string;
+	readonly onSelect?: (path: string) => void;
+	readonly maxDepth?: number;
+	readonly showHidden?: boolean;
+	readonly label?: string;
+};
 
-interface TreeEntry {
+type TreeEntry = {
 	path: string;
 	name: string;
 	depth: number;
 	isDir: boolean;
 	isLast: boolean;
-}
+};
 
 const readEntries = (
 	dir: string,
@@ -48,12 +48,14 @@ const readEntries = (
 			if (aIsDir && !bIsDir) {
 				return -1;
 			}
+
 			if (!aIsDir && bIsDir) {
 				return 1;
 			}
 		} catch {
-			/* noop */
+			/* Noop */
 		}
+
 		return a.localeCompare(b);
 	});
 
@@ -66,7 +68,7 @@ const readEntries = (
 		try {
 			isDir = statSync(fullPath).isDirectory();
 		} catch {
-			/* noop */
+			/* Noop */
 		}
 
 		result.push({depth, isDir, isLast, name, path: fullPath});
@@ -81,13 +83,13 @@ const readEntries = (
 	return result;
 };
 
-export const DirectoryTree = ({
+export function DirectoryTree({
 	rootPath = process.cwd(),
 	onSelect,
 	maxDepth = 2,
 	showHidden = false,
 	label,
-}: DirectoryTreeProps) => {
+}: DirectoryTreeProps) {
 	const theme = useTheme();
 	const [expanded, setExpanded] = useState<Set<string>>(new Set([rootPath]));
 	const [cursor, setCursor] = useState(0);
@@ -104,14 +106,16 @@ export const DirectoryTree = ({
 			if (!entry) {
 				return;
 			}
+
 			if (entry.isDir) {
-				setExpanded(prev => {
-					const next = new Set(prev);
+				setExpanded(previous => {
+					const next = new Set(previous);
 					if (next.has(entry.path)) {
 						next.delete(entry.path);
 					} else {
 						next.add(entry.path);
 					}
+
 					return next;
 				});
 			} else {
@@ -123,7 +127,7 @@ export const DirectoryTree = ({
 	return (
 		<Box flexDirection="column">
 			{label && <Text bold>{label}</Text>}
-			<Text color={theme.colors.primary} bold>
+			<Text bold color={theme.colors.primary}>
 				{rootPath}
 			</Text>
 			{entries.map((entry, idx) => {
@@ -162,9 +166,9 @@ export const DirectoryTree = ({
 					</Box>
 				);
 			})}
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				↑↓: navigate · Space/Enter: expand/select
 			</Text>
 		</Box>
 	);
-};
+}

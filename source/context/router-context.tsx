@@ -16,7 +16,7 @@ type RouterContextValue = {
 	current: RouteFrame;
 	goBack: () => void;
 	historyLength: number;
-	navigate: (screen: Screen, params?: RouterParams) => void;
+	navigate: (screen: Screen, parameters?: RouterParams) => void;
 	replaceRoot: (frame: RouteFrame) => void;
 };
 
@@ -26,16 +26,19 @@ export function RouterProvider({
 	children,
 	initial,
 }: {
-	children: React.ReactNode;
-	initial: RouteFrame;
+	readonly children: React.ReactNode;
+	readonly initial: RouteFrame;
 }) {
 	const [stack, setStack] = useState<RouteFrame[]>([initial]);
 
-	const current = stack[stack.length - 1]!;
+	const current = stack.at(-1)!;
 
-	const navigate = useCallback((screen: Screen, params: RouterParams = {}) => {
-		setStack(s => [...s, {params, screen}]);
-	}, []);
+	const navigate = useCallback(
+		(screen: Screen, parameters: RouterParams = {}) => {
+			setStack(s => [...s, {params: parameters, screen}]);
+		},
+		[],
+	);
 
 	const goBack = useCallback(() => {
 		setStack(s => (s.length <= 1 ? s : s.slice(0, -1)));

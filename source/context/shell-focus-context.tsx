@@ -19,7 +19,11 @@ const ShellFocusContext = createContext<ShellFocusContextValue | undefined>(
 	undefined,
 );
 
-export function ShellFocusProvider({children}: {children: React.ReactNode}) {
+export function ShellFocusProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
 	const [shellZone, setShellZone] = useState<ShellZone>('sidebar');
 
 	const toggleShellZone = useCallback(() => {

@@ -3,17 +3,17 @@ import {Box, Text} from 'ink';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useAnimation} from '@/hooks/use-animation';
 
-export interface SkeletonProps {
-	width?: number;
-	height?: number;
-	animated?: boolean;
-}
+export type SkeletonProps = {
+	readonly width?: number;
+	readonly height?: number;
+	readonly animated?: boolean;
+};
 
-export const Skeleton = ({
+export function Skeleton({
 	width = 20,
 	height = 1,
 	animated = true,
-}: SkeletonProps) => {
+}: SkeletonProps) {
 	const theme = useTheme();
 	const frame = useAnimation(4);
 
@@ -25,6 +25,7 @@ export const Skeleton = ({
 			const inHighlight = i >= offset - 3 && i <= offset + 3;
 			row += inHighlight ? '█' : '░';
 		}
+
 		return row;
 	};
 
@@ -35,6 +36,7 @@ export const Skeleton = ({
 			const inHighlight = i >= rowOffset - 3 && i <= rowOffset + 3;
 			row += inHighlight ? '█' : '░';
 		}
+
 		return row;
 	});
 
@@ -56,4 +58,4 @@ export const Skeleton = ({
 			))}
 		</Box>
 	);
-};
+}

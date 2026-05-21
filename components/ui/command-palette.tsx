@@ -4,31 +4,32 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface Command {
+export type Command = {
 	id: string;
 	label: string;
 	description?: string;
 	shortcut?: string;
 	onSelect?: () => void;
 	group?: string;
-}
+};
 
-export interface CommandPaletteProps {
-	commands: Command[];
-	isOpen: boolean;
-	onClose?: () => void;
-	placeholder?: string;
-	maxItems?: number;
-}
+export type CommandPaletteProps = {
+	readonly commands: Command[];
+	readonly isOpen: boolean;
+	readonly onClose?: () => void;
+	readonly placeholder?: string;
+	readonly maxItems?: number;
+};
 
 /**
  * Fuzzy match: returns true if query is a subsequence of str (case insensitive).
  */
-const fuzzyMatch = (str: string, query: string): boolean => {
+const fuzzyMatch = (string_: string, query: string): boolean => {
 	if (!query) {
 		return true;
 	}
-	const s = str.toLowerCase();
+
+	const s = string_.toLowerCase();
 	const q = query.toLowerCase();
 	let qi = 0;
 	for (let i = 0; i < s.length && qi < q.length; i += 1) {
@@ -36,17 +37,19 @@ const fuzzyMatch = (str: string, query: string): boolean => {
 			qi += 1;
 		}
 	}
+
 	return qi === q.length;
 };
 
 /**
  * Score fuzzy match: lower = better. Consecutive matches score better.
  */
-const fuzzyScore = (str: string, query: string): number => {
+const fuzzyScore = (string_: string, query: string): number => {
 	if (!query) {
 		return 0;
 	}
-	const s = str.toLowerCase();
+
+	const s = string_.toLowerCase();
 	const q = query.toLowerCase();
 	let score = 0;
 	let qi = 0;
@@ -63,20 +66,20 @@ const fuzzyScore = (str: string, query: string): number => {
 	return score;
 };
 
-export const CommandPalette = ({
+export function CommandPalette({
 	commands,
 	isOpen,
 	onClose,
 	placeholder = 'Type a command...',
 	maxItems = 8,
-}: CommandPaletteProps) => {
+}: CommandPaletteProps) {
 	const theme = useTheme();
 	const [query, setQuery] = useState('');
 	const [cursor, setCursor] = useState(0);
 
 	const filtered = commands
 		.filter(c => fuzzyMatch(c.label, query))
-		.toSorted((a, b) => fuzzyScore(a.label, query) - fuzzyScore(b.label, query))
+		.sort((a, b) => fuzzyScore(a.label, query) - fuzzyScore(b.label, query))
 		.slice(0, maxItems);
 
 	useInput((input, key) => {
@@ -109,6 +112,7 @@ export const CommandPalette = ({
 				setCursor(0);
 				onClose?.();
 			}
+
 			return;
 		}
 
@@ -136,6 +140,7 @@ export const CommandPalette = ({
 		if (!groups.has(g)) {
 			groups.set(g, []);
 		}
+
 		groups.get(g)?.push(cmd);
 	}
 
@@ -160,7 +165,7 @@ export const CommandPalette = ({
 
 			{filtered.length === 0 ? (
 				<Box paddingX={1} paddingY={0}>
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						No commands found
 					</Text>
 				</Box>
@@ -170,7 +175,7 @@ export const CommandPalette = ({
 						<Box key={group ?? '_'} flexDirection="column">
 							{group && (
 								<Box paddingX={1}>
-									<Text color={theme.colors.mutedForeground} dimColor bold>
+									<Text dimColor bold color={theme.colors.mutedForeground}>
 										{group}
 									</Text>
 								</Box>
@@ -193,14 +198,13 @@ export const CommandPalette = ({
 												{cmd.label}
 											</Text>
 											{cmd.description && (
-												<Text color={theme.colors.mutedForeground} dimColor>
-													{'—'}
-													{cmd.description}
+												<Text dimColor color={theme.colors.mutedForeground}>
+													—{cmd.description}
 												</Text>
 											)}
 										</Box>
 										{cmd.shortcut && (
-											<Text color={theme.colors.accent} dimColor>
+											<Text dimColor color={theme.colors.accent}>
 												{cmd.shortcut}
 											</Text>
 										)}
@@ -212,9 +216,9 @@ export const CommandPalette = ({
 				</Box>
 			)}
 
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				↑↓: navigate · Enter: run · Esc: close
 			</Text>
 		</Box>
 	);
-};
+}

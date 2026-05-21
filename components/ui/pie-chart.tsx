@@ -2,18 +2,18 @@ import {Box, Text} from 'ink';
 
 import {useTheme} from '@/components/ui/theme-provider';
 
-export interface PieChartItem {
+export type PieChartItem = {
 	label: string;
 	value: number;
 	color?: string;
-}
+};
 
-export interface PieChartProps {
-	data: PieChartItem[];
-	radius?: number;
-	showLegend?: boolean;
-	showPercentages?: boolean;
-}
+export type PieChartProps = {
+	readonly data: PieChartItem[];
+	readonly radius?: number;
+	readonly showLegend?: boolean;
+	readonly showPercentages?: boolean;
+};
 
 const DEFAULT_COLORS = [
 	'#7c3aed',
@@ -38,7 +38,7 @@ const LEGEND_SQUARE = '■';
 const buildPieGrid = (
 	data: PieChartItem[],
 	radius: number,
-): {char: string; color: string}[][] => {
+): Array<Array<{char: string; color: string}>> => {
 	const total = data.reduce((s, d) => s + d.value, 0);
 	if (total === 0) {
 		return [];
@@ -49,12 +49,12 @@ const buildPieGrid = (
 	const cx = cols / 2;
 	const cy = rows / 2;
 
-	const grid: {char: string; color: string}[][] = Array.from(
+	const grid: Array<Array<{char: string; color: string}>> = Array.from(
 		{length: rows},
 		() => Array.from({length: cols}, () => ({char: '', color: ''})),
 	);
 
-	const angles: {color: string; end: number; start: number}[] = [];
+	const angles: Array<{color: string; end: number; start: number}> = [];
 	let cumulative = 0;
 	for (const item of data) {
 		const slice = (item.value / total) * Math.PI * 2;
@@ -92,12 +92,12 @@ const buildPieGrid = (
 	return grid;
 };
 
-export const PieChart = ({
+export function PieChart({
 	data,
 	radius = 5,
 	showLegend = true,
 	showPercentages = true,
-}: PieChartProps) => {
+}: PieChartProps) {
 	const theme = useTheme();
 
 	if (data.length === 0) {
@@ -153,4 +153,4 @@ export const PieChart = ({
 			)}
 		</Box>
 	);
-};
+}

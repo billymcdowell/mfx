@@ -8,18 +8,18 @@ import {useTheme} from '@/components/ui/theme-provider';
 import {useFocus} from '@/hooks/use-focus';
 import {useInput} from '@/hooks/use-input';
 
-export interface PathInputProps {
-	value?: string;
-	onChange?: (value: string) => void;
-	onSubmit?: (value: string) => void;
-	label?: string;
-	placeholder?: string;
-	autoFocus?: boolean;
-	id?: string;
-	width?: number;
-	filter?: string;
-	dirsOnly?: boolean;
-}
+export type PathInputProps = {
+	readonly value?: string;
+	readonly onChange?: (value: string) => void;
+	readonly onSubmit?: (value: string) => void;
+	readonly label?: string;
+	readonly placeholder?: string;
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+	readonly width?: number;
+	readonly filter?: string;
+	readonly dirsOnly?: boolean;
+};
 
 const getCompletions = (
 	inputPath: string,
@@ -48,9 +48,11 @@ const getCompletions = (
 					if (dirsOnly && !stat.isDirectory()) {
 						return false;
 					}
+
 					if (filter && !stat.isDirectory() && !e.endsWith(filter)) {
 						return false;
 					}
+
 					return true;
 				} catch {
 					return false;
@@ -71,7 +73,7 @@ const getCompletions = (
 	}
 };
 
-export const PathInput = ({
+export function PathInput({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -82,7 +84,7 @@ export const PathInput = ({
 	width = 40,
 	filter,
 	dirsOnly = false,
-}: PathInputProps) => {
+}: PathInputProps) {
 	const [internalValue, setInternalValue] = useState('');
 	const [completionIndex, setCompletionIndex] = useState(0);
 	const theme = useTheme();
@@ -112,8 +114,10 @@ export const PathInput = ({
 				} else {
 					setInternalValue(selected);
 				}
+
 				setCompletionIndex(0);
 			}
+
 			return;
 		}
 
@@ -128,13 +132,14 @@ export const PathInput = ({
 		}
 
 		if (key.backspace || key.delete) {
-			const newVal = value.slice(0, -1);
+			const newValue = value.slice(0, -1);
 			setCompletionIndex(0);
 			if (onChange) {
-				onChange(newVal);
+				onChange(newValue);
 			} else {
-				setInternalValue(newVal);
+				setInternalValue(newValue);
 			}
+
 			return;
 		}
 
@@ -142,12 +147,12 @@ export const PathInput = ({
 			return;
 		}
 
-		const newVal = value + input;
+		const newValue = value + input;
 		setCompletionIndex(0);
 		if (onChange) {
-			onChange(newVal);
+			onChange(newValue);
 		} else {
-			setInternalValue(newVal);
+			setInternalValue(newValue);
 		}
 	});
 
@@ -195,10 +200,10 @@ export const PathInput = ({
 				</Box>
 			)}
 			{isFocused && completions.length > 0 && (
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					Tab: accept · ↑↓: navigate
 				</Text>
 			)}
 		</Box>
 	);
-};
+}

@@ -5,22 +5,22 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface ScrollViewProps {
-	height: number;
-	children: ReactNode;
-	contentHeight?: number;
-	showScrollbar?: boolean;
-	scrollbarColor?: string;
-	thumbColor?: string;
-	trackChar?: string;
-	thumbChar?: string;
+export type ScrollViewProps = {
+	readonly height: number;
+	readonly children: ReactNode;
+	readonly contentHeight?: number;
+	readonly showScrollbar?: boolean;
+	readonly scrollbarColor?: string;
+	readonly thumbColor?: string;
+	readonly trackChar?: string;
+	readonly thumbChar?: string;
 	/** Disable scroll keys when another layer owns input. */
-	scrollInputActive?: boolean;
+	readonly scrollInputActive?: boolean;
 	/** Fired when scroll position changes (for read progress UI). */
-	onScrollTopChange?: (scrollTop: number, maxScroll: number) => void;
-}
+	readonly onScrollTopChange?: (scrollTop: number, maxScroll: number) => void;
+};
 
-export const ScrollView = ({
+export function ScrollView({
 	height,
 	children,
 	contentHeight = 0,
@@ -31,7 +31,7 @@ export const ScrollView = ({
 	thumbChar = '█',
 	scrollInputActive = true,
 	onScrollTopChange,
-}: ScrollViewProps) => {
+}: ScrollViewProps) {
 	const theme = useTheme();
 	const [scrollTop, setScrollTop] = useState(0);
 
@@ -73,6 +73,7 @@ export const ScrollView = ({
 		if (contentHeight <= height) {
 			return height;
 		}
+
 		return Math.max(1, Math.round((height / contentHeight) * height));
 	}, [contentHeight, height]);
 
@@ -80,6 +81,7 @@ export const ScrollView = ({
 		if (contentHeight <= height || maxScroll === 0) {
 			return 0;
 		}
+
 		return Math.round((clampedScroll / maxScroll) * (height - thumbSize));
 	}, [clampedScroll, maxScroll, height, thumbSize, contentHeight]);
 
@@ -94,11 +96,7 @@ export const ScrollView = ({
 
 	return (
 		<Box flexDirection="row" height={height} overflow="hidden">
-			<Box
-				flexGrow={1}
-				flexDirection="column"
-				marginTop={-clampedScroll as number}
-			>
+			<Box flexGrow={1} flexDirection="column" marginTop={-clampedScroll}>
 				{children}
 			</Box>
 			{showScrollbar && (
@@ -115,4 +113,4 @@ export const ScrollView = ({
 			)}
 		</Box>
 	);
-};
+}

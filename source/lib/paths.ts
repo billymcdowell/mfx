@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 export function getConfigDirectory(): string {
-	const override = process.env['MFX_CONFIG_DIR']?.trim();
+	const override = process.env.MFX_CONFIG_DIR?.trim();
 	if (override) {
 		fs.mkdirSync(override, {recursive: true});
 		return override;
@@ -12,8 +12,8 @@ export function getConfigDirectory(): string {
 	const home = os.homedir();
 
 	if (process.platform === 'win32') {
-		const base = process.env['APPDATA']?.trim().length
-			? process.env['APPDATA']!
+		const base = process.env.APPDATA?.trim().length
+			? process.env.APPDATA!
 			: path.join(home, 'AppData', 'Roaming');
 		const dir = path.join(base, 'mfx');
 		fs.mkdirSync(dir, {recursive: true});

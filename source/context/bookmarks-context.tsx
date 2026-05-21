@@ -19,7 +19,11 @@ const BookmarksContext = createContext<BookmarksContextValue | undefined>(
 	undefined,
 );
 
-export function BookmarksProvider({children}: {children: React.ReactNode}) {
+export function BookmarksProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
 	const [items, setItems] = useState(() => loadBookmarks());
 
 	const persist = useCallback((next: Bookmark[]) => {

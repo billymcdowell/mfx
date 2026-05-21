@@ -5,29 +5,29 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface WizardStep {
+export type WizardStep = {
 	key: string;
 	title: string;
 	content: ReactNode;
 	validate?: () => boolean | string;
-}
+};
 
-export interface WizardProps {
-	steps: WizardStep[];
-	onComplete?: (completedSteps: string[]) => void;
-	onCancel?: () => void;
-	showProgress?: boolean;
-}
+export type WizardProps = {
+	readonly steps: WizardStep[];
+	readonly onComplete?: (completedSteps: string[]) => void;
+	readonly onCancel?: () => void;
+	readonly showProgress?: boolean;
+};
 
-export const Wizard = ({
+export function Wizard({
 	steps,
 	onComplete,
 	onCancel,
 	showProgress = true,
-}: WizardProps) => {
+}: WizardProps) {
 	const theme = useTheme();
 	const [currentStep, setCurrentStep] = useState(0);
-	const [validationError, setValidationError] = useState<string | null>(null);
+	const [validationError, setValidationError] = useState<string | undefined>();
 
 	const isLast = currentStep === steps.length - 1;
 	const isFirst = currentStep === 0;
@@ -52,14 +52,15 @@ export const Wizard = ({
 					return;
 				}
 			}
-			setValidationError(null);
+
+			setValidationError(undefined);
 			if (isLast) {
 				onComplete?.(steps.map(s => s.key));
 			} else {
 				setCurrentStep(i => i + 1);
 			}
 		} else if (goBack) {
-			setValidationError(null);
+			setValidationError(undefined);
 			if (!isFirst) {
 				setCurrentStep(i => i - 1);
 			}
@@ -106,24 +107,21 @@ export const Wizard = ({
 			</Box>
 
 			{validationError && (
-				<Text color={theme.colors.error}>
-					{'✗'}
-					{validationError}
-				</Text>
+				<Text color={theme.colors.error}>✗{validationError}</Text>
 			)}
 
 			<Box flexDirection="row" gap={2}>
 				{!isFirst && <Text color={theme.colors.mutedForeground}>[← Back]</Text>}
 				{isLast ? (
-					<Text color={theme.colors.primary} bold>
+					<Text bold color={theme.colors.primary}>
 						[Finish]
 					</Text>
 				) : (
-					<Text color={theme.colors.primary} bold>
+					<Text bold color={theme.colors.primary}>
 						[Next →]
 					</Text>
 				)}
 			</Box>
 		</Box>
 	);
-};
+}

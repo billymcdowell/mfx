@@ -10,13 +10,13 @@ export type BadgeVariant =
 	| 'info'
 	| 'secondary';
 
-export interface BadgeProps {
-	children: string;
-	variant?: BadgeVariant;
-	color?: string;
-	bold?: boolean;
-	bordered?: boolean;
-	borderStyle?:
+export type BadgeProps = {
+	readonly children: string;
+	readonly variant?: BadgeVariant;
+	readonly color?: string;
+	readonly bold?: boolean;
+	readonly bordered?: boolean;
+	readonly borderStyle?:
 		| 'single'
 		| 'double'
 		| 'round'
@@ -24,10 +24,10 @@ export interface BadgeProps {
 		| 'singleDouble'
 		| 'doubleSingle'
 		| 'classic';
-	paddingX?: number;
-}
+	readonly paddingX?: number;
+};
 
-export const Badge = ({
+export function Badge({
 	children,
 	variant = 'default',
 	color,
@@ -35,7 +35,7 @@ export const Badge = ({
 	bordered = true,
 	borderStyle = 'round',
 	paddingX = 1,
-}: BadgeProps) => {
+}: BadgeProps) {
 	const theme = useTheme();
 
 	const variantColor =
@@ -45,18 +45,23 @@ export const Badge = ({
 				case 'success': {
 					return theme.colors.success;
 				}
+
 				case 'warning': {
 					return theme.colors.warning;
 				}
+
 				case 'error': {
 					return theme.colors.error;
 				}
+
 				case 'info': {
 					return theme.colors.info;
 				}
+
 				case 'secondary': {
 					return theme.colors.secondary;
 				}
+
 				default: {
 					return theme.colors.primary;
 				}
@@ -82,4 +87,4 @@ export const Badge = ({
 			</Text>
 		</Box>
 	);
-};
+}

@@ -4,14 +4,14 @@ import React, {useState, useCallback} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInterval} from '@/hooks/use-interval';
 
-export interface ClockProps {
-	format?: '12h' | '24h';
-	showSeconds?: boolean;
-	showDate?: boolean;
-	timezone?: string;
-	color?: string;
-	size?: 'sm' | 'lg';
-}
+export type ClockProps = {
+	readonly format?: '12h' | '24h';
+	readonly showSeconds?: boolean;
+	readonly showDate?: boolean;
+	readonly timezone?: string;
+	readonly color?: string;
+	readonly size?: 'sm' | 'lg';
+};
 
 const BIG_DIGITS: Record<string, string[]> = {
 	'': ['', '', '', '', ''],
@@ -28,14 +28,15 @@ const BIG_DIGITS: Record<string, string[]> = {
 	':': ['', '●', '', '●', ''],
 };
 
-const renderBigText = (str: string, color: string): React.ReactElement => {
+const renderBigText = (string_: string, color: string): React.ReactElement => {
 	const rows: string[] = ['', '', '', ''];
-	for (const ch of str) {
+	for (const ch of string_) {
 		const segs = BIG_DIGITS[ch] ?? BIG_DIGITS[''] ?? [];
 		for (let r = 0; r < 5; r += 1) {
 			rows[r] += segs[r];
 		}
 	}
+
 	return (
 		<Box flexDirection="column">
 			{rows.map((row, i) => (
@@ -47,7 +48,7 @@ const renderBigText = (str: string, color: string): React.ReactElement => {
 	);
 };
 
-const padNum = (n: number) => String(n).padStart(2, '0');
+const padNumber = (n: number) => String(n).padStart(2, '0');
 
 const getTimeParts = (
 	format: '12h' | '24h',
@@ -69,8 +70,8 @@ const getTimeParts = (
 	}
 
 	const time = showSeconds
-		? `${padNum(hours)}:${padNum(minutes)}:${padNum(seconds)}`
-		: `${padNum(hours)}:${padNum(minutes)}`;
+		? `${padNumber(hours)}:${padNumber(minutes)}:${padNumber(seconds)}`
+		: `${padNumber(hours)}:${padNumber(minutes)}`;
 
 	return {ampm, time};
 };
@@ -87,20 +88,22 @@ const getDateString = (timezone?: string): string => {
 	});
 };
 
-export const Clock = ({
+export function Clock({
 	format = '24h',
 	showSeconds = true,
 	showDate = false,
 	timezone,
 	color,
 	size = 'sm',
-}: ClockProps) => {
+}: ClockProps) {
 	const theme = useTheme();
 	const resolvedColor = color ?? theme.colors.primary;
 
 	const [_tick, setTick] = useState(0);
 	useInterval(
-		useCallback(() => setTick(t => t + 1), []),
+		useCallback(() => {
+			setTick(t => t + 1);
+		}, []),
 		1000,
 	);
 
@@ -117,7 +120,7 @@ export const Clock = ({
 				<Box alignItems="flex-end" gap={0}>
 					{renderBigText(time, resolvedColor)}
 					{ampm && (
-						<Text color={theme.colors.mutedForeground} bold>
+						<Text bold color={theme.colors.mutedForeground}>
 							{ampm}
 						</Text>
 					)}
@@ -134,11 +137,11 @@ export const Clock = ({
 				</Text>
 			)}
 			<Box gap={0}>
-				<Text color={resolvedColor} bold>
+				<Text bold color={resolvedColor}>
 					{time}
 				</Text>
 				{ampm && <Text color={theme.colors.mutedForeground}>{ampm}</Text>}
 			</Box>
 		</Box>
 	);
-};
+}

@@ -5,28 +5,28 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface TabbedContentTab {
+export type TabbedContentTab = {
 	id: string;
 	label: string;
 	content: ReactNode;
 	disabled?: boolean;
-}
+};
 
-export interface TabbedContentProps {
-	tabs: TabbedContentTab[];
-	defaultTab?: string;
-	activeTab?: string;
-	onChange?: (id: string) => void;
-	tabBarStyle?: 'underline' | 'box' | 'minimal';
-}
+export type TabbedContentProps = {
+	readonly tabs: TabbedContentTab[];
+	readonly defaultTab?: string;
+	readonly activeTab?: string;
+	readonly onChange?: (id: string) => void;
+	readonly tabBarStyle?: 'underline' | 'box' | 'minimal';
+};
 
-export const TabbedContent = ({
+export function TabbedContent({
 	tabs,
 	defaultTab,
 	activeTab: controlledTab,
 	onChange,
 	tabBarStyle = 'underline',
-}: TabbedContentProps) => {
+}: TabbedContentProps) {
 	const theme = useTheme();
 	const [internalTab, setInternalTab] = useState(
 		defaultTab ?? tabs[0]?.id ?? '',
@@ -44,18 +44,20 @@ export const TabbedContent = ({
 
 	useInput((_input, key) => {
 		if (key.leftArrow || (key.shift && key.tab)) {
-			let prev = activeIndex - 1;
-			while (prev >= 0 && tabs[prev]?.disabled) {
-				prev -= 1;
+			let previous = activeIndex - 1;
+			while (previous >= 0 && tabs[previous]?.disabled) {
+				previous -= 1;
 			}
-			if (prev >= 0) {
-				switchTab(tabs[prev].id);
+
+			if (previous >= 0) {
+				switchTab(tabs[previous].id);
 			}
 		} else if (key.rightArrow || key.tab) {
 			let next = activeIndex + 1;
 			while (next < tabs.length && tabs[next]?.disabled) {
 				next += 1;
 			}
+
 			if (next < tabs.length) {
 				switchTab(tabs[next].id);
 			}
@@ -78,6 +80,7 @@ export const TabbedContent = ({
 						} else {
 							textColor = theme.colors.foreground;
 						}
+
 						return (
 							<Box key={tab.id} paddingX={1}>
 								<Text color={textColor} bold={isActive} dimColor={tab.disabled}>
@@ -108,6 +111,7 @@ export const TabbedContent = ({
 						} else {
 							textColor = theme.colors.mutedForeground;
 						}
+
 						return (
 							<Text
 								key={tab.id}
@@ -135,6 +139,7 @@ export const TabbedContent = ({
 					} else {
 						textColor = theme.colors.foreground;
 					}
+
 					return (
 						<Box key={tab.id}>
 							<Text
@@ -166,9 +171,9 @@ export const TabbedContent = ({
 			>
 				{activeTab?.content}
 			</Box>
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				←→ or Tab to switch tabs
 			</Text>
 		</Box>
 	);
-};
+}

@@ -6,18 +6,18 @@ import {useInput} from '@/hooks/use-input';
 
 export type RiskLevel = 'low' | 'medium' | 'high';
 
-export interface ToolApprovalProps {
-	name: string;
-	description?: string;
-	args?: Record<string, unknown>;
-	risk?: RiskLevel;
-	onApprove?: () => void;
-	onDeny?: () => void;
-	onAlwaysAllow?: () => void;
-	timeout?: number;
-}
+export type ToolApprovalProps = {
+	readonly name: string;
+	readonly description?: string;
+	readonly args?: Record<string, unknown>;
+	readonly risk?: RiskLevel;
+	readonly onApprove?: () => void;
+	readonly onDeny?: () => void;
+	readonly onAlwaysAllow?: () => void;
+	readonly timeout?: number;
+};
 
-export const ToolApproval = ({
+export function ToolApproval({
 	name,
 	description,
 	args,
@@ -26,7 +26,7 @@ export const ToolApproval = ({
 	onDeny,
 	onAlwaysAllow,
 	timeout,
-}: ToolApprovalProps) => {
+}: ToolApprovalProps) {
 	const theme = useTheme();
 	const [remaining, setRemaining] = useState(timeout ?? 0);
 	const onDenyRef = useRef(onDeny);
@@ -39,6 +39,7 @@ export const ToolApproval = ({
 		if (!timeout) {
 			return;
 		}
+
 		setRemaining(timeout);
 		const id = setInterval(() => {
 			setRemaining(r => {
@@ -47,10 +48,13 @@ export const ToolApproval = ({
 					onDenyRef.current?.();
 					return 0;
 				}
+
 				return r - 1;
 			});
 		}, 1000);
-		return () => clearInterval(id);
+		return () => {
+			clearInterval(id);
+		};
 	}, [timeout]);
 
 	useInput(input => {
@@ -99,7 +103,7 @@ export const ToolApproval = ({
 					[{riskLabel[risk]} RISK]
 				</Text>
 				{timeout && remaining > 0 && (
-					<Text color={theme.colors.warning ?? 'yellow'} dimColor>
+					<Text dimColor color={theme.colors.warning ?? 'yellow'}>
 						Auto-deny in {remaining}s
 					</Text>
 				)}
@@ -122,7 +126,7 @@ export const ToolApproval = ({
 
 			{args && Object.keys(args).length > 0 && (
 				<Box flexDirection="column" marginTop={1}>
-					<Text color={theme.colors.mutedForeground} dimColor>
+					<Text dimColor color={theme.colors.mutedForeground}>
 						Arguments:
 					</Text>
 					{Object.entries(args).map(([k, v]) => (
@@ -135,18 +139,18 @@ export const ToolApproval = ({
 			)}
 
 			<Box gap={2} marginTop={1}>
-				<Text color={theme.colors.success ?? 'green'} bold>
+				<Text bold color={theme.colors.success ?? 'green'}>
 					[y] Approve
 				</Text>
-				<Text color={theme.colors.error ?? 'red'} bold>
+				<Text bold color={theme.colors.error ?? 'red'}>
 					[n] Deny
 				</Text>
 				{onAlwaysAllow && (
-					<Text color={theme.colors.warning ?? 'yellow'} bold>
+					<Text bold color={theme.colors.warning ?? 'yellow'}>
 						[a] Always Allow
 					</Text>
 				)}
 			</Box>
 		</Box>
 	);
-};
+}

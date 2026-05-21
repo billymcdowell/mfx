@@ -21,7 +21,11 @@ type SettingsRow =
 	| 'copyBookmarks'
 	| 'logout';
 
-export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
+export function SettingsScreen({
+	mainInputActive,
+}: {
+	readonly mainInputActive: boolean;
+}) {
 	const theme = useTheme();
 	const {config, setConfig} = useConfig();
 	const {logout} = useAuth();
@@ -106,6 +110,7 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 						setCopyFlash(undefined);
 					}, 1200);
 				}
+
 				return;
 			}
 
@@ -135,6 +140,7 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 		return (
 			<Confirm
 				message="Sign out and clear this session?"
+				variant="danger"
 				onCancel={() => {
 					setConfirmSignOut(false);
 				}}
@@ -142,7 +148,6 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					logout();
 					setConfirmSignOut(false);
 				}}
-				variant="danger"
 			/>
 		);
 	}
@@ -171,14 +176,14 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					</Text>
 					<Select<ThemeKey>
 						inputActive={mainInputActive && focusRow === 'theme'}
+						options={themeSelect}
+						value={config.themeKey}
 						onChange={k => {
 							setConfig({themeKey: k});
 						}}
 						onFocusLeaveEnd={() => {
 							setFocusRow('refresh');
 						}}
-						options={themeSelect}
-						value={config.themeKey}
 					/>
 				</Box>
 			</Box>
@@ -199,6 +204,13 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 					</Text>
 					<RadioGroup<number>
 						inputActive={mainInputActive && focusRow === 'refresh'}
+						options={[
+							{label: '15 seconds', value: 15},
+							{label: '30 seconds', value: 30},
+							{label: '60 seconds', value: 60},
+							{label: 'Off (manual only)', value: 0},
+						]}
+						value={config.priceRefreshSeconds}
 						onChange={v => {
 							setConfig({priceRefreshSeconds: v});
 						}}
@@ -208,13 +220,6 @@ export function SettingsScreen({mainInputActive}: {mainInputActive: boolean}) {
 						onFocusLeaveStart={() => {
 							setFocusRow('theme');
 						}}
-						options={[
-							{label: '15 seconds', value: 15},
-							{label: '30 seconds', value: 30},
-							{label: '60 seconds', value: 60},
-							{label: 'Off (manual only)', value: 0},
-						]}
-						value={config.priceRefreshSeconds}
 					/>
 				</Box>
 			</Box>

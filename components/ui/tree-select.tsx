@@ -4,42 +4,41 @@ import React, {useState} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface TreeSelectNode<T = string> {
+export type TreeSelectNode<T = string> = {
 	value: T;
 	label: string;
-	children?: TreeSelectNode<T>[];
+	children?: Array<TreeSelectNode<T>>;
 	disabled?: boolean;
-}
+};
 
-export interface TreeSelectProps<T = string> {
-	nodes: TreeSelectNode<T>[];
-	value?: T;
-	onChange?: (value: T) => void;
-	onSubmit?: (value: T) => void;
-	label?: string;
-	expandedByDefault?: boolean;
-}
+export type TreeSelectProps<T = string> = {
+	readonly nodes: Array<TreeSelectNode<T>>;
+	readonly value?: T;
+	readonly onChange?: (value: T) => void;
+	readonly onSubmit?: (value: T) => void;
+	readonly label?: string;
+	readonly expandedByDefault?: boolean;
+};
 
-interface FlatNode<T> {
+type FlatNode<T> = {
 	node: TreeSelectNode<T>;
 	depth: number;
 	path: string;
 	hasChildren: boolean;
-}
+};
 
 const flatten = <T,>(
-	nodes: TreeSelectNode<T>[],
+	nodes: Array<TreeSelectNode<T>>,
 	depth: number,
 	expanded: Set<string>,
 	pathPrefix: string,
 	expandedByDefault: boolean,
-): FlatNode<T>[] => {
-	const result: FlatNode<T>[] = [];
+): Array<FlatNode<T>> => {
+	const result: Array<FlatNode<T>> = [];
 
-	for (let i = 0; i < nodes.length; i += 1) {
-		const node = nodes[i];
+	for (const [i, node] of nodes.entries()) {
 		const path = `${pathPrefix}/${i}`;
-		const hasChildren = !!(node.children && node.children.length > 0);
+		const hasChildren = Boolean(node.children && node.children.length > 0);
 		result.push({depth, hasChildren, node, path});
 
 		if (hasChildren) {
@@ -72,23 +71,26 @@ const getNodeColor = (
 	if (disabled) {
 		return theme.colors.mutedForeground;
 	}
+
 	if (isCursor) {
 		return theme.colors.primary;
 	}
+
 	if (isSelected) {
 		return theme.colors.accent;
 	}
+
 	return theme.colors.foreground;
 };
 
-export const TreeSelect = <T = string,>({
+export function TreeSelect<T = string>({
 	nodes,
 	value: controlledValue,
 	onChange,
 	onSubmit,
 	label,
 	expandedByDefault = false,
-}: TreeSelectProps<T>) => {
+}: TreeSelectProps<T>) {
 	const theme = useTheme();
 	const [expanded, setExpanded] = useState<Set<string>>(new Set());
 	const [cursor, setCursor] = useState(0);
@@ -109,12 +111,13 @@ export const TreeSelect = <T = string,>({
 					expanded.has(item.path) ||
 					(expandedByDefault && !expanded.has(`${item.path}:collapsed`));
 				if (isExpanded) {
-					setExpanded(prev => {
-						const next = new Set(prev);
+					setExpanded(previous => {
+						const next = new Set(previous);
 						next.delete(item.path);
 						if (expandedByDefault) {
 							next.add(`${item.path}:collapsed`);
 						}
+
 						return next;
 					});
 				}
@@ -125,8 +128,8 @@ export const TreeSelect = <T = string,>({
 				const isExpanded =
 					expanded.has(item.path) ||
 					(expandedByDefault && !expanded.has(`${item.path}:collapsed`));
-				setExpanded(prev => {
-					const next = new Set(prev);
+				setExpanded(previous => {
+					const next = new Set(previous);
 					if (isExpanded) {
 						next.delete(item.path);
 						if (expandedByDefault) {
@@ -136,6 +139,7 @@ export const TreeSelect = <T = string,>({
 						next.add(item.path);
 						next.delete(`${item.path}:collapsed`);
 					}
+
 					return next;
 				});
 			}
@@ -193,4 +197,4 @@ export const TreeSelect = <T = string,>({
 			})}
 		</Box>
 	);
-};
+}

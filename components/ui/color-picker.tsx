@@ -26,17 +26,17 @@ const DEFAULT_PALETTE = [
 
 const COLS = 8;
 
-export interface ColorPickerProps {
-	value?: string;
-	onChange?: (color: string) => void;
-	onSubmit?: (color: string) => void;
-	label?: string;
-	palette?: string[];
-	autoFocus?: boolean;
-	id?: string;
-}
+export type ColorPickerProps = {
+	readonly value?: string;
+	readonly onChange?: (color: string) => void;
+	readonly onSubmit?: (color: string) => void;
+	readonly label?: string;
+	readonly palette?: string[];
+	readonly autoFocus?: boolean;
+	readonly id?: string;
+};
 
-export const ColorPicker = ({
+export function ColorPicker({
 	value: controlledValue,
 	onChange,
 	onSubmit,
@@ -44,7 +44,7 @@ export const ColorPicker = ({
 	palette = DEFAULT_PALETTE,
 	autoFocus = false,
 	id,
-}: ColorPickerProps) => {
+}: ColorPickerProps) {
 	const theme = useTheme();
 	const {isFocused} = useFocus({autoFocus, id});
 	const [paletteRow, setPaletteRow] = useState(0);
@@ -93,11 +93,11 @@ export const ColorPicker = ({
 			setHexInput(h => h.slice(0, -1));
 		} else if (key.return) {
 			const hex = hexInput.startsWith('#') ? hexInput : `#${hexInput}`;
-			if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+			if (/^#[\da-fA-F]{6}$/.test(hex)) {
 				applyColor(hex);
 				onSubmit?.(hex);
 			}
-		} else if (/^[0-9a-fA-F#]$/.test(input) && hexInput.length < 7) {
+		} else if (/^[\da-fA-F#]$/.test(input) && hexInput.length < 7) {
 			setHexInput(h => h + input);
 		}
 	});
@@ -114,6 +114,7 @@ export const ColorPicker = ({
 							if (idx >= palette.length) {
 								return null;
 							}
+
 							const paletteColor = palette[idx];
 							const isActive =
 								mode === 'palette' && r === paletteRow && c === paletteCol;
@@ -135,9 +136,7 @@ export const ColorPicker = ({
 
 			<Box marginTop={1} gap={1}>
 				<Text color={theme.colors.mutedForeground}>Selected:</Text>
-				<Text backgroundColor={currentColor} color={currentColor}>
-					{''}
-				</Text>
+				<Text backgroundColor={currentColor} color={currentColor} />
 				<Text color={theme.colors.foreground}>{currentColor}</Text>
 			</Box>
 
@@ -156,11 +155,11 @@ export const ColorPicker = ({
 				)}
 			</Box>
 
-			<Text color={theme.colors.mutedForeground} dimColor>
+			<Text dimColor color={theme.colors.mutedForeground}>
 				{mode === 'palette'
 					? '↑↓←→: navigate · Enter: select Tab: hex input'
 					: 'Type hex · Enter: apply Tab: palette'}
 			</Text>
 		</Box>
 	);
-};
+}

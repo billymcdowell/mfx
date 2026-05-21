@@ -32,7 +32,7 @@ const TerminalViewportContext = createContext<
 export function TerminalViewportProvider({
 	children,
 }: {
-	children: React.ReactNode;
+	readonly children: React.ReactNode;
 }) {
 	const {stdout} = useStdout();
 	const [columns, setColumns] = useState(() => stdout.columns ?? 80);

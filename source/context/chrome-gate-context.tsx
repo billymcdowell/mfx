@@ -15,7 +15,11 @@ const ChromeGateContext = createContext<ChromeGateContextValue | undefined>(
 	undefined,
 );
 
-export function ChromeGateProvider({children}: {children: React.ReactNode}) {
+export function ChromeGateProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
 	const [blocked, setBlockedState] = useState(false);
 	const setBlocked = useCallback((value: boolean) => {
 		setBlockedState(value);

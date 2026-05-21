@@ -23,13 +23,13 @@ export function LoginScreen() {
 		setBusy(true);
 		try {
 			await login(email, password);
-		} catch (e: unknown) {
-			const raw = e instanceof Error ? e.message : 'Login failed.';
-			const msg =
+		} catch (error_: unknown) {
+			const raw = error_ instanceof Error ? error_.message : 'Login failed.';
+			const message =
 				raw.toLowerCase().includes('invalid') || raw.includes('wrong')
 					? 'Invalid credentials. Please try again.'
 					: raw;
-			setError(msg);
+			setError(message);
 		}
 
 		setBusy(false);
@@ -84,26 +84,26 @@ export function LoginScreen() {
 								borderStyle="single"
 								id="mex-email"
 								label="Email"
-								onChange={setEmail}
-								onSubmit={() => {
-									/* tab to password */
-								}}
 								placeholder="trader@example.com"
 								value={email}
 								width={44}
+								onChange={setEmail}
+								onSubmit={() => {
+									/* Tab to password */
+								}}
 							/>
 							<PasswordInput
 								borderStyle="single"
 								id="mex-password"
 								label="Password"
 								mask="•"
+								placeholder="********"
+								value={password}
+								width={44}
 								onChange={setPassword}
 								onSubmit={() => {
 									void submit();
 								}}
-								placeholder="********"
-								value={password}
-								width={44}
 							/>
 							<Box
 								marginTop={1}
@@ -125,7 +125,7 @@ export function LoginScreen() {
 				)}
 			</Box>
 			<Box justifyContent="center" paddingBottom={1}>
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					Tab to move between fields · Enter to submit · Ctrl+C to quit
 				</Text>
 			</Box>

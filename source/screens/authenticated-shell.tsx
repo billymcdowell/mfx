@@ -110,18 +110,23 @@ function sidebarActiveKey(screen: Screen): string {
 		case 'articleDetail': {
 			return 'news';
 		}
+
 		case 'bookmarks': {
 			return 'bookmarks';
 		}
+
 		case 'news': {
 			return 'news';
 		}
+
 		case 'priceDetail': {
 			return 'prices';
 		}
+
 		case 'settings': {
 			return 'settings';
 		}
+
 		default: {
 			return 'prices';
 		}
@@ -143,27 +148,32 @@ const FOOTER_HINTS: Partial<Record<Screen, string>> = {
 
 function resolvePaneHeaderTitle(
 	screen: Screen,
-	params: {symbol?: string},
-	instruments: {symbol: string; name: string}[],
+	parameters: {symbol?: string},
+	instruments: Array<{symbol: string; name: string}>,
 ): string {
 	switch (screen) {
 		case 'articleDetail': {
 			return '← Back to News';
 		}
+
 		case 'bookmarks': {
 			return 'Bookmarks';
 		}
+
 		case 'news': {
 			return 'News';
 		}
+
 		case 'priceDetail': {
-			const sym = params.symbol ?? '';
+			const sym = parameters.symbol ?? '';
 			const inst = instruments.find(i => i.symbol === sym);
 			return inst ? `← Back   ${sym} — ${inst.name}` : `← Back   ${sym}`;
 		}
+
 		case 'settings': {
 			return 'Settings';
 		}
+
 		default: {
 			return 'Prices';
 		}
@@ -175,15 +185,19 @@ function paneHeaderActions(screen: Screen): string {
 		case 'articleDetail': {
 			return '[b] Bookmark  [o] Open URL';
 		}
+
 		case 'news': {
 			return '[/] Search';
 		}
+
 		case 'priceDetail': {
 			return '[r] Refresh  [s] Watchlist';
 		}
+
 		case 'prices': {
 			return '[r] Refresh  [/] Search';
 		}
+
 		default: {
 			return '';
 		}
@@ -309,12 +323,15 @@ function ShellInterior() {
 					/>
 				);
 			}
+
 			case 'bookmarks': {
 				return <BookmarksScreen mainInputActive={mainInputActive} />;
 			}
+
 			case 'news': {
 				return <NewsScreen mainInputActive={mainInputActive} />;
 			}
+
 			case 'priceDetail': {
 				return (
 					<PriceDetailScreen
@@ -323,9 +340,11 @@ function ShellInterior() {
 					/>
 				);
 			}
+
 			case 'settings': {
 				return <SettingsScreen mainInputActive={mainInputActive} />;
 			}
+
 			default: {
 				return (
 					<PricesScreen
@@ -361,16 +380,16 @@ function ShellInterior() {
 		>
 			<Box flexDirection="row" flexGrow={1} width="100%">
 				<Sidebar
-					activeKey={sidebarActiveKey(current.screen)}
 					brandedTitle
+					activeKey={sidebarActiveKey(current.screen)}
 					inputActive={shellZone === 'sidebar' && !showHelp}
 					items={SIDEBAR_ITEMS}
+					title="M F X"
+					width={20}
 					onSelect={key => {
 						replaceRoot({params: {}, screen: key as Screen});
 						setShellZone('main');
 					}}
-					title="M F X"
-					width={20}
 				/>
 				<Box flexDirection="column" flexGrow={1} height="100%">
 					<Box
@@ -413,7 +432,7 @@ function ShellInterior() {
 					{compositeLastUpdated.toLocaleTimeString()} · Theme: {themedLabel} ·
 					[?] Help
 				</Text>
-				<Text color={theme.colors.mutedForeground} dimColor>
+				<Text dimColor color={theme.colors.mutedForeground}>
 					{footerHint}
 				</Text>
 			</Box>

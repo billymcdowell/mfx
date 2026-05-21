@@ -19,6 +19,7 @@ function hslToHex(h: number, s: number, l: number): string {
 			.toString(16)
 			.padStart(2, '0');
 	};
+
 	return `#${f(0)}${f(8)}${f(4)}`;
 }
 
@@ -30,24 +31,35 @@ function buildGrid(art: string): Grid {
 				const hue = (colIdx * 7 + rowIdx * 23) % 360;
 				return {filled: true, baseHue: hue};
 			}
+
 			return {filled: false, baseHue: 0};
 		}),
 	);
 }
 
-export function RainbowTitle({text, fps = 24}: {text: string; fps?: number}) {
-	const [grid, setGrid] = useState<Grid | null>(null);
+export function RainbowTitle({
+	text,
+	fps = 24,
+}: {
+	readonly text: string;
+	readonly fps?: number;
+}) {
+	const [grid, setGrid] = useState<Grid | undefined>();
 	const [tick, setTick] = useState(0);
 
 	useEffect(() => {
-		figlet.text(text, {font: 'Banner3'}, (err, result) => {
-			if (!err && result) setGrid(buildGrid(result));
+		figlet.text(text, {font: 'Banner3'}, (error, result) => {
+			if (!error && result) setGrid(buildGrid(result));
 		});
 	}, [text]);
 
 	useEffect(() => {
-		const id = setInterval(() => setTick(t => t + 1), Math.floor(1000 / fps));
-		return () => clearInterval(id);
+		const id = setInterval(() => {
+			setTick(t => t + 1);
+		}, Math.floor(1000 / fps));
+		return () => {
+			clearInterval(id);
+		};
 	}, [fps]);
 
 	if (!grid) return <Text color="gray">Loading…</Text>;
@@ -62,7 +74,7 @@ export function RainbowTitle({text, fps = 24}: {text: string; fps?: number}) {
 						if (!cell.filled) return <Text key={cIdx}> </Text>;
 						const hue = (cell.baseHue + hueShift) % 360;
 						return (
-							<Text key={cIdx} color={hslToHex(hue, 100, 55)} bold>
+							<Text key={cIdx} bold color={hslToHex(hue, 100, 55)}>
 								{BLOCK}
 							</Text>
 						);

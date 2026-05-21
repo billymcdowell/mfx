@@ -41,18 +41,18 @@ const GRADIENT_PRESETS: Record<GradientName, string[]> = {
 	vice: ['#5ee7df', '#b490ca'],
 };
 
-export interface GradientProps {
-	children: string;
-	name?: GradientName;
-	colors?: string[];
-	bold?: boolean;
-}
+export type GradientProps = {
+	readonly children: string;
+	readonly name?: GradientName;
+	readonly colors?: string[];
+	readonly bold?: boolean;
+};
 
-interface RGB {
+type RGB = {
 	r: number;
 	g: number;
 	b: number;
-}
+};
 
 const parseHex = (hex: string): RGB => {
 	const clean = hex.replace('#', '');
@@ -79,10 +79,10 @@ const lerpColor = (a: RGB, b: RGB, t: number): RGB => ({
 	r: a.r + (b.r - a.r) * t,
 });
 
-export interface GradientChar {
+export type GradientChar = {
 	char: string;
 	color: string;
-}
+};
 
 export const gradientText = (
 	text: string,
@@ -91,19 +91,21 @@ export const gradientText = (
 	if (colors.length === 0) {
 		return [...text].map(char => ({char, color: ''}));
 	}
+
 	if (colors.length === 1) {
 		return [...text].map(char => ({char, color: colors[0]}));
 	}
 
 	const parsedColors = colors.map(parseHex);
 	const segments = colors.length - 1;
-	const len = text.length;
+	const {length} = text;
 
 	return [...text].map((char, i) => {
-		if (len <= 1) {
+		if (length <= 1) {
 			return {char, color: colors[0]};
 		}
-		const pos = (i / (len - 1)) * segments;
+
+		const pos = (i / (length - 1)) * segments;
 		const segIndex = Math.min(Math.floor(pos), segments - 1);
 		const t = pos - segIndex;
 		const color = toHex(
@@ -113,12 +115,12 @@ export const gradientText = (
 	});
 };
 
-export const Gradient = ({
+export function Gradient({
 	children,
 	name,
 	colors,
 	bold = false,
-}: GradientProps) => {
+}: GradientProps) {
 	const resolvedColors = colors ?? (name ? GRADIENT_PRESETS[name] : []);
 	const chars = gradientText(children, resolvedColors);
 
@@ -131,4 +133,4 @@ export const Gradient = ({
 			))}
 		</Box>
 	);
-};
+}

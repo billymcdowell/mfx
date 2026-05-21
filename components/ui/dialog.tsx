@@ -5,18 +5,18 @@ import type {ReactNode} from 'react';
 import {useTheme} from '@/components/ui/theme-provider';
 import {useInput} from '@/hooks/use-input';
 
-export interface DialogProps {
-	title?: string;
-	children: ReactNode;
-	confirmLabel?: string;
-	cancelLabel?: string;
-	onConfirm?: () => void;
-	onCancel?: () => void;
-	variant?: 'default' | 'danger';
-	isOpen?: boolean;
-}
+export type DialogProps = {
+	readonly title?: string;
+	readonly children: ReactNode;
+	readonly confirmLabel?: string;
+	readonly cancelLabel?: string;
+	readonly onConfirm?: () => void;
+	readonly onCancel?: () => void;
+	readonly variant?: 'default' | 'danger';
+	readonly isOpen?: boolean;
+};
 
-export const Dialog = ({
+export function Dialog({
 	title,
 	children,
 	confirmLabel = 'OK',
@@ -25,7 +25,7 @@ export const Dialog = ({
 	onCancel,
 	variant = 'default',
 	isOpen = false,
-}: DialogProps) => {
+}: DialogProps) {
 	const theme = useTheme();
 	const [focusedButton, setFocusedButton] = useState<0 | 1>(0);
 
@@ -34,8 +34,9 @@ export const Dialog = ({
 			if (!isOpen) {
 				return;
 			}
+
 			if (key.tab || key.leftArrow || key.rightArrow) {
-				setFocusedButton(prev => (prev === 0 ? 1 : 0));
+				setFocusedButton(previous => (previous === 0 ? 1 : 0));
 			} else if (key.return) {
 				if (focusedButton === 1) {
 					onConfirm?.();
@@ -95,9 +96,7 @@ export const Dialog = ({
 					bold={focusedButton === 0}
 					inverse={focusedButton === 0}
 				>
-					{''}
 					{cancelLabel}
-					{''}
 				</Text>
 				<Text
 					color={
@@ -106,11 +105,9 @@ export const Dialog = ({
 					bold={focusedButton === 1}
 					inverse={focusedButton === 1}
 				>
-					{''}
 					{confirmLabel}
-					{''}
 				</Text>
 			</Box>
 		</Box>
 	);
-};
+}
